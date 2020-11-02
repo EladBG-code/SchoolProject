@@ -3,7 +3,7 @@ package com.theproject.schoolproject;
 public class User {
 
     private String fName,lName,username,email,password;
-
+    //elad's first commit
     public int getGrade() {
         return grade;
     }
