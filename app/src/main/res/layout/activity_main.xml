@@ -64,4 +64,9 @@
         android:id="@+id/tvRegister"
         android:textColor="@color/colorPrimaryDark"
         />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:id="@+id/btnTest"
+        />
 </LinearLayout>

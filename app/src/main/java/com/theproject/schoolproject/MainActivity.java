@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText etPassword,etUsername;
-    Button btnLogin;
+    Button btnLogin,btnTest;
     TextView tvRegister;
     FirebaseDatabase database;
     DatabaseReference myRef;
@@ -34,12 +34,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         etUsername = findViewById(R.id.etUsernameL);
         btnLogin = findViewById(R.id.btnLogin);
         tvRegister = findViewById(R.id.tvRegister);
+        btnTest = findViewById(R.id.btnTest);
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("UsersPlace");
 
         tvRegister.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
+        btnTest.setOnClickListener(this);
 
         // Read from the database
         myRef.addValueEventListener(new ValueEventListener() {
@@ -85,6 +87,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             else{
                 //User doesn't exist
             }
+        }
+        if(v == btnTest){
+            Intent intent = new Intent(this,Homepage.class);
+            startActivity(intent);
+            finish();
         }
     }
 
