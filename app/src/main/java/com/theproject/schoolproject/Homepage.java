@@ -21,6 +21,8 @@ public class Homepage extends AppCompatActivity{
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-        //toolbar = findViewById(R.id.);
+        toolbar = findViewById(R.id.toolbarHome);
+
+
     }
 }
