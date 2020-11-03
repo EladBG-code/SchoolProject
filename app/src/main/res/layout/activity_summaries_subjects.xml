@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SummariesSubjects">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:id="@+id/tvSummariesTitle"
+            android:layout_width="282dp"
+            android:layout_height="76dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="88dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="554dp"
+            android:text="בחר מקצוע"
+            android:textSize="30sp" />
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="188dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/btnMath"
+                    android:layout_width="match_parent"
+                    android:layout_height="71dp"
+                    android:text="מתמטיקה"
+                    android:textSize="24sp" />
+
+                <Button
+                    android:id="@+id/btnHistory"
+                    android:layout_width="match_parent"
+                    android:layout_height="71dp"
+                    android:text="היסטוריה"
+                    android:textSize="24sp" />
+
+                <Button
+                    android:id="@+id/btnHebrew"
+                    android:layout_width="match_parent"
+                    android:layout_height="71dp"
+                    android:text="לשון"
+                    android:textSize="24sp" />
+
+                <Button
+                    android:id="@+id/btnCitizenship"
+                    android:layout_width="match_parent"
+                    android:layout_height="71dp"
+                    android:text="אזרחות"
+                    android:textSize="24sp" />
+
+                <Button
+                    android:id="@+id/btnBible"
+                    android:layout_width="match_parent"
+                    android:layout_height="71dp"
+                    android:text="תנך"
+                    android:textSize="24sp" />
+
+                <Button
+                    android:id="@+id/btnLiterature"
+                    android:layout_width="match_parent"
+                    android:layout_height="71dp"
+                    android:text="ספרות"
+                    android:textSize="24sp" />
+
+                <Button
+                    android:id="@+id/btnEnglish"
+                    android:layout_width="match_parent"
+                    android:layout_height="71dp"
+                    android:text="אנגלית"
+                    android:textSize="24sp" />
+
+                <Button
+                    android:id="@+id/btnBiology"
+                    android:layout_width="match_parent"
+                    android:layout_height="71dp"
+                    android:text="ביולוגיה"
+                    android:textSize="24sp" />
+
+                <Button
+                    android:id="@+id/btnComputer"
+                    android:layout_width="match_parent"
+                    android:layout_height="71dp"
+                    android:text="מדעי המחשב"
+                    android:textSize="22sp" />
+
+                <Button
+                    android:id="@+id/btnChemistry"
+                    android:layout_width="match_parent"
+                    android:layout_height="71dp"
+                    android:text="כימיה"
+                    android:textSize="22sp" />
+
+                <Button
+                    android:id="@+id/btnPhysics"
+                    android:layout_width="match_parent"
+                    android:layout_height="71dp"
+                    android:text="פיזיקה"
+                    android:textSize="22sp" />
+
+                <Button
+                    android:id="@+id/btnArts"
+                    android:layout_width="match_parent"
+                    android:layout_height="71dp"
+                    android:text="תולדות האומנות"
+                    android:textSize="22sp" />
+
+                <Button
+                    android:id="@+id/btnFilm"
+                    android:layout_width="match_parent"
+                    android:layout_height="71dp"
+                    android:text="תקשורת"
+                    android:textSize="22sp" />
+
+                <Button
+                    android:id="@+id/btnSocial"
+                    android:layout_width="match_parent"
+                    android:layout_height="71dp"
+                    android:text="מדעי החברה"
+                    android:textSize="22sp" />
+            </LinearLayout>
+        </ScrollView>
+
+
+    </RelativeLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>
