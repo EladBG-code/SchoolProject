@@ -190,4 +190,12 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
             finish();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
+        finish();
+        //super.onBackPressed();
+    }
 }

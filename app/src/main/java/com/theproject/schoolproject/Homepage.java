@@ -49,9 +49,6 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
         if(drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawer(GravityCompat.START);
         }
-        else{
-            super.onBackPressed();
-        }
 
     }
 }
