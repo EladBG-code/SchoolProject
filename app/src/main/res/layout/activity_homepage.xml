@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".Homepage"
-    >
+    android:orientation="horizontal">
 
     <!--<LinearLayout
         android:layout_width="match_parent"
@@ -16,24 +16,24 @@
         </LinearLayout>
         -->
 
-        <com.google.android.material.appbar.AppBarLayout
+
+    <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             >
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbarHome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_blue_dark"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:navigationIcon="@drawable/navigation_icon"
+            app:menu="@menu/main_menu"
+            />
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbarHome"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/holo_blue_dark"
-                android:minHeight="?attr/actionBarSize"
-                android:theme="?attr/actionBarTheme"
-                app:navigationIcon="@drawable/navigation_icon"
-                app:menu="@menu/main_menu"
-                />
 
-
-        </com.google.android.material.appbar.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
         <!--<Toolbar
             android:id="@+id/toolbarHome"
@@ -70,9 +70,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             app:headerLayout="@layout/header"
-            app:menu="@menu/main_menu"
-            >
-
+            app:menu="@menu/main_menu">
 
 
         </com.google.android.material.navigation.NavigationView>
