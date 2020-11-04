@@ -17,24 +17,6 @@
         -->
 
 
-    <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbarHome"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/holo_blue_dark"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme"
-            app:navigationIcon="@drawable/navigation_icon"
-            app:menu="@menu/main_menu"
-            />
-
-
-    </com.google.android.material.appbar.AppBarLayout>
-
         <!--<Toolbar
             android:id="@+id/toolbarHome"
             android:layout_width="match_parent"
@@ -55,6 +37,24 @@
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme" /> -->
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbarHome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_blue_dark"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:navigationIcon="@drawable/navigation_icon"
+            app:menu="@menu/main_menu"
+            />
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
@@ -62,6 +62,7 @@
         android:fitsSystemWindows="true"
         tools:context=".Homepage"
         tools:openDrawer="start">
+
 
 
         <com.google.android.material.navigation.NavigationView
