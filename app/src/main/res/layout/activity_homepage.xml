@@ -5,42 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".Homepage"
-    android:orientation="horizontal">
-
-    <!--<LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        </LinearLayout>
-        -->
-
-
-        <!--<Toolbar
-            android:id="@+id/toolbarHome"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme"
-
-
-
-            />
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbarHome"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme" /> -->
+    android:orientation="horizontal"
+    tools:context=".Homepage">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
+
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbarHome"
             android:layout_width="match_parent"
@@ -48,9 +19,8 @@
             android:background="@android:color/holo_blue_dark"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
-            app:navigationIcon="@drawable/navigation_icon"
             app:menu="@menu/main_menu"
-            />
+            app:navigationIcon="@drawable/navigation_icon" />
 
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -66,7 +36,38 @@
 
         <ScrollView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"></ScrollView>
+            android:layout_height="wrap_content">
+
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:id="@+id/tvHomeWelcome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="ברוכה השבה"
+                    android:textSize="35dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:gravity="center|bottom"
+                    android:text="לסיכומים: "
+                    android:textSize="20dp"
+
+                    app:layout_anchor="@+id/tvHomeWelcome"
+                    app:layout_anchorGravity="bottom|center" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        </ScrollView>
 
 
         <com.google.android.material.navigation.NavigationView

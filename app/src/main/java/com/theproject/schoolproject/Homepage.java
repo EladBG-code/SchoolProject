@@ -8,6 +8,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toolbar;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -19,6 +20,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     MaterialToolbar toolbar;
+    TextView welcomeMessage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +29,9 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbarHome);
+        welcomeMessage = findViewById(R.id.tvHomeWelcome);
+
+        welcomeMessage.setText(welcomeMessage.getText().toString()+" "+GlobalAcross.currentUser.getfName()+"!"); /*Tells the user a welcome message with their own name! */
 
         setSupportActionBar(toolbar);
         navigationView.bringToFront();
@@ -42,6 +47,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return true;
     }
+
 
     @Override
     public void onBackPressed() {
