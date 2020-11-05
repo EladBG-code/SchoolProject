@@ -55,72 +55,99 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         if(v == btnMath){
             //Math subject
-
+            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
+            intent.putExtra("SubjectSelected",btnMath.getText());
+            startActivity(intent);
 
         }
         if(v == btnHebrew){
             //Hebrew subject
-
+            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
+            intent.putExtra("SubjectSelected",btnHebrew.getText());
+            startActivity(intent);
 
         }
         if(v == btnHistory){
             //History subject
-
-
+            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
+            intent.putExtra("SubjectSelected",btnHistory.getText());
+            startActivity(intent);
         }
         if(v == btnCitizenship){
             //Citizenship subject
-
+            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
+            intent.putExtra("SubjectSelected",btnCitizenship.getText());
+            startActivity(intent);
 
         }
         if(v == btnBible){
             //Bible subject
-
+            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
+            intent.putExtra("SubjectSelected",btnBible.getText());
+            startActivity(intent);
 
         }
         if(v == btnLiterature){
             //Literature subject
-
+            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
+            intent.putExtra("SubjectSelected",btnLiterature.getText());
+            startActivity(intent);
 
         }
         if(v == btnEnglish){
             //English subject
-
+            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
+            intent.putExtra("SubjectSelected",btnEnglish.getText());
+            startActivity(intent);
 
         }
         if(v == btnBiology){
             //Biology subject
-
+            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
+            intent.putExtra("SubjectSelected",btnBiology.getText());
+            startActivity(intent);
 
         }
         if(v == btnComputerScience){
             //Computer Science subject
-
+            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
+            intent.putExtra("SubjectSelected",btnComputerScience.getText());
+            startActivity(intent);
 
         }
         if(v == btnChemistry){
             //Chemistry subject
-
+            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
+            intent.putExtra("SubjectSelected",btnChemistry.getText());
+            startActivity(intent);
 
         }
         if(v == btnPhysics){
             //Physics subject
-
+            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
+            intent.putExtra("SubjectSelected",btnPhysics.getText());
+            startActivity(intent);
 
         }
         if(v == btnArts){
             //Arts subject
-
+            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
+            intent.putExtra("SubjectSelected",btnArts.getText());
+            startActivity(intent);
 
         }
         if(v == btnCommunication){
             //Communication subject
-
+            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
+            intent.putExtra("SubjectSelected",btnCommunication.getText());
+            startActivity(intent);
 
         }
         if(v == btnSocialStudies){
             //Social Studies subject
-
+            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
+            intent.putExtra("SubjectSelected",btnSocialStudies.getText());
+            startActivity(intent);
 
         }
     }
