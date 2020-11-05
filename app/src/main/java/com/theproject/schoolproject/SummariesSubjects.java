@@ -1,21 +1,45 @@
 package com.theproject.schoolproject;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
-public class SummariesSubjects extends AppCompatActivity implements View.OnClickListener {
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.navigation.NavigationView;
 
+public class SummariesSubjects extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
+    MaterialToolbar toolbar;
     Button btnMath,btnHistory,btnHebrew,btnCitizenship,btnBible,btnLiterature,btnEnglish,btnBiology,btnComputerScience,btnChemistry,btnPhysics,btnArts,btnCommunication,btnSocialStudies;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summaries_subjects);
 
+        drawerLayout = findViewById(R.id.drawer_layout_subjects);
+        navigationView = findViewById(R.id.nav_view_subjects);
+        toolbar = findViewById(R.id.toolbarSelectSubject);
+
+        setSupportActionBar(toolbar);
+        navigationView.bringToFront();
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(this);
         //The function below this line attaches all buttons to their ID's in the XML and sets their onclicklistener function
         attachAndClickListenSubjectButtons();
     }
@@ -154,14 +178,53 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onBackPressed() {
-        /*if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         }
         else{
             super.onBackPressed();
-        }*/
+        }
+    }
 
-        //NOTE: Undo the comment above on the if and else once there is a toolbar and a drawer on the summary selecting page
-        super.onBackPressed();
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        //Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
+        if(item.getTitle().equals("התנתקות")){
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(SummariesSubjects.this);
+
+            builder.setMessage("את\\ה בטוח\\ה שאת\\ה רוצה להתנתק?")
+                    .setPositiveButton("כן", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            GlobalAcross.currentUser = null;
+                            Intent intent = new Intent(SummariesSubjects.this,MainActivity.class);
+                            Toast.makeText(SummariesSubjects.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT-5000).show();
+                            startActivity(intent);
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("לא",null);
+
+            AlertDialog alert = builder.create();
+            alert.show();
+            return false;
+        }
+        if(item.getTitle().equals("הגדרות")){
+            //Will be added in the future
+            Toast.makeText(this,"מסך ההגדרות יהיה זמין לשימוש בעתיד.", Toast.LENGTH_LONG-5000).show();
+            return false;
+        }
+        if(item.getTitle().equals("פרופיל")){
+            //Will be added in the future
+            Toast.makeText(this,"מסך הפרופיל יהיה זמין לשימוש בעתיד.", Toast.LENGTH_LONG-5000).show();
+            return false;
+        }
+        if(item.getTitle().equals("מסך הבית")){
+            Intent intent = new Intent(this,Homepage.class);
+            startActivity(intent);
+            return false;
+        }
+        return false;
     }
 }

@@ -2,19 +2,24 @@ package com.theproject.schoolproject;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 
 public class Homepage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -50,10 +55,51 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
         tvToSummaries.setOnClickListener(this);
     }
 
+    public void openDialog() {}
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return true;
+        //Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
+        if(item.getTitle().equals("התנתקות")){
+
+               androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(Homepage.this);
+
+            builder.setMessage("את\\ה בטוח\\ה שאת\\ה רוצה להתנתק?")
+                    .setPositiveButton("כן", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            GlobalAcross.currentUser = null;
+                            Intent intent = new Intent(Homepage.this,MainActivity.class);
+                            Toast.makeText(Homepage.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT-5000).show();
+                            startActivity(intent);
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("לא",null);
+
+            AlertDialog alert = builder.create();
+            alert.show();
+            return false;
+
+        }
+        if(item.getTitle().equals("הגדרות")){
+            //Will be added in the future
+            Toast.makeText(this,"מסך ההגדרות יהיה זמין לשימוש בעתיד.", Toast.LENGTH_LONG-5000).show();
+            return false;
+        }
+        if(item.getTitle().equals("פרופיל")){
+            //Will be added in the future
+            Toast.makeText(this,"מסך הפרופיל יהיה זמין לשימוש בעתיד.", Toast.LENGTH_LONG-5000).show();
+            return false;
+        }
+        if(item.getTitle().equals("מסך הבית") && getClass()!=Homepage.class){
+            Intent intent = new Intent(this,Homepage.class);
+            startActivity(intent);
+            return false;
+        }
+        return false;
     }
+
 
 
     @Override

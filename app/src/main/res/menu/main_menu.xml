@@ -5,6 +5,12 @@
         <!--This "group" is a tag that makes sure that only one item in the menu is clicked-->
 
         <item
+            android:id="@+id/nav_homepage"
+            android:icon="@drawable/homepage_icon"
+            android:title="מסך הבית"
+            />
+
+        <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/profile_icon"
             android:title="פרופיל" />

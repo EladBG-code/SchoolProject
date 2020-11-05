@@ -182,9 +182,10 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 GlobalAcross.allUsers.add(newUser);
                 myRef.setValue(GlobalAcross.allUsers);
                 GlobalAcross.currentUser = newUser;
-
                 Toast.makeText(this, "נרשמת בהצלחה!", Toast.LENGTH_SHORT).show();
-
+                Intent intent = new Intent(this, Homepage.class);
+                startActivity(intent);
+                finish();
             }
         }
         if(view == btnLoginBack){

@@ -15,6 +15,19 @@ public class ViewSummariesOnSubject extends AppCompatActivity {
 
         tvSubjectName = findViewById(R.id.tvSubjectName);
 
-        tvSubjectName.setText(getIntent().getStringExtra("SubjectSelected"));
+        tvSubjectName.setText(getIntent().getStringExtra("SubjectSelected")); /*This line sets the name of the subject which was selected as the title of the subject's summary page*/
+    }
+
+    @Override
+    public void onBackPressed() {
+         /*if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+        else{
+            super.onBackPressed();
+        }*/
+
+        //NOTE: Undo the comment above on the if and else once there is a toolbar and a drawer on the summary selecting page
+        super.onBackPressed();
     }
 }

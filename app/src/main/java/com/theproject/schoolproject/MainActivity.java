@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText etPassword,etUsername;
-    Button btnLogin,btnTest;
+    Button btnLogin;
     TextView tvRegister;
     FirebaseDatabase database;
     DatabaseReference myRef;
@@ -116,6 +116,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             i++;
         }
         return -1;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(super.getClass() == RegisterActivity.class){
+            super.onBackPressed();
+        }
     }
 
     public void vibratePhone(int milisecondsToVibrate){
