@@ -23,7 +23,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     MaterialToolbar toolbar;
-    TextView welcomeMessage;
+    TextView tvWelcomeMessage,tvToSummaries;
     ImageView ivLibraryIcon;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +33,11 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbarHome);
-        welcomeMessage = findViewById(R.id.tvHomeWelcome);
+        tvWelcomeMessage = findViewById(R.id.tvHomeWelcome);
         ivLibraryIcon = findViewById(R.id.ivLibraryIcon);
+        tvToSummaries = findViewById(R.id.tvToSummaries);
 
-        welcomeMessage.setText(welcomeMessage.getText().toString()+" "+GlobalAcross.currentUser.getfName()); /*Tells the user a welcome message with their own name! */
+        tvWelcomeMessage.setText(tvWelcomeMessage.getText().toString()+" "+GlobalAcross.currentUser.getfName()); /*Tells the user a welcome message with their own name! */
 
         setSupportActionBar(toolbar);
         navigationView.bringToFront();
@@ -46,6 +47,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
 
         navigationView.setNavigationItemSelectedListener(this);
         ivLibraryIcon.setOnClickListener(this);
+        tvToSummaries.setOnClickListener(this);
     }
 
     @Override
@@ -64,7 +66,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
 
     @Override
     public void onClick(View v) {
-        if(v == ivLibraryIcon){
+        if(v == ivLibraryIcon || v == tvToSummaries){
             Intent intent = new Intent(this,SummariesSubjects.class);
             startActivity(intent);
             //finish();
