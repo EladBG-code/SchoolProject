@@ -199,7 +199,7 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
                         public void onClick(DialogInterface dialog, int which) {
                             GlobalAcross.currentUser = null;
                             Intent intent = new Intent(SummariesSubjects.this,MainActivity.class);
-                            Toast.makeText(SummariesSubjects.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT-5000).show();
+                            Toast.makeText(SummariesSubjects.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT).show();
                             startActivity(intent);
                             finish();
                         }

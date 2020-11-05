@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     EditText etPassword,etUsername;
     Button btnLogin;
+    Button btnAutoFill; //Remove this line once you're done with testing
     TextView tvRegister;
     FirebaseDatabase database;
     DatabaseReference myRef;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         etPassword = findViewById(R.id.etPasswordL);
         etUsername = findViewById(R.id.etUsernameL);
         btnLogin = findViewById(R.id.btnLogin);
+        btnAutoFill = findViewById(R.id.btnAutoFill); //Remove this line once you're done with testing
         tvRegister = findViewById(R.id.tvRegister);
 
         database = FirebaseDatabase.getInstance();
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         tvRegister.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
+        btnAutoFill.setOnClickListener(this); //Remove this line once you're done with testing
 
         // Read from the database
         myRef.addValueEventListener(new ValueEventListener() {
@@ -69,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        if(v == btnAutoFill){etPassword.setText("e123456"); etUsername.setText("eladbg");} //Remove this line once you're done with testing
         if (v == tvRegister) {
             Intent intent = new Intent(this, RegisterActivity.class);
             startActivity(intent);
