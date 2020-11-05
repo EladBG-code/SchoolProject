@@ -52,7 +52,7 @@
         />
     </LinearLayout>
     <Button
-        android:layout_width="match_parent"
+        android:layout_width="100sp"
         android:layout_height="wrap_content"
         android:text="התחברות"
         android:gravity="center"
@@ -69,9 +69,9 @@
         />
 
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="50sp"
-        android:text="REMOVE ME ONCE YOU'RE DONE TESTING"
+        android:layout_width="200sp"
+        android:layout_height="60sp"
+        android:text="REMOVE ME ONCE YOU'RE DONE TESTING (Autofill)"
         android:id="@+id/btnAutoFill"
         />
 

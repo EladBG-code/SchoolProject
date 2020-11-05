@@ -83,8 +83,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:gravity="center|top"
-                    android:text="ברוכים השבים"
-                    android:textSize="32dp"
+                    android:text="שלום"
+                    android:textSize="36sp"
                     app:layout_anchor="@+id/llOne"
                     app:layout_anchorGravity="center" />
 
