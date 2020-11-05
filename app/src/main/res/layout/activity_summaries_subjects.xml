@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -24,7 +24,7 @@
             android:layout_marginTop="100dp"
             android:layout_marginEnd="40dp"
             android:layout_marginBottom="554dp"
-            android:text="בחר מקצוע"
+            android:text="בחרו מקצוע"
             android:textSize="30sp" />
 
         <ScrollView
@@ -102,7 +102,7 @@
                     android:textSize="24sp" />
 
                 <Button
-                    android:id="@+id/btnComputer"
+                    android:id="@+id/btnComputerScience"
                     android:layout_width="match_parent"
                     android:layout_height="71dp"
                     android:text="מדעי המחשב"
@@ -130,14 +130,14 @@
                     android:textSize="22sp" />
 
                 <Button
-                    android:id="@+id/btnFilm"
+                    android:id="@+id/btnCommunication"
                     android:layout_width="match_parent"
                     android:layout_height="71dp"
                     android:text="תקשורת"
                     android:textSize="22sp" />
 
                 <Button
-                    android:id="@+id/btnSocial"
+                    android:id="@+id/btnSocialStudies"
                     android:layout_width="match_parent"
                     android:layout_height="71dp"
                     android:text="מדעי החברה"
@@ -147,4 +147,4 @@
 
 
     </RelativeLayout>
-</androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

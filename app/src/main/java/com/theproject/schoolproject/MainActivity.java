@@ -69,35 +69,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if(v == tvRegister){
-            Intent intent = new Intent(this,RegisterActivity.class);
+        if (v == tvRegister) {
+            Intent intent = new Intent(this, RegisterActivity.class);
             startActivity(intent);
-            finish();
         }
-        if(v == btnLogin){
+        if (v == btnLogin) {
+            if (etUsername.getText().toString().isEmpty() || etPassword.getText().toString().isEmpty()) {
+                vibratePhone(200);
+                Toast.makeText(this, "אנא בדקו אם מלאתם את שדה הסיסמה ושם המשתמש.", Toast.LENGTH_SHORT).show();
+            }
+            else{
             int index = findIndexOfUser(etUsername.getText().toString());
-            if(index != -1){
-                if(GlobalAcross.allUsers.get(index).getPassword().equals(etPassword.getText().toString())){
+            if (index != -1) {
+                if (GlobalAcross.allUsers.get(index).getPassword().equals(etPassword.getText().toString())) {
                     GlobalAcross.currentUser = GlobalAcross.allUsers.get(index);
                     //Create an intent for the homepage and redirect the user to there
                     GlobalAcross.currentUser = GlobalAcross.allUsers.get(index);
-                    Toast.makeText(this, "התחברת בהצלחה "+GlobalAcross.currentUser.getfName()+'!', Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(this,Homepage.class);
+                    Toast.makeText(this, "התחברת בהצלחה " + GlobalAcross.currentUser.getfName() + '!', Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this, Homepage.class);
                     startActivity(intent);
                     finish();
-                }
-                else{
+                } else {
                     //Incorrect password
                     vibratePhone(200);
                     Toast.makeText(this, "הסיסמה שגויה. תקן ונסה שוב.", Toast.LENGTH_SHORT).show();
                 }
                 //Login successful
-            }
-            else{
+            } else {
                 //User doesn't exist
                 vibratePhone(200);
                 Toast.makeText(this, "המשתמש אינו קיים במערכת כלל.", Toast.LENGTH_SHORT).show();
             }
+        }
         }
     }
 

@@ -6,21 +6,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 
-public class Homepage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class Homepage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     MaterialToolbar toolbar;
     TextView welcomeMessage;
+    ImageView ivLibraryIcon;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,8 +34,9 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbarHome);
         welcomeMessage = findViewById(R.id.tvHomeWelcome);
+        ivLibraryIcon = findViewById(R.id.ivLibraryIcon);
 
-        welcomeMessage.setText(welcomeMessage.getText().toString()+" "+GlobalAcross.currentUser.getfName()+"!"); /*Tells the user a welcome message with their own name! */
+        welcomeMessage.setText(welcomeMessage.getText().toString()+" "+GlobalAcross.currentUser.getfName()); /*Tells the user a welcome message with their own name! */
 
         setSupportActionBar(toolbar);
         navigationView.bringToFront();
@@ -40,7 +45,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
-
+        ivLibraryIcon.setOnClickListener(this);
     }
 
     @Override
@@ -55,6 +60,14 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
         if(drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawer(GravityCompat.START);
         }
+    }
 
+    @Override
+    public void onClick(View v) {
+        if(v == ivLibraryIcon){
+            Intent intent = new Intent(this,SummariesSubjects.class);
+            startActivity(intent);
+            //finish();
+        }
     }
 }

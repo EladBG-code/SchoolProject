@@ -178,24 +178,22 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
             if(validDetails(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString())){
                 //If the user entered all of the info truthfully, the user will pass through this 'if'
                 // Write a message to the database
-                GlobalAcross.allUsers.add(new User(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString(),classNum));
+                User newUser = new User(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString(),classNum);
+                GlobalAcross.allUsers.add(newUser);
                 myRef.setValue(GlobalAcross.allUsers);
+                GlobalAcross.currentUser = newUser;
+
                 Toast.makeText(this, "נרשמת בהצלחה!", Toast.LENGTH_SHORT).show();
 
             }
         }
         if(view == btnLoginBack){
-            Intent intent = new Intent(this,MainActivity.class);
-            startActivity(intent);
-            finish();
+            super.onBackPressed();
         }
     }
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this,MainActivity.class);
-        startActivity(intent);
-        finish();
-        //super.onBackPressed();
+        super.onBackPressed();
     }
 }

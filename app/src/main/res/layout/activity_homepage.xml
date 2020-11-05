@@ -62,14 +62,16 @@
                     >
 
                     <ImageView
+                        android:id="@+id/ivLibraryIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/local_library_icon" />
+                        android:background="@drawable/local_library_icon"
+                        />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="20dp"
+                        android:textSize="25dp"
                         android:text="לסיכומים: "
                         android:gravity="right" />
                 </LinearLayout>
@@ -80,7 +82,7 @@
                     android:layout_height="100dp"
                     android:gravity="center|top"
                     android:text="ברוכים השבים"
-                    android:textSize="28dp"
+                    android:textSize="32dp"
                     app:layout_anchor="@+id/llOne"
                     app:layout_anchorGravity="center" />
 
