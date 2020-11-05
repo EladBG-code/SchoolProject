@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:textSize="20dp"
         android:text="שם משתמש:"
+        android:gravity="right"
         />
     <EditText
         android:layout_width="match_parent"
@@ -40,6 +41,7 @@
         android:layout_height="wrap_content"
         android:textSize="20dp"
         android:text="סיסמה:"
+        android:gravity="right"
         />
     <EditText
         android:layout_width="match_parent"
@@ -63,10 +65,5 @@
         android:text="אין לך עדיין חשבון?"
         android:id="@+id/tvRegister"
         android:textColor="@color/colorPrimaryDark"
-        />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:id="@+id/btnTest"
         />
 </LinearLayout>
