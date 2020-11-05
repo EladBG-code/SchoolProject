@@ -48,22 +48,32 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="ברוכה השבה"
-                    android:textSize="35dp" />
+                    android:text="ברוכים השבים"
+                    android:textSize="28dp" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:gravity="center|bottom"
-                    android:text="לסיכומים: "
-                    android:textSize="20dp"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
-                    app:layout_anchor="@+id/tvHomeWelcome"
-                    app:layout_anchorGravity="bottom|center" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:gravity="center|bottom"
+                        android:text="לסיכומים: "
+                        android:textSize="20dp"
+                        app:layout_anchor="@+id/tvHomeWelcome"
+                        app:layout_anchorGravity="bottom|center"/>
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/local_library_icon"
+                        />
+
+
+                </LinearLayout>
+
 
 
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
