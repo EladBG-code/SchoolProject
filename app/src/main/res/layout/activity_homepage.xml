@@ -8,6 +8,7 @@
     android:orientation="horizontal"
     tools:context=".Homepage">
 
+
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -21,9 +22,9 @@
             android:theme="?attr/actionBarTheme"
             app:menu="@menu/main_menu"
             app:navigationIcon="@drawable/navigation_icon" />
-
-
     </com.google.android.material.appbar.AppBarLayout>
+
+
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
@@ -32,7 +33,6 @@
         android:fitsSystemWindows="true"
         tools:context=".Homepage"
         tools:openDrawer="start">
-
 
         <ScrollView
             android:layout_width="wrap_content"
@@ -43,41 +43,51 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center">
 
-                <TextView
-                    android:id="@+id/tvHomeWelcome"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="ברוכים השבים"
-                    android:textSize="28dp" />
-
                 <LinearLayout
+                    android:id="@+id/llOne"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center|top"
                     android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="70dp"
-                        android:gravity="center|bottom"
-                        android:text="לסיכומים: "
-                        android:textSize="20dp"
-                        app:layout_anchor="@+id/tvHomeWelcome"
-                        app:layout_anchorGravity="bottom|center"/>
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/local_library_icon"
-                        />
-
 
                 </LinearLayout>
 
 
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|center"
+                    android:gravity="center_vertical|center_horizontal"
+                    >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/local_library_icon" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20dp"
+                        android:text="לסיכומים: "
+                        android:gravity="right" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvHomeWelcome"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:gravity="center|top"
+                    android:text="ברוכים השבים"
+                    android:textSize="28dp"
+                    app:layout_anchor="@+id/llOne"
+                    app:layout_anchorGravity="center" />
 
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
         </ScrollView>
+
 
 
         <com.google.android.material.navigation.NavigationView
@@ -90,6 +100,6 @@
 
 
         </com.google.android.material.navigation.NavigationView>
-
     </androidx.drawerlayout.widget.DrawerLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
