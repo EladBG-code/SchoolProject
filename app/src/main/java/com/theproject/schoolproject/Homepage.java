@@ -1,5 +1,6 @@
 package com.theproject.schoolproject;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -10,9 +11,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.transition.Transition;
+import android.transition.TransitionManager;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +48,8 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
         ivLibraryIcon = findViewById(R.id.ivLibraryIcon);
         tvToSummaries = findViewById(R.id.tvToSummaries);
 
+        
+
         tvWelcomeMessage.setText(tvWelcomeMessage.getText().toString()+" "+GlobalAcross.currentUser.getfName()); /*Tells the user a welcome message with their own name! */
 
         setSupportActionBar(toolbar);
@@ -54,8 +62,6 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
         ivLibraryIcon.setOnClickListener(this);
         tvToSummaries.setOnClickListener(this);
     }
-
-    public void openDialog() {}
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -82,6 +88,11 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
             return false;
 
         }
+        if(item.getTitle().equals("סיכומים")){
+            Intent intent = new Intent(Homepage.this,SummariesSubjects.class);
+            startActivity(intent);
+            return false;
+        }
         if(item.getTitle().equals("הגדרות")){
             //Will be added in the future
             Toast.makeText(this,"מסך ההגדרות יהיה זמין לשימוש בעתיד.", Toast.LENGTH_LONG-5000).show();
@@ -92,9 +103,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
             Toast.makeText(this,"מסך הפרופיל יהיה זמין לשימוש בעתיד.", Toast.LENGTH_LONG-5000).show();
             return false;
         }
-        if(item.getTitle().equals("מסך הבית") && getClass()!=Homepage.class){
-            Intent intent = new Intent(this,Homepage.class);
-            startActivity(intent);
+        if(item.getTitle().equals("מסך הבית")){
             return false;
         }
         return false;
@@ -107,6 +116,9 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
         //This function makes sure the app doesn't close down if someone is back pressing in their phone
         if(drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawer(GravityCompat.START);
+        }
+        else{
+            drawerLayout.openDrawer(GravityCompat.START);
         }
     }
 

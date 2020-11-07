@@ -82,7 +82,6 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
             Intent intent = new Intent(this,ViewSummariesOnSubject.class);
             intent.putExtra("SubjectSelected",btnMath.getText());
             startActivity(intent);
-
         }
         if(v == btnHebrew){
             //Hebrew subject
@@ -208,6 +207,9 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
 
             AlertDialog alert = builder.create();
             alert.show();
+            return false;
+        }
+        if(item.getTitle().equals("סיכומים")){
             return false;
         }
         if(item.getTitle().equals("הגדרות")){

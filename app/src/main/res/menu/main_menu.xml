@@ -9,7 +9,11 @@
             android:icon="@drawable/homepage_icon"
             android:title="מסך הבית"
             />
-
+        <item
+            android:id="@+id/nav_summaries"
+            android:icon="@drawable/local_library_icon"
+            android:title="סיכומים"
+            />
         <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/profile_icon"

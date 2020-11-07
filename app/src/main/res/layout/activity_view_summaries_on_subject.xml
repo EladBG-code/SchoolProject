@@ -4,15 +4,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="horizontal"
     tools:context=".ViewSummariesOnSubject">
 
-    <TextView
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbarSubjectSelected"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_blue_dark"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:menu="@menu/main_menu"
+            app:navigationIcon="@drawable/navigation_icon" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout_subject"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/tvSubjectName"
-        android:textSize="35dp"
-        android:gravity="right"
-        />
+        android:fitsSystemWindows="true"
+        tools:context=".ViewSummariesOnSubject"
+        tools:openDrawer="start">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/tvSubjectName"
+                android:layout_marginTop="56sp"
+                android:textSize="35dp"
+                android:text="Subject name"
+                android:gravity="right"
+                />
+        </RelativeLayout>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -20,5 +53,23 @@
         <!--Here the cards of the subjects will be scrollable-->
 
     </ScrollView>
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view_subject"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            app:headerLayout="@layout/header"
+            app:menu="@menu/main_menu">
+
+
+        </com.google.android.material.navigation.NavigationView>
+    </androidx.drawerlayout.widget.DrawerLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingUploadButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        app:srcCompat="@drawable/cloud_upload_icon"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
