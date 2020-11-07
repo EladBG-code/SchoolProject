@@ -10,11 +10,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.transition.TransitionManager;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,14 +19,13 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
-public class ViewSummariesOnSubject extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, View.OnContextClickListener {
+public class ViewSummariesOnSubject extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     MaterialToolbar toolbar;
     TextView tvSubjectName;
     FloatingActionButton floatingUploadButton;
-    ActionBarDrawerToggle toggle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,12 +38,12 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
 
         setSupportActionBar(toolbar);
         navigationView.bringToFront();
-        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
 
-        //navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(this);
         floatingUploadButton.setOnClickListener(this);
         tvSubjectName = findViewById(R.id.tvSubjectName);
         tvSubjectName.setText(getIntent().getStringExtra("SubjectSelected")); /*This line sets the name of the subject which was selected as the title of the subject's summary page*/
@@ -87,6 +83,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
             return false;
         }
         if(item.getTitle().equals("סיכומים")){
+            super.onBackPressed();
             return false;
         }
         if(item.getTitle().equals("הגדרות")){
@@ -117,9 +114,4 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
     }
 
 
-    @Override
-    public boolean onContextClick(View v) {
-        floatingUploadButton.setAlpha(v.getAlpha());
-        return false;
-    }
 }
