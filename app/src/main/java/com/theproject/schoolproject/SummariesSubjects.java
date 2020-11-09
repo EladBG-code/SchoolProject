@@ -192,7 +192,7 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
 
             AlertDialog.Builder builder = new AlertDialog.Builder(SummariesSubjects.this);
 
-            builder.setMessage("את\\ה בטוח\\ה שאת\\ה רוצה להתנתק?")
+            builder.setMessage("האם את\\ה בטוח\\ה שאת\\ה רוצה להתנתק?")
                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
