@@ -123,7 +123,8 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
     public void onClick(View v) {
         if(v == floatingUploadButton){
             //Upload floating action button selected
-
+            Intent intent = new Intent(this,AddSummaryActivity.class);
+            startActivity(intent);
         }
 
     }
