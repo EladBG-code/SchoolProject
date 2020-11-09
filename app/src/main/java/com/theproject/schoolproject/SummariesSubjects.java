@@ -40,6 +40,7 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
+
         //The function below this line attaches all buttons to their ID's in the XML and sets their onclicklistener function
         attachAndClickListenSubjectButtons();
     }
@@ -75,103 +76,70 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
         btnCommunication.setOnClickListener(this);
         btnSocialStudies.setOnClickListener(this);
     }
+
+    public void nextPageOfButton(Button subject){
+        Intent intent = new Intent(this,ViewSummariesOnSubject.class);
+        intent.putExtra("SubjectSelected",subject.getText());
+        startActivity(intent);
+    }
+
     @Override
     public void onClick(View v) {
         if(v == btnMath){
             //Math subject
-            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
-            intent.putExtra("SubjectSelected",btnMath.getText());
-            startActivity(intent);
+            nextPageOfButton(btnMath);
         }
         if(v == btnHebrew){
             //Hebrew subject
-            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
-            intent.putExtra("SubjectSelected",btnHebrew.getText());
-            startActivity(intent);
-
+            nextPageOfButton(btnHebrew);
         }
         if(v == btnHistory){
             //History subject
-            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
-            intent.putExtra("SubjectSelected",btnHistory.getText());
-            startActivity(intent);
+            nextPageOfButton(btnHistory);
         }
         if(v == btnCitizenship){
             //Citizenship subject
-            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
-            intent.putExtra("SubjectSelected",btnCitizenship.getText());
-            startActivity(intent);
-
+            nextPageOfButton(btnCitizenship);
         }
         if(v == btnBible){
             //Bible subject
-            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
-            intent.putExtra("SubjectSelected",btnBible.getText());
-            startActivity(intent);
-
+            nextPageOfButton(btnBible);
         }
         if(v == btnLiterature){
             //Literature subject
-            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
-            intent.putExtra("SubjectSelected",btnLiterature.getText());
-            startActivity(intent);
-
+            nextPageOfButton(btnLiterature);
         }
         if(v == btnEnglish){
             //English subject
-            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
-            intent.putExtra("SubjectSelected",btnEnglish.getText());
-            startActivity(intent);
-
+            nextPageOfButton(btnEnglish);
         }
         if(v == btnBiology){
             //Biology subject
-            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
-            intent.putExtra("SubjectSelected",btnBiology.getText());
-            startActivity(intent);
-
+            nextPageOfButton(btnBiology);
         }
         if(v == btnComputerScience){
             //Computer Science subject
-            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
-            intent.putExtra("SubjectSelected",btnComputerScience.getText());
-            startActivity(intent);
-
+            nextPageOfButton(btnComputerScience);
         }
         if(v == btnChemistry){
             //Chemistry subject
-            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
-            intent.putExtra("SubjectSelected",btnChemistry.getText());
-            startActivity(intent);
-
+            nextPageOfButton(btnChemistry);
         }
         if(v == btnPhysics){
             //Physics subject
-            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
-            intent.putExtra("SubjectSelected",btnPhysics.getText());
-            startActivity(intent);
-
+            nextPageOfButton(btnPhysics);
         }
         if(v == btnArts){
             //Arts subject
-            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
-            intent.putExtra("SubjectSelected",btnArts.getText());
-            startActivity(intent);
-
+            nextPageOfButton(btnArts);
         }
         if(v == btnCommunication){
             //Communication subject
-            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
-            intent.putExtra("SubjectSelected",btnCommunication.getText());
-            startActivity(intent);
-
+            nextPageOfButton(btnCommunication);
         }
         if(v == btnSocialStudies){
             //Social Studies subject
-            Intent intent = new Intent(this,ViewSummariesOnSubject.class);
-            intent.putExtra("SubjectSelected",btnSocialStudies.getText());
-            startActivity(intent);
-
+            nextPageOfButton(btnSocialStudies);
         }
     }
 
@@ -189,9 +157,8 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         //Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
         if(item.getTitle().equals("התנתקות")){
-
+            //This lines below represent the builder of the dialog of the disconnect
             AlertDialog.Builder builder = new AlertDialog.Builder(SummariesSubjects.this);
-
             builder.setMessage("האם את\\ה בטוח\\ה שאת\\ה רוצה להתנתק?")
                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                         @Override
@@ -204,7 +171,6 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
                         }
                     })
                     .setNegativeButton("לא",null);
-
             AlertDialog alert = builder.create();
             alert.show();
             return false;

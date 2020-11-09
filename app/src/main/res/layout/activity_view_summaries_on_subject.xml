@@ -41,10 +41,14 @@
                 android:layout_height="match_parent"
                 android:id="@+id/tvSubjectName"
                 android:layout_marginTop="56sp"
-                android:textSize="35dp"
+                android:textSize="35sp"
                 android:text="Subject name"
                 android:gravity="right"
                 />
+
+
+
+
         </RelativeLayout>
     <ScrollView
         android:layout_width="match_parent"

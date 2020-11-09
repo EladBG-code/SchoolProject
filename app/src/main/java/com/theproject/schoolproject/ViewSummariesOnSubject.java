@@ -38,7 +38,22 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
 
         setSupportActionBar(toolbar);
         navigationView.bringToFront();
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close){
+            public void onDrawerClosed(View view) {
+                // Visible/Enable the FAB
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                // Hide/Disable the FAB
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                // invert the slideOffset value
+                //This line fades the floating action button as the user slides their finger across the screen
+                floatingUploadButton.setAlpha(1-slideOffset);
+            }
+        };
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 

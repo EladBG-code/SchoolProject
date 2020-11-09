@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ViewSummariesOnSubject"></activity>
+        <activity android:name=".AddSummaryActivity"></activity>
+        <activity android:name=".ViewSummariesOnSubject" />
         <activity android:name=".SummariesSubjects" />
         <activity android:name=".Homepage" />
         <activity android:name=".RegisterActivity" />
