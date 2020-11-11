@@ -1,6 +1,7 @@
 package com.theproject.schoolproject;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +27,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
     MaterialToolbar toolbar;
     TextView tvSubjectName;
     FloatingActionButton floatingUploadButton;
+    Subject subject;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +64,18 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         floatingUploadButton.setOnClickListener(this);
         tvSubjectName = findViewById(R.id.tvSubjectName);
         tvSubjectName.setText(getIntent().getStringExtra("SubjectSelected")); /*This line sets the name of the subject which was selected as the title of the subject's summary page*/
+
+        subject = new Subject(getIntent().getStringExtra("SubjectSelected"));
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RESULT_OK){
+            String[] arr = data.getStringArrayExtra("Summary");
+            subject.addSummary(new Summary(arr[0],arr[1],arr[2]));
+        }
     }
 
     @Override

@@ -58,9 +58,11 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         spinnerClass.setAdapter(adapter);
         btnLoginBack = findViewById(R.id.btnLoginBack);
         btnRegister = findViewById(R.id.btnRegister);
+
         btnRegister.setOnClickListener(this);
         btnLoginBack.setOnClickListener(this);
         spinnerClass.setOnItemSelectedListener(this);
+
         etFName = findViewById(R.id.etFName);
         etLName = findViewById(R.id.etLName);
         etUsername = findViewById(R.id.etUsername);

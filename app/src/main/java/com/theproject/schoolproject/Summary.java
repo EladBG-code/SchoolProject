@@ -16,7 +16,6 @@ public class Summary {
         //EDITOR NOTE URGENT: ADD IMAGE\FILE UPLOADING SYSTEM
     }
 
-
     public String getAuthor() {
         return author;
     }

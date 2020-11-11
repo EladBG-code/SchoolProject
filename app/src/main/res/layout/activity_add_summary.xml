@@ -16,12 +16,14 @@
             android:layout_width="match_parent"
             android:layout_height="50sp"
             android:hint="כותרת הסיכום"
+            android:id="@+id/etSummaryTitle"
             />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="200sp"
                 android:hint="תיאור הסיכום"
+                android:id="@+id/etSummaryDescription"
                 />
 
 
@@ -29,6 +31,7 @@
             android:layout_width="80sp"
             android:layout_height="40sp"
             android:text="העלאה"
+            android:id="@+id/btnUpload"
             />
 
     </LinearLayout>
