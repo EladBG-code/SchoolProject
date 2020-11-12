@@ -38,44 +38,38 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         toolbar = findViewById(R.id.toolbarSubjectSelected);
         floatingUploadButton = findViewById(R.id.floatingUploadButton);
 
-        setSupportActionBar(toolbar);
-        navigationView.bringToFront();
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close){
-            public void onDrawerClosed(View view) {
-                // Visible/Enable the FAB
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                // Hide/Disable the FAB
-            }
-
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                // invert the slideOffset value
-                //This line fades the floating action button as the user slides their finger across the screen
-                floatingUploadButton.setAlpha(1-slideOffset);
-            }
-        };
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
-
-        navigationView.setNavigationItemSelectedListener(this);
+        initDrawer();
         floatingUploadButton.setOnClickListener(this);
         tvSubjectName = findViewById(R.id.tvSubjectName);
+        subject=  new Subject(getIntent().getStringExtra("SubjectSelected"));
         tvSubjectName.setText(getIntent().getStringExtra("SubjectSelected")); /*This line sets the name of the subject which was selected as the title of the subject's summary page*/
-
-        subject = new Subject(getIntent().getStringExtra("SubjectSelected"));
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RESULT_OK){
-            String[] arr = data.getStringArrayExtra("Summary");
-            subject.addSummary(new Summary(arr[0],arr[1],arr[2]));
-        }
+     public void initDrawer(){
+         setSupportActionBar(toolbar);
+         navigationView.bringToFront();
+         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close){
+             public void onDrawerClosed(View view) {
+                 // Visible/Enable the FAB
+             }
+
+             public void onDrawerOpened(View drawerView) {
+                 // Hide/Disable the FAB
+             }
+
+             @Override
+             public void onDrawerSlide(View drawerView, float slideOffset) {
+                 // invert the slideOffset value
+                 //This line fades the floating action button as the user slides their finger across the screen
+                 floatingUploadButton.setAlpha(1-slideOffset);
+             }
+         };
+         drawerLayout.addDrawerListener(toggle);
+         toggle.syncState();
+
+
+         navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
@@ -138,6 +132,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         if(v == floatingUploadButton){
             //Upload floating action button selected
             Intent intent = new Intent(this,AddSummaryActivity.class);
+            intent.putExtra("Subject",subject.getSubjectName());
             startActivity(intent);
         }
 
