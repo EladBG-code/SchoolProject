@@ -5,20 +5,27 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ViewSummariesOnSubject extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
@@ -28,25 +35,51 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
     TextView tvSubjectName;
     FloatingActionButton floatingUploadButton;
     Subject subject;
+    RecyclerView dataList;
+    List<Integer> images;
+    List<String> titles;
+    RecyclerView.Adapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_summaries_on_subject);
+        initComponents();
+        initDrawer();
+        floatingUploadButton.setOnClickListener(this);
+        subject=  new Subject(getIntent().getStringExtra("SubjectSelected"));
+        tvSubjectName.setText(getIntent().getStringExtra("SubjectSelected")); /*This line sets the name of the subject which was selected as the title of the subject's summary page*/
 
+        titles=new ArrayList<>();
+        images =new ArrayList<>();
+
+        titles.add("First");
+        titles.add("Second");
+        titles.add("Third");
+        titles.add("Forth");
+
+        images.add(R.drawable.ic_baseline_accessibility_24);
+        images.add(R.drawable.ic_baseline_adb_24);
+        images.add(R.drawable.ic_baseline_bedtime_24);
+        images.add(R.drawable.ic_baseline_mood_24);
+
+        //adapters and layout Manager for the recycler View
+        adapter = new SummariesAdapter(this,titles,images);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,2,GridLayoutManager.VERTICAL, false);
+        dataList.setLayoutManager(gridLayoutManager);
+        dataList.setAdapter(adapter);
+    }
+
+    private void initComponents() {
+        setContentView(R.layout.activity_view_summaries_on_subject);
+        dataList = (RecyclerView)findViewById(R.id.recyclerView);
         drawerLayout = findViewById(R.id.drawer_layout_subject);
         navigationView = findViewById(R.id.nav_view_subject);
         toolbar = findViewById(R.id.toolbarSubjectSelected);
         floatingUploadButton = findViewById(R.id.floatingUploadButton);
-
-        initDrawer();
-        floatingUploadButton.setOnClickListener(this);
         tvSubjectName = findViewById(R.id.tvSubjectName);
-        subject=  new Subject(getIntent().getStringExtra("SubjectSelected"));
-        tvSubjectName.setText(getIntent().getStringExtra("SubjectSelected")); /*This line sets the name of the subject which was selected as the title of the subject's summary page*/
-
     }
 
-     public void initDrawer(){
+    public void initDrawer(){
          setSupportActionBar(toolbar);
          navigationView.bringToFront();
          ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close){
