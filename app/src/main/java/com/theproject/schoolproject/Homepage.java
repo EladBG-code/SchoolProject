@@ -41,7 +41,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
 
         
 
-//        tvWelcomeMessage.setText(tvWelcomeMessage.getText().toString()+" "+GlobalAcross.currentUser.getfName()); /*Tells the user a welcome message with their own name! */
+        tvWelcomeMessage.setText(tvWelcomeMessage.getText().toString()+" "+GlobalAcross.currentUser.getfName()); /*Tells the user a welcome message with their own name! */
 
         setSupportActionBar(toolbar);
         navigationView.bringToFront();

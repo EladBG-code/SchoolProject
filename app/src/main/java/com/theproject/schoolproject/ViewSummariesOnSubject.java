@@ -82,13 +82,21 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         holder.tvTitle.setText(model.getTitle());
         holder.tvDescription.setText(model.getDescription());
         holder.tvAuthor.setText(model.getAuthor());
+        holder.btnViewSummary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ViewSummariesOnSubject.this,ViewSummary.class);
+                intent.putExtra("summaryKey",getRef(position).getKey());
+                intent.putExtra("subject",subject.getSubjectName());
+                startActivity(intent);
+            }
+        });
         holder.v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ViewSummariesOnSubject.this,ViewSummary.class);
                 intent.putExtra("summaryKey",getRef(position).getKey());
                 intent.putExtra("subject",subject.getSubjectName());
-
                 startActivity(intent);
             }
         });

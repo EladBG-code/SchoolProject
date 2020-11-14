@@ -15,6 +15,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
     TextView tvTitle;
     TextView tvDescription;
     TextView tvAuthor;
+    Button btnViewSummary;
     View v;
 
     public MyViewHolder(@NonNull View itemView) {
@@ -23,6 +24,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
         tvTitle=itemView.findViewById(R.id.summaryTitle);
         tvDescription=itemView.findViewById(R.id.summaryDescription);
         tvAuthor=itemView.findViewById(R.id.summaryAuthor);
+        btnViewSummary = itemView.findViewById(R.id.openSummaryBtn);
         v=itemView;
 
     }
