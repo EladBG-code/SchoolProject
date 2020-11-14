@@ -12,16 +12,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MyViewHolder extends RecyclerView.ViewHolder {
 
-    TextView title;
-    TextView description;
-    TextView author;
+    TextView tvTitle;
+    TextView tvDescription;
+    TextView tvAuthor;
+    View v;
 
     public MyViewHolder(@NonNull View itemView) {
         super(itemView);
 
-        title=itemView.findViewById(R.id.summaryTitle);
-        description=itemView.findViewById(R.id.summaryDescription);
-        author=itemView.findViewById(R.id.summaryAuthor);
+        tvTitle=itemView.findViewById(R.id.summaryTitle);
+        tvDescription=itemView.findViewById(R.id.summaryDescription);
+        tvAuthor=itemView.findViewById(R.id.summaryAuthor);
+        v=itemView;
 
     }
 }

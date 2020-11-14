@@ -78,10 +78,20 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
     options =new FirebaseRecyclerOptions.Builder<Summary>().setQuery(summariesRef, Summary.class).build();
     adapter = new FirebaseRecyclerAdapter<Summary, MyViewHolder>(options) {
         @Override
-        protected void onBindViewHolder(@NonNull MyViewHolder holder, int position, @NonNull Summary model) {
-        holder.title.setText(model.getTitle());
-        holder.description.setText(model.getDescription());
-        holder.author.setText(model.getAuthor());
+        protected void onBindViewHolder(@NonNull MyViewHolder holder, final int position, @NonNull Summary model) {
+        holder.tvTitle.setText(model.getTitle());
+        holder.tvDescription.setText(model.getDescription());
+        holder.tvAuthor.setText(model.getAuthor());
+        holder.v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ViewSummariesOnSubject.this,ViewSummary.class);
+                intent.putExtra("summaryKey",getRef(position).getKey());
+                intent.putExtra("subject",subject.getSubjectName());
+
+                startActivity(intent);
+            }
+        });
         }
 
         @NonNull
