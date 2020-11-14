@@ -23,7 +23,6 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     Button btnUpload;
     EditText summaryTitle,summaryDescription;
     FirebaseDatabase database;
-    DatabaseReference myRef;
     DatabaseReference summariesRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

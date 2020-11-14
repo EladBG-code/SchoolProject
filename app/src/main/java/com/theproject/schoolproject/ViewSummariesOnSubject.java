@@ -14,15 +14,27 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Comment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +50,10 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
     RecyclerView dataList;
     List<Integer> images;
     List<String> titles;
-    RecyclerView.Adapter adapter;
+    FirebaseDatabase database;
+    DatabaseReference summariesRef;
+    FirebaseRecyclerOptions<Summary> options;
+    FirebaseRecyclerAdapter<Summary, MyViewHolder> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,24 +67,39 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         titles=new ArrayList<>();
         images =new ArrayList<>();
 
-        titles.add("First");
-        titles.add("Second");
-        titles.add("Third");
-        titles.add("Forth");
+        database = FirebaseDatabase.getInstance();
+        summariesRef = database.getReference(subject.getSubjectName());
+        Log.d("summariesRef", "onCreate: "+summariesRef.toString());
+        loadSummariesListFromDB();
 
-        images.add(R.drawable.ic_baseline_accessibility_24);
-        images.add(R.drawable.ic_baseline_adb_24);
-        images.add(R.drawable.ic_baseline_bedtime_24);
-        images.add(R.drawable.ic_baseline_mood_24);
-
-        //adapters and layout Manager for the recycler View
-        adapter = new SummariesAdapter(this,titles,images);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,2,GridLayoutManager.VERTICAL, false);
-        dataList.setLayoutManager(gridLayoutManager);
-        dataList.setAdapter(adapter);
     }
 
-    private void initComponents() {
+    public void loadSummariesListFromDB() {
+    options =new FirebaseRecyclerOptions.Builder<Summary>().setQuery(summariesRef, Summary.class).build();
+    adapter = new FirebaseRecyclerAdapter<Summary, MyViewHolder>(options) {
+        @Override
+        protected void onBindViewHolder(@NonNull MyViewHolder holder, int position, @NonNull Summary model) {
+        holder.title.setText(model.getTitle());
+            Log.d("onBindViewHolder", "onBindViewHolder: "+model.getTitle().toString());
+        }
+
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_grid_layout,parent,false);
+            return new MyViewHolder(v);
+        }
+    };
+    adapter.startListening();
+    GridLayoutManager gridLayoutManager = new GridLayoutManager(this,2,GridLayoutManager.VERTICAL, false);
+    dataList.setLayoutManager(gridLayoutManager);
+    dataList.setAdapter(adapter);
+
+    }
+
+
+
+    public void initComponents() {
         setContentView(R.layout.activity_view_summaries_on_subject);
         dataList = (RecyclerView)findViewById(R.id.recyclerView);
         drawerLayout = findViewById(R.id.drawer_layout_subject);

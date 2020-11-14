@@ -18,6 +18,10 @@ public class Summary {
     private String subject;
     //private int score;
 
+    public Summary(){
+
+    }
+
     public Summary(String author, String title, String description) {
         this.author = author;
         this.title = title;
