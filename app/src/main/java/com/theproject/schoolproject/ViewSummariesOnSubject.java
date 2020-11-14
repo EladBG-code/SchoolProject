@@ -80,7 +80,8 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         @Override
         protected void onBindViewHolder(@NonNull MyViewHolder holder, int position, @NonNull Summary model) {
         holder.title.setText(model.getTitle());
-            Log.d("onBindViewHolder", "onBindViewHolder: "+model.getTitle().toString());
+        holder.description.setText(model.getDescription());
+        holder.author.setText(model.getAuthor());
         }
 
         @NonNull

@@ -6,46 +6,127 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardViewHolder"
-        android:layout_width="409dp"
-        android:layout_height="176dp"
-        app:contentPadding="10dp"
+
+    <com.google.android.material.card.MaterialCardView
+    android:theme="@style/Theme.MaterialComponents.Light"
+    android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_marginBottom="315dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:minHeight="130dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="383dp"
-            android:layout_height="156dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            
-            <ImageButton
-                android:id="@+id/summaryImage"
-                android:layout_width="127dp"
-                android:layout_height="115dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.18"
-                tools:srcCompat="@tools:sample/avatars" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:paddingBottom="8dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="Card Logo"
+                    app:srcCompat="@drawable/ic_baseline_library_books_24" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1.0"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/summaryTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Title goes here"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/summaryAuthor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Secondary message card layouts can vary to support the types of content they contain. The following elements are commonly found among that variety."
+                        android:textStyle="italic" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="194dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Card Image"
+                android:scaleType="centerCrop"
+                app:backgroundTint="@color/material_on_surface_emphasis_medium"
+                app:backgroundTintMode="add" />
 
             <TextView
-                android:id="@+id/summaryTitle"
+                android:id="@+id/summaryDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="124dp"
-                android:text="TextView"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/summaryImage"
-                app:layout_constraintVertical_bias="0.95" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+                android:layout_margin="16dp"
+                android:maxLines="2"
+                android:text="Lorem ipsum dolor sit amet, nec no nominavi scaevola. Per et sint sapientem, nobis perpetua salutandi mei te. Quo tamquam probatus reprehendunt in. Eos esse purto eruditi ea. Enim tation persius ut sea, eos ad consul populo.
+Ne eum solet altera. Cibo eligendi et est, electram theophrastus te vel eu." />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/openSummaryBtn"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="#80CBC4"
+                    android:text="צפייה בסיכום" />
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/shareBtn"
+                        android:paddingTop="12dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_baseline_share_24" />
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/rateBtn"
+                        style="?attr/iconEndPadding"
+                        android:paddingTop="12dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:cropToPadding="false"
+                        android:src="@drawable/ic_baseline_star_border_24" />
+
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
