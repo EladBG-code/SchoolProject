@@ -44,7 +44,15 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         super.onBackPressed();
     }
 
-    public boolean checkValid(){
+    public boolean checkValid(EditText title,EditText description){
+        if(title.getText().toString().length()<5){
+            Toast.makeText(this, "אנא וודא\\י שיש לפחות 5 תווים בכותרת הסיכום", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if(description.getText().toString().length()<20){
+            Toast.makeText(this, "אנא וודא\\י שיש לפחות 20 תווים בתיאור הסיכום", Toast.LENGTH_LONG).show();
+            return false;
+        }
         return true;
         //temp
     }
@@ -55,7 +63,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
             finish();
         }
         if(v == btnUpload){
-            if(checkValid()){
+            if(checkValid(summaryTitle,summaryDescription)){
                 Summary summary = new Summary(GlobalAcross.currentUser.getfName()+" "+GlobalAcross.currentUser.getlName(),summaryTitle.getText().toString(),summaryDescription.getText().toString());
                 addSummaryToDB(summary);
                 Toast.makeText(this, "העלית את הסיכום בהצלחה", Toast.LENGTH_SHORT).show();

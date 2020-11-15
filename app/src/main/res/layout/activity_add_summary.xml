@@ -13,12 +13,6 @@
         android:gravity="center"
         >
 
-        <Button
-            android:id="@+id/btnUpload"
-            android:layout_width="80sp"
-            android:layout_height="40sp"
-            android:text="העלאה" />
-
         <EditText
             android:layout_width="match_parent"
             android:layout_height="50sp"
@@ -32,8 +26,15 @@
             android:layout_height="93dp"
             android:hint="תיאור הסיכום" />
 
+        <Button
+            android:id="@+id/btnUpload"
+            android:layout_width="80sp"
+            android:layout_height="40sp"
+            android:text="העלאה" />
 
     </LinearLayout>
+
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingReturnButton"

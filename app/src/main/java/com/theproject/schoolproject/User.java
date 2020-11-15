@@ -3,16 +3,6 @@ package com.theproject.schoolproject;
 public class User {
 
     private String fName,lName,username,email,password;
-    //elad's first commit
-    public int getGrade() {
-        return grade;
-    }
-
-
-    public void setGrade(int grade) {
-        this.grade = grade;
-    }
-
     private int grade;
 
     public User(){
@@ -68,4 +58,13 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public int getGrade() {
+        return grade;
+    }
+
+    public void setGrade(int grade) {
+        this.grade = grade;
+    }
+
 }

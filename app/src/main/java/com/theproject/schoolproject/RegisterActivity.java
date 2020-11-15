@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -180,6 +182,27 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
             if(validDetails(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString())){
                 //If the user entered all of the info truthfully, the user will pass through this 'if'
                 // Write a message to the database
+
+                /*if(isTeacher){
+                    User newUser = new User(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString(),isTeacher);
+                    GlobalAcross.allUsers.add(newUser);
+                    myRef.setValue(GlobalAcross.allUsers);
+                    GlobalAcross.currentUser = newUser;
+                    Toast.makeText(this, "נרשמת בהצלחה!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this, Homepage.class);
+                    startActivity(intent);
+                    finish();
+                }
+                else{
+                    User newUser = new User(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString(),classNum);
+                    GlobalAcross.allUsers.add(newUser);
+                    myRef.setValue(GlobalAcross.allUsers);
+                    GlobalAcross.currentUser = newUser;
+                    Toast.makeText(this, "נרשמת בהצלחה!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this, Homepage.class);
+                    startActivity(intent);
+                    finish();
+                }*/
                 User newUser = new User(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString(),classNum);
                 GlobalAcross.allUsers.add(newUser);
                 myRef.setValue(GlobalAcross.allUsers);
@@ -199,4 +222,5 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
     public void onBackPressed() {
         super.onBackPressed();
     }
+
 }

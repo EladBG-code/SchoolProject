@@ -67,12 +67,12 @@
         android:id="@+id/tvRegister"
         android:textColor="@color/colorPrimaryDark"
         />
-
+<!--
     <Button
         android:layout_width="200sp"
         android:layout_height="60sp"
         android:text="REMOVE ME ONCE YOU'RE DONE TESTING (Autofill)"
         android:id="@+id/btnAutoFill"
         />
-
+-->
 </LinearLayout>
