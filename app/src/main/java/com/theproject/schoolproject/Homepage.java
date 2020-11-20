@@ -81,6 +81,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
         }
         if(item.getTitle().equals("סיכומים")){
             Intent intent = new Intent(Homepage.this,SummariesSubjects.class);
+            drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
         }
@@ -90,16 +91,17 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
             return false;
         }
         if(item.getTitle().equals("פרופיל")){
-            //Will be added in the future
-            Toast.makeText(this,"מסך הפרופיל יהיה זמין לשימוש בעתיד.", Toast.LENGTH_LONG-5000).show();
+            Intent intent = new Intent(Homepage.this,ProfileActivity.class);
+            drawerLayout.closeDrawers();
+            startActivity(intent);
             return false;
         }
         if(item.getTitle().equals("מסך הבית")){
+            drawerLayout.closeDrawers();
             return false;
         }
         return false;
     }
-
 
 
     @Override

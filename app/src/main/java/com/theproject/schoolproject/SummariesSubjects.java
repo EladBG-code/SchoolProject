@@ -184,12 +184,14 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
             return false;
         }
         if(item.getTitle().equals("פרופיל")){
-            //Will be added in the future
-            Toast.makeText(this,"מסך הפרופיל יהיה זמין לשימוש בעתיד.", Toast.LENGTH_LONG-5000).show();
+            Intent intent = new Intent(SummariesSubjects.this,ProfileActivity.class);
+            drawerLayout.closeDrawers();
+            startActivity(intent);
             return false;
         }
         if(item.getTitle().equals("מסך הבית")){
             Intent intent = new Intent(this,Homepage.class);
+            drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
         }
