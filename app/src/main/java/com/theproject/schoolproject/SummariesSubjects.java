@@ -29,6 +29,13 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summaries_subjects);
 
+        drawerFunction();
+
+        //The function below this line attaches all buttons to their ID's in the XML and sets their onclicklistener function
+        attachAndClickListenSubjectButtons();
+    }
+
+    public void drawerFunction(){
         drawerLayout = findViewById(R.id.drawer_layout_subjects);
         navigationView = findViewById(R.id.nav_view_subjects);
         toolbar = findViewById(R.id.toolbarSelectSubject);
@@ -40,9 +47,6 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
-
-        //The function below this line attaches all buttons to their ID's in the XML and sets their onclicklistener function
-        attachAndClickListenSubjectButtons();
     }
 
     public void attachAndClickListenSubjectButtons(){
