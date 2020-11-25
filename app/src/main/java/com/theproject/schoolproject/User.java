@@ -1,22 +1,26 @@
 package com.theproject.schoolproject;
 
+import android.graphics.Bitmap;
+
 public class User {
 
     private String fName,lName,username,email,password;
     private int grade;
+    private Bitmap profilePicture;
 
     public User(){
 
     }
 
 
-    public User(String fName, String lName, String username, String email, String password,int grade) {
+    public User(String fName, String lName, String username, String email, String password,int grade,Bitmap profilePicture) {
         this.fName = fName;
         this.lName = lName;
         this.username = username;
         this.email = email;
         this.password = password;
         this.grade = grade;
+        this.profilePicture = profilePicture;
     }
 
     public String getfName() {
@@ -67,4 +71,11 @@ public class User {
         this.grade = grade;
     }
 
+    public Bitmap getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(Bitmap profilePicture) {
+        this.profilePicture = profilePicture;
+    }
 }

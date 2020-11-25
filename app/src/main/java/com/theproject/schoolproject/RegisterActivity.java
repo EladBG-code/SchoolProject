@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -19,6 +21,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -203,8 +206,11 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                     startActivity(intent);
                     finish();
                 }*/
-                User newUser = new User(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString(),classNum);
+
+                User newUser = new User(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString(),classNum,null);
                 GlobalAcross.allUsers.add(newUser);
+                //GlobalAcross.setUserIndex(GlobalAcross.allUsers.size());
+                //Toast.makeText(this, GlobalAcross.getUserIndex(), Toast.LENGTH_SHORT).show();
                 myRef.setValue(GlobalAcross.allUsers);
                 GlobalAcross.currentUser = newUser;
                 Toast.makeText(this, "נרשמת בהצלחה!", Toast.LENGTH_SHORT).show();
