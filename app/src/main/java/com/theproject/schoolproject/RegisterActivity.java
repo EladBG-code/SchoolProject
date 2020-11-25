@@ -183,31 +183,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
     public void onClick(View view) {
         if(view == btnRegister){
             if(validDetails(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString())){
-                //If the user entered all of the info truthfully, the user will pass through this 'if'
-                // Write a message to the database
-
-                /*if(isTeacher){
-                    User newUser = new User(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString(),isTeacher);
-                    GlobalAcross.allUsers.add(newUser);
-                    myRef.setValue(GlobalAcross.allUsers);
-                    GlobalAcross.currentUser = newUser;
-                    Toast.makeText(this, "נרשמת בהצלחה!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(this, Homepage.class);
-                    startActivity(intent);
-                    finish();
-                }
-                else{
-                    User newUser = new User(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString(),classNum);
-                    GlobalAcross.allUsers.add(newUser);
-                    myRef.setValue(GlobalAcross.allUsers);
-                    GlobalAcross.currentUser = newUser;
-                    Toast.makeText(this, "נרשמת בהצלחה!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(this, Homepage.class);
-                    startActivity(intent);
-                    finish();
-                }*/
-
-                User newUser = new User(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString(),classNum,null);
+                User newUser = new User(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString(),classNum);
                 GlobalAcross.allUsers.add(newUser);
                 //GlobalAcross.setUserIndex(GlobalAcross.allUsers.size());
                 //Toast.makeText(this, GlobalAcross.getUserIndex(), Toast.LENGTH_SHORT).show();

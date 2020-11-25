@@ -18,7 +18,7 @@ public class Subject {
 
 
     public Subject(String subjectName){
-       this.subjectName=subjectName;
+       this.subjectName = subjectName;
     }
     public Subject(String subjectName, ArrayList<Summary> summaries) {
         this.subjectName = subjectName;

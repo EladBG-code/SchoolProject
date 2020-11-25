@@ -1,26 +1,26 @@
 package com.theproject.schoolproject;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 public class User {
 
-    private String fName,lName,username,email,password;
+    private String fName,lName,username,email,password,pfpPath;
     private int grade;
-    private Bitmap profilePicture;
 
     public User(){
 
     }
 
 
-    public User(String fName, String lName, String username, String email, String password,int grade,Bitmap profilePicture) {
+    public User(String fName, String lName, String username, String email, String password,int grade) {
         this.fName = fName;
         this.lName = lName;
         this.username = username;
         this.email = email;
         this.password = password;
         this.grade = grade;
-        this.profilePicture = profilePicture;
+        this.pfpPath = "none";
     }
 
     public String getfName() {
@@ -71,11 +71,11 @@ public class User {
         this.grade = grade;
     }
 
-    public Bitmap getProfilePicture() {
-        return profilePicture;
+    public String getPfpPath() {
+        return pfpPath;
     }
 
-    public void setProfilePicture(Bitmap profilePicture) {
-        this.profilePicture = profilePicture;
+    public void setPfpPath(String pfpPath) {
+        this.pfpPath = pfpPath;
     }
 }

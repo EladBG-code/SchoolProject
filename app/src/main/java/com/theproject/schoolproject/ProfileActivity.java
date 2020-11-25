@@ -11,38 +11,35 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-import org.w3c.dom.Text;
-
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.util.UUID;
 
 public class ProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+
+    FirebaseStorage storage = FirebaseStorage.getInstance();
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -51,13 +48,15 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     TextView tvProfileName,tvProfileClass;
     FirebaseDatabase database;
     DatabaseReference myRef;
+    StorageReference firePfpRef;
+    StorageReference mStorageReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("UsersPlace");
+        myRef = database.getReference("UsersPlace/"+GlobalAcross.currentUserIndex+"/pfpPath");
 
         setToolbarAndDrawer();
         ivProfileIcon = findViewById(R.id.ivProfilePictureIcon);
@@ -68,7 +67,37 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         tvProfileClass.setText("כיתה: "+GlobalAcross.getCurrentUserGradeString());
         ivProfileIcon.setOnClickListener(this);
 
+        if(!GlobalAcross.currentUser.getPfpPath().equals("none")){
+            //The if only goes through if the user does have a profile picture
+            String pfpPath = GlobalAcross.currentUser.getPfpPath();
+            firePfpRef = storage.getInstance().getReference().child(GlobalAcross.currentUser.getPfpPath());
+
+            try {
+                final File localFile = File.createTempFile("profilePicture","png");
+                firePfpRef.getFile(localFile)
+                        .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                ShapeableImageView ivPFP = findViewById(R.id.ivProfilePictureIcon);
+                                Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                                ivPFP.setScaleType(ImageView.ScaleType.FIT_XY);
+                                ivPFP.setForeground(null);
+                                ivPFP.setImageBitmap(bitmap);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
+
 
 
     public void setToolbarAndDrawer(){
@@ -152,16 +181,35 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(resultCode == RESULT_OK && requestCode == 1){
-            ShapeableImageView profilePictureReference = findViewById(R.id.ivProfilePictureIcon);
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == 1) {
+            final ShapeableImageView profilePictureReference = findViewById(R.id.ivProfilePictureIcon);
             try {
                 InputStream inputStream = getContentResolver().openInputStream(data.getData());
 
-                profilePictureReference.setScaleType(ImageView.ScaleType.FIT_XY);
-                Bitmap bitmapPFP = BitmapFactory.decodeStream(inputStream);
-                profilePictureReference.setForeground(null);
-                profilePictureReference.setImageBitmap(bitmapPFP);
+                final Bitmap bitmapPFP = BitmapFactory.decodeStream(inputStream);
 
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmapPFP.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                byte[] byteArray = baos.toByteArray();
+                final String pfpPath = "profilePictures/" + UUID.randomUUID() + ".png";
+                firePfpRef = storage.getReference(pfpPath);
+
+                UploadTask uploadTask = firePfpRef.putBytes(byteArray);
+                uploadTask.addOnSuccessListener(ProfileActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        //This function only activates when the upload of a new pfp is successful
+                        profilePictureReference.setScaleType(ImageView.ScaleType.FIT_XY);
+                        profilePictureReference.setForeground(null);
+                        profilePictureReference.setImageBitmap(bitmapPFP);
+
+                        GlobalAcross.currentUser.setPfpPath(firePfpRef.getPath());
+                        myRef.setValue(firePfpRef.getPath());
+
+                        Toast.makeText(ProfileActivity.this, "התמונת פרופיל שונתה בהצלחה!", Toast.LENGTH_LONG - 5000).show();
+                    }
+                });
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

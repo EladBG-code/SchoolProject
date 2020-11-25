@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     EditText etPassword,etUsername;
     Button btnLogin;
-    /*Button btnAutoFill; */ //Remove this line once you're done with testing
     TextView tvRegister;
     FirebaseDatabase database;
     DatabaseReference myRef;
@@ -115,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             if (user.getUsername().equals(username))
             {
+                GlobalAcross.currentUserIndex = i;
                 return i;
             }
             i++;
@@ -126,6 +126,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onBackPressed() {
         if(super.getClass() == RegisterActivity.class){
             super.onBackPressed();
+        }
+        else{
+            finish();
         }
     }
 
