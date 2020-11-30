@@ -49,7 +49,6 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     FirebaseDatabase database;
     DatabaseReference myRef;
     StorageReference firePfpRef;
-    StorageReference mStorageReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

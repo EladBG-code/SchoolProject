@@ -63,7 +63,7 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:text="Secondary message card layouts can vary to support the types of content they contain. The following elements are commonly found among that variety."
-                        android:textStyle="italic" />
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 
