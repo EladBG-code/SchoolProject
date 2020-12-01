@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             super.onBackPressed();
         }
         else{
-            finish();
+            this.finishAffinity();
         }
     }
 
