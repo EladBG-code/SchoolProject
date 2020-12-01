@@ -49,7 +49,6 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     FirebaseDatabase database;
     DatabaseReference myRef;
     StorageReference firePfpRef;
-    StorageReference mStorageReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,7 +119,6 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         if (item.getTitle().equals("התנתקות")) {
 
             androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(ProfileActivity.this);
-
             builder.setMessage("האם את\\ה בטוח\\ה שאת\\ה רוצה להתנתק?")
                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                         @Override
@@ -146,8 +144,9 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
             return false;
         }
         if (item.getTitle().equals("הגדרות")) {
-            //Will be added in the future
-            Toast.makeText(this, "מסך ההגדרות יהיה זמין לשימוש בעתיד.", Toast.LENGTH_LONG - 5000).show();
+            Intent intent = new Intent(ProfileActivity.this, SettingsUser.class);
+            drawerLayout.closeDrawers();
+            startActivity(intent);
             return false;
         }
         if (item.getTitle().equals("פרופיל")) {

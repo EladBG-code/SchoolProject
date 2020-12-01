@@ -165,8 +165,9 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
             return false;
         }
         if(item.getTitle().equals("הגדרות")){
-            //Will be added in the future
-            Toast.makeText(this,"מסך ההגדרות יהיה זמין לשימוש בעתיד.", Toast.LENGTH_LONG-5000).show();
+            Intent intent = new Intent(ViewSummariesOnSubject.this, SettingsUser.class);
+            drawerLayout.closeDrawers();
+            startActivity(intent);
             return false;
         }
         if(item.getTitle().equals("פרופיל")){

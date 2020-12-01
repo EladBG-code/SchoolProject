@@ -9,6 +9,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,17 +18,29 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
+import java.io.IOException;
 
 public class Homepage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
+    FirebaseStorage storage = FirebaseStorage.getInstance();
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     MaterialToolbar toolbar;
     TextView tvWelcomeMessage,tvToSummaries;
     ImageView ivLibraryIcon;
+    ShapeableImageView ivProfilePictureHomepage;
+    StorageReference firePfpRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +52,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
         tvWelcomeMessage = findViewById(R.id.tvHomeWelcome);
         ivLibraryIcon = findViewById(R.id.ivLibraryIcon);
         tvToSummaries = findViewById(R.id.tvToSummaries);
+        ivProfilePictureHomepage = findViewById(R.id.ivProfilePictureIconHomepage);
 
         
 
@@ -52,6 +67,38 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
         navigationView.setNavigationItemSelectedListener(this);
         ivLibraryIcon.setOnClickListener(this);
         tvToSummaries.setOnClickListener(this);
+        ivProfilePictureHomepage.setOnClickListener(this);
+
+        if(!GlobalAcross.currentUser.getPfpPath().equals("none")){
+            //Gets the image of the user and displays it on the homepage top right corner
+            StorageReference firePfpRef;
+            String pfpPath = GlobalAcross.currentUser.getPfpPath();
+                firePfpRef = storage.getInstance().getReference().child(GlobalAcross.currentUser.getPfpPath());
+
+                try {
+                    final File localFile = File.createTempFile("profilePicture","png");
+                    firePfpRef.getFile(localFile)
+                            .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                    ShapeableImageView ivPFP = findViewById(R.id.ivProfilePictureIconHomepage);
+                                    Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                                    ivPFP.setScaleType(ImageView.ScaleType.FIT_XY);
+                                    ivPFP.setForeground(null);
+                                    ivPFP.setImageBitmap(bitmap);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+        }
     }
 
     @Override
@@ -86,8 +133,9 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
             return false;
         }
         if(item.getTitle().equals("הגדרות")){
-            //Will be added in the future
-            Toast.makeText(this,"מסך ההגדרות יהיה זמין לשימוש בעתיד.", Toast.LENGTH_LONG-5000).show();
+            Intent intent = new Intent(Homepage.this, SettingsUser.class);
+            drawerLayout.closeDrawers();
+            startActivity(intent);
             return false;
         }
         if(item.getTitle().equals("פרופיל")){
@@ -98,6 +146,16 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
         }
         if(item.getTitle().equals("מסך הבית")){
             drawerLayout.closeDrawers();
+            return false;
+        }
+        if(item.getTitle().equals("אודות")){
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(Homepage.this);
+            String info = "שלום "+GlobalAcross.currentUser.getfName()+" שמי";
+            builder.setMessage(info)
+                    .setNegativeButton("הבנתי",null);
+
+            AlertDialog alert = builder.create();
+            alert.show();
             return false;
         }
         return false;
@@ -121,6 +179,11 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
             Intent intent = new Intent(this,SummariesSubjects.class);
             startActivity(intent);
             //finish();
+        }
+        if(v == ivProfilePictureHomepage){
+            Intent intent = new Intent(Homepage.this,ProfileActivity.class);
+            drawerLayout.closeDrawers();
+            startActivity(intent);
         }
     }
 }

@@ -11,7 +11,10 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_anchorGravity="top"
+        android:id="@+id/appBarLayout1"
+        >
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbarHome"
@@ -43,6 +46,32 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center">
 
+                <FrameLayout
+                    android:id="@+id/frameLayoutTwo"
+                    android:layout_width="match_parent"
+                    android:layout_height="621dp"
+                    android:layout_gravity="top|right"
+                    android:gravity="top|right"
+                    android:orientation="horizontal"
+                    app:layout_anchorGravity="top|right">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/ivProfilePictureIconHomepage"
+                        android:layout_width="50sp"
+                        android:layout_height="50sp"
+                        android:layout_gravity="right|top"
+                        android:background="@color/profile_icon_image_final_background"
+                        android:foreground="@drawable/profile_icon_image_final_foreground"
+                        android:foregroundTint="#FFFFFF"
+                        android:src="@drawable/profile_icon_image_final_foreground"
+                        app:layout_anchorGravity="top|right"
+                        app:shapeAppearance="@style/roundedImageViewRounded"
+                        android:layout_marginRight="10sp"
+                        android:layout_marginTop="5sp"
+                        app:strokeWidth="1sp" />
+
+                </FrameLayout>
+
                 <LinearLayout
                     android:id="@+id/llOne"
                     android:layout_width="match_parent"
@@ -53,40 +82,39 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="621dp"
                     android:layout_gravity="center_horizontal|center"
                     android:gravity="center_vertical|center_horizontal"
-                    >
+                    android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/tvToSummaries"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/tvToSummaries"
-                        android:textSize="25dp"
+                        android:layout_marginTop="30sp"
+                        android:gravity="right"
                         android:text="לסיכומים: "
-                        android:gravity="right" />
-
+                        android:textSize="25dp" />
 
 
                     <ImageView
                         android:id="@+id/ivLibraryIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/local_library_icon"
-                        />
+                        android:layout_marginTop="30sp"
+                        android:background="@drawable/local_library_icon" />
 
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/tvHomeWelcome"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="wrap_content"
                     android:gravity="center|top"
                     android:text="שלום"
-                    android:textSize="36sp"
-                    app:layout_anchor="@+id/llOne"
+                    android:textSize="35sp"
+                    app:layout_anchor="@+id/frameLayoutTwo"
                     app:layout_anchorGravity="center" />
 
             </androidx.coordinatorlayout.widget.CoordinatorLayout>

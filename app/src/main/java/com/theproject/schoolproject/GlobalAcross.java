@@ -19,7 +19,5 @@ public class GlobalAcross {
         return "י"+'"'+"ב";
     }
 
-
-
     //
 }

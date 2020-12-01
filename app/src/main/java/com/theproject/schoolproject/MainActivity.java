@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public static int findIndexOfUser(String username)
     {
-        int i=0;
+        int i = 0;
         for (User user:GlobalAcross.allUsers)
         {
             if (user.getUsername().equals(username))
