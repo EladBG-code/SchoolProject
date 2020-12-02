@@ -19,5 +19,9 @@ public class GlobalAcross {
         return "י"+'"'+"ב";
     }
 
+    public static void addCreatedSummaryRef(){
+
+    }
+
     //
 }

@@ -150,7 +150,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
         }
         if(item.getTitle().equals("אודות")){
             androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(Homepage.this);
-            String info = "שלום "+GlobalAcross.currentUser.getfName()+" שמי";
+            String info = "שלום "+GlobalAcross.currentUser.getfName()+", שמי אלעד ואני פיתחתי את אפליקציה זו. אשמח שתשלח\\י לי פידבק לאימייל: "+"eladbargal2@gmail.com";
             builder.setMessage(info)
                     .setNegativeButton("הבנתי",null);
 

@@ -158,6 +158,16 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
             startActivity(intent);
             return false;
         }
+        if(item.getTitle().equals("אודות")){
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(ProfileActivity.this);
+            String info = "שלום "+GlobalAcross.currentUser.getfName()+", שמי אלעד ואני פיתחתי את אפליקציה זו. אשמח שתשלח\\י לי פידבק לאימייל: "+"eladbargal2@gmail.com";
+            builder.setMessage(info)
+                    .setNegativeButton("הבנתי",null);
+
+            AlertDialog alert = builder.create();
+            alert.show();
+            return false;
+        }
         return false;
     }
 

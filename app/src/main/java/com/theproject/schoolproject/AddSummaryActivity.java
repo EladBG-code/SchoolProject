@@ -66,6 +66,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
             if(checkValid(summaryTitle,summaryDescription)){
                 Summary summary = new Summary(GlobalAcross.currentUser.getfName()+" "+GlobalAcross.currentUser.getlName(),summaryTitle.getText().toString(),summaryDescription.getText().toString());
                 addSummaryToDB(summary);
+                summariesRef = database.getReference(subject).push();
                 Toast.makeText(this, "העלית את הסיכום בהצלחה", Toast.LENGTH_SHORT).show();
                 super.onBackPressed();
             }

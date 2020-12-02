@@ -3,10 +3,15 @@ package com.theproject.schoolproject;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
+import com.google.firebase.database.DatabaseReference;
+
+import java.util.ArrayList;
+
 public class User {
 
     private String fName,lName,username,email,password,pfpPath;
     private int grade;
+    private ArrayList<DatabaseReference> userSummariesList;
 
     public User(){
 
@@ -78,4 +83,5 @@ public class User {
     public void setPfpPath(String pfpPath) {
         this.pfpPath = pfpPath;
     }
+
 }
