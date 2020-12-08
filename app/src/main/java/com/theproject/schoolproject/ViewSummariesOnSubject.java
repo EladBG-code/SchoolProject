@@ -66,7 +66,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
     }
 
     public void loadSummariesListFromDB() {
-    options =new FirebaseRecyclerOptions.Builder<Summary>().setQuery(summariesRef, Summary.class).build();
+    options = new FirebaseRecyclerOptions.Builder<Summary>().setQuery(summariesRef, Summary.class).build();
     adapter = new FirebaseRecyclerAdapter<Summary, MyViewHolder>(options) {
         @Override
         protected void onBindViewHolder(@NonNull MyViewHolder holder, final int position, @NonNull Summary model) {

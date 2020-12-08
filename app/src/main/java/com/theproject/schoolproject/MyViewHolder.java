@@ -25,7 +25,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
         tvDescription = itemView.findViewById(R.id.summaryDescription);
         tvAuthor = itemView.findViewById(R.id.summaryAuthor);
         btnViewSummary = itemView.findViewById(R.id.openSummaryBtn);
-        v=itemView;
+        v = itemView;
 
     }
 }
