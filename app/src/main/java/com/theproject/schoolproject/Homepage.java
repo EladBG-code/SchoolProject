@@ -7,8 +7,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -41,6 +43,12 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
     ImageView ivLibraryIcon;
     ShapeableImageView ivProfilePictureHomepage;
     StorageReference firePfpRef;
+
+    SharedPreferences sharedPreferences;
+
+    public static final String fileName = "login";
+    public static final String Username = "username";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,9 +120,11 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            GlobalAcross.currentUser = null;
+                            GlobalAcross.currentUser = null; /*Temp disable*/
                             Intent intent = new Intent(Homepage.this,MainActivity.class);
                             Toast.makeText(Homepage.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT-5000).show();
+                            sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
+                            sharedPreferences.edit().clear();
                             startActivity(intent);
                             finish();
                         }

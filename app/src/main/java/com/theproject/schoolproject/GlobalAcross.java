@@ -3,7 +3,7 @@ package com.theproject.schoolproject;
 import java.util.ArrayList;
 
 public class GlobalAcross {
-    public static ArrayList<User> allUsers; //The arraylist of all users (used for login - needs to be replaced)
+    public static ArrayList<User> allUsers; //The ArrayList of all users (used for login - needs to be replaced)
     public static User currentUser; //Current logged in user
     public static int currentUserIndex;
 
@@ -20,8 +20,18 @@ public class GlobalAcross {
     }
 
     public static void addCreatedSummaryRef(){
-
+        //TEMP NOT CREATED
     }
+
+    /*public static void logoutResetUser(){
+        currentUser.setEmail("");
+        currentUser.setfName("");
+        currentUser.setGrade(1);
+        currentUser.setlName("");
+        currentUser.setPassword("");
+        currentUser.setUsername("");
+        currentUser.setPfpPath("");
+    }*/
 
     //
 }

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -30,6 +31,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView tvRegister;
     FirebaseDatabase database;
     DatabaseReference myRef;
+
+    SharedPreferences sharedPreferences;
+
+    public static final String fileName = "login";
+    public static final String Username = "username";
+    public static final String Password = "password";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,24 +56,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnLogin.setOnClickListener(this);
         /*btnAutoFill.setOnClickListener(this); */ //Remove this line once you're done with testing
 
-        // Read from the database
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                GenericTypeIndicator<ArrayList<User>> t = new GenericTypeIndicator<ArrayList<User>>() {
-                };
-                GlobalAcross.allUsers = new ArrayList<>();
-                if(dataSnapshot.getValue(t) != null){
-                GlobalAcross.allUsers.addAll(dataSnapshot.getValue(t));
-                }
-            }
-                @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-            }
-        });
+
+
+        sharedPreferences = getSharedPreferences(fileName,Context.MODE_PRIVATE);
+        if(!sharedPreferences.getString(Username,null) == null){
+           etUsername.setText(sharedPreferences.getString(Username,null));
+           etPassword.setText(sharedPreferences.getString(Password,null));
+           //GlobalAcross.currentUser = findIndexOfUser(sharedPreferences.getString())
+           btnLogin.performClick();
+        }
+
+
 
         }
 
@@ -86,8 +87,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (index != -1) {
                 if (GlobalAcross.allUsers.get(index).getPassword().equals(etPassword.getText().toString())) {
                     GlobalAcross.currentUser = GlobalAcross.allUsers.get(index);
-                    //Create an intent for the homepage and redirect the user to there
+                    //Create an intent for the homepage and redirect the user to there - SUCCESSFUL LOGIN
                     GlobalAcross.currentUser = GlobalAcross.allUsers.get(index);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(Username,etUsername.getText().toString()); //Shared preferences - login keeper (key and value)
+                    editor.putString(Password,etPassword.getText().toString()); //Shared preferences - login keeper
+                    editor.commit();
+
+
                     Toast.makeText(this, "התחברת בהצלחה " + GlobalAcross.currentUser.getfName() + '!', Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(this, Homepage.class);
                     startActivity(intent);
