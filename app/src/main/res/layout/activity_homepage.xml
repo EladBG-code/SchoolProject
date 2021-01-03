@@ -67,7 +67,7 @@
                         app:layout_anchorGravity="top|right"
                         app:shapeAppearance="@style/roundedImageViewRounded"
                         android:layout_marginRight="10sp"
-                        android:layout_marginTop="5sp"
+                        android:layout_marginTop="45sp"
                         app:strokeWidth="1sp" />
 
                 </FrameLayout>
