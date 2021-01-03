@@ -7,8 +7,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -49,6 +51,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     FirebaseDatabase database;
     DatabaseReference myRef;
     StorageReference firePfpRef;
+    SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,6 +129,13 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                             GlobalAcross.currentUser = null;
                             Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
                             Toast.makeText(ProfileActivity.this, "התנתקת בהצלחה.", Toast.LENGTH_SHORT - 5000).show();
+                            sharedPreferences = getSharedPreferences(MainActivity.fileName, Context.MODE_PRIVATE);
+
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.remove(MainActivity.Username); //Shared preferences - login keeper (key and value)
+                            editor.remove(MainActivity.Password); //Shared preferences - login keeper
+                            editor.commit();
+
                             startActivity(intent);
                             finish();
                         }

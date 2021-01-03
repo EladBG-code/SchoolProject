@@ -7,8 +7,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +26,7 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
     NavigationView navigationView;
     MaterialToolbar toolbar;
     Button btnMath,btnHistory,btnHebrew,btnCitizenship,btnBible,btnLiterature,btnEnglish,btnBiology,btnComputerScience,btnChemistry,btnPhysics,btnArts,btnCommunication,btnSocialStudies;
+    SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -170,6 +173,13 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
                             GlobalAcross.currentUser = null;
                             Intent intent = new Intent(SummariesSubjects.this,MainActivity.class);
                             Toast.makeText(SummariesSubjects.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT).show();
+                            sharedPreferences = getSharedPreferences(MainActivity.fileName, Context.MODE_PRIVATE);
+
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.remove(MainActivity.Username); //Shared preferences - login keeper (key and value)
+                            editor.remove(MainActivity.Password); //Shared preferences - login keeper
+                            editor.commit();
+
                             startActivity(intent);
                             finish();
                         }

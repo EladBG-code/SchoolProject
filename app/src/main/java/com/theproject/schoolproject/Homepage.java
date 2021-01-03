@@ -46,8 +46,8 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
 
     SharedPreferences sharedPreferences;
 
-    public static final String fileName = "login";
-    public static final String Username = "username";
+    //public static final String fileName = "login";
+    //public static final String Username = "username";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,8 +123,13 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
                             GlobalAcross.currentUser = null; /*Temp disable*/
                             Intent intent = new Intent(Homepage.this,MainActivity.class);
                             Toast.makeText(Homepage.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT-5000).show();
-                            sharedPreferences = getSharedPreferences(fileName, Context.MODE_PRIVATE);
-                            sharedPreferences.edit().clear();
+                            sharedPreferences = getSharedPreferences(MainActivity.fileName, Context.MODE_PRIVATE);
+
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.remove(MainActivity.Username); //Shared preferences - login keeper (key and value)
+                            editor.remove(MainActivity.Password); //Shared preferences - login keeper
+                            editor.commit();
+
                             startActivity(intent);
                             finish();
                         }

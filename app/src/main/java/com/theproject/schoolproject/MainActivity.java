@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         sharedPreferences = getSharedPreferences(fileName,Context.MODE_PRIVATE);
-        if(!sharedPreferences.getString(Username,null) == null){
+        if(sharedPreferences.getString(Username,null)!=null){
            etUsername.setText(sharedPreferences.getString(Username,null));
            etPassword.setText(sharedPreferences.getString(Password,null));
            //GlobalAcross.currentUser = findIndexOfUser(sharedPreferences.getString())
