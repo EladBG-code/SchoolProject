@@ -9,8 +9,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,6 +48,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
     DatabaseReference summariesRef;
     FirebaseRecyclerOptions<Summary> options;
     FirebaseRecyclerAdapter<Summary, MyViewHolder> adapter;
+    SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,6 +152,13 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
                             GlobalAcross.currentUser = null;
                             Intent intent = new Intent(ViewSummariesOnSubject.this,MainActivity.class);
                             Toast.makeText(ViewSummariesOnSubject.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT).show();
+                            sharedPreferences = getSharedPreferences(MainActivity.fileName, Context.MODE_PRIVATE);
+
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.remove(MainActivity.Username); //Shared preferences - login keeper (key and value)
+                            editor.remove(MainActivity.Password); //Shared preferences - login keeper
+                            editor.commit();
+
                             startActivity(intent);
                             finish();
                         }

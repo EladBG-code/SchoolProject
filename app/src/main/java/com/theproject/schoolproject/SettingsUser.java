@@ -6,8 +6,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -22,6 +24,7 @@ public class SettingsUser extends AppCompatActivity implements NavigationView.On
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     MaterialToolbar toolbar;
+    SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +60,13 @@ public class SettingsUser extends AppCompatActivity implements NavigationView.On
                             GlobalAcross.currentUser = null;
                             Intent intent = new Intent(SettingsUser.this, MainActivity.class);
                             Toast.makeText(SettingsUser.this, "התנתקת בהצלחה.", Toast.LENGTH_SHORT - 5000).show();
+                            sharedPreferences = getSharedPreferences(MainActivity.fileName, Context.MODE_PRIVATE);
+
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.remove(MainActivity.Username); //Shared preferences - login keeper (key and value)
+                            editor.remove(MainActivity.Password); //Shared preferences - login keeper
+                            editor.commit();
+
                             startActivity(intent);
                             finish();
                         }
