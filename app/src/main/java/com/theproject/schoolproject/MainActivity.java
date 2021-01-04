@@ -89,13 +89,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     GlobalAcross.currentUser = GlobalAcross.allUsers.get(index);
                     //Create an intent for the homepage and redirect the user to there - SUCCESSFUL LOGIN
                     GlobalAcross.currentUser = GlobalAcross.allUsers.get(index);
+
+                    if(sharedPreferences.getString(Username,null) != null){
+                        Toast.makeText(this, "ברוכה השבה " + GlobalAcross.currentUser.getfName() + '.', Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(this, "התחברת בהצלחה " + GlobalAcross.currentUser.getfName() + '!', Toast.LENGTH_SHORT).show();
+                    }
+
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(Username,etUsername.getText().toString()); //Shared preferences - login keeper (key and value)
                     editor.putString(Password,etPassword.getText().toString()); //Shared preferences - login keeper
                     editor.commit();
 
-
-                    Toast.makeText(this, "התחברת בהצלחה " + GlobalAcross.currentUser.getfName() + '!', Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(this, Homepage.class);
                     startActivity(intent);
                     finish();
