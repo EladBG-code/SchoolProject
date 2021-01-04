@@ -1,9 +1,12 @@
 package com.theproject.schoolproject;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,6 +28,9 @@ public class LoadingActivity extends AppCompatActivity {
     ProgressBar progressBar;
     int pbStatus = 0;
     private Handler mHandler = new Handler();
+
+    SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,51 +40,70 @@ public class LoadingActivity extends AppCompatActivity {
         myRef = database.getReference("UsersPlace");
         progressBar = findViewById(R.id.pbLoading);
         // Read from the database
+        sharedPreferences = getSharedPreferences("index", Context.MODE_PRIVATE);
 
-        new Thread(new Runnable() { //This makes a thread that runs in the background regardless of the UI loading in here that does both actions
-            @Override
-            public void run() {
-                while(pbStatus < 100){
-                    pbStatus++;
-                    android.os.SystemClock.sleep(15);
+         new Thread(new Runnable() { //This makes a thread that runs in the background regardless of the UI loading in here that does both actions
+                @Override
+                public void run() {
+                    while (pbStatus < 100) {
+                        pbStatus++;
+                        android.os.SystemClock.sleep(15);
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressBar.setProgress(pbStatus);
+                            }
+                        });
+                    }
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            progressBar.setProgress(pbStatus);
+                            loadingFunc();
                         }
                     });
                 }
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadingFunc();
-                    }
-                });
-            }
-        }).start();
+            }).start();
+
+
+
+        }
+
 
         //loadingFunc();
-    }
-
-    public void loadingFunc(){
+    public void loadingFunc() {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                GenericTypeIndicator<ArrayList<User>> t = new GenericTypeIndicator<ArrayList<User>>(){};
-                GlobalAcross.allUsers = new ArrayList<>();
-                if(dataSnapshot.getValue(t) != null){
-                    GlobalAcross.allUsers.addAll(dataSnapshot.getValue(t));
+                if (sharedPreferences.getBoolean("logged", false)) {
+                    //Checks if the user was logged in the device and places the correct path reference for his saved index and pulls out the class out of the arraylist in the firebase database
+                    GenericTypeIndicator<ArrayList<User>> t = new GenericTypeIndicator<ArrayList<User>>() {};
+                    GlobalAcross.currentUser = (dataSnapshot.getValue(t).get(sharedPreferences.getInt("index", 0)));
+                    Toast.makeText(LoadingActivity.this, "ברוכה השבה " + GlobalAcross.currentUser.getfName() + '.', Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(LoadingActivity.this, Homepage.class);
+                    startActivity(intent);
+                    finish();
                 }
-                Intent intent = new Intent(LoadingActivity.this,MainActivity.class);
-                startActivity(intent);
-                finish();
+                else {
+                    //Was not logged in the current device
+                    GenericTypeIndicator<ArrayList<User>> t = new GenericTypeIndicator<ArrayList<User>>() {
+                    };
+                    GlobalAcross.allUsers = new ArrayList<>();
+                    if (dataSnapshot.getValue(t) != null) {
+                        GlobalAcross.allUsers.addAll(dataSnapshot.getValue(t));
+                    }
+                    Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
             }
+
             @Override
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
             }
         });
     }
+
 }

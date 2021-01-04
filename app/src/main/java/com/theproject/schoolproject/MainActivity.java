@@ -1,5 +1,6 @@
 package com.theproject.schoolproject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -34,9 +35,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     SharedPreferences sharedPreferences;
 
-    public static final String fileName = "login";
-    public static final String Username = "username";
-    public static final String Password = "password";
+    public static final String Index = "index";
+    public static final String Logged = "logged";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-        sharedPreferences = getSharedPreferences(fileName,Context.MODE_PRIVATE);
-        if(sharedPreferences.getString(Username,null) != null){
-           etUsername.setText(sharedPreferences.getString(Username,null));
-           etPassword.setText(sharedPreferences.getString(Password,null));
-           //GlobalAcross.currentUser = findIndexOfUser(sharedPreferences.getString())
-           btnLogin.performClick();
-        }
-
+        sharedPreferences = getSharedPreferences(Index,Context.MODE_PRIVATE);
 
 
         }
@@ -83,23 +76,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "אנא בדקו אם מלאתם את שדה הסיסמה ושם המשתמש.", Toast.LENGTH_SHORT).show();
             }
             else{
+                //loginV2(etUsername.getText().toString(),etPassword.getText().toString());   ----> W.I.P - Very important function!
+
             int index = findIndexOfUser(etUsername.getText().toString());
             if (index != -1) {
                 if (GlobalAcross.allUsers.get(index).getPassword().equals(etPassword.getText().toString())) {
                     GlobalAcross.currentUser = GlobalAcross.allUsers.get(index);
                     //Create an intent for the homepage and redirect the user to there - SUCCESSFUL LOGIN
-                    GlobalAcross.currentUser = GlobalAcross.allUsers.get(index);
-
-                    if(sharedPreferences.getString(Username,null) != null){
-                        Toast.makeText(this, "ברוכה השבה " + GlobalAcross.currentUser.getfName() + '.', Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Toast.makeText(this, "התחברת בהצלחה " + GlobalAcross.currentUser.getfName() + '!', Toast.LENGTH_SHORT).show();
-                    }
-
+                    Toast.makeText(this, "התחברת בהצלחה " + GlobalAcross.currentUser.getfName() + '!', Toast.LENGTH_SHORT).show();
+                    sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString(Username,etUsername.getText().toString()); //Shared preferences - login keeper (key and value)
-                    editor.putString(Password,etPassword.getText().toString()); //Shared preferences - login keeper
+                    editor.putInt(Index,index);
+                    editor.putBoolean(Logged,true);
                     editor.commit();
 
                     Intent intent = new Intent(this, Homepage.class);
@@ -133,6 +121,76 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             i++;
         }
         return -1;
+    }
+
+    public void loginV2(String username,String password){
+
+        //FUNCTION IS A W.I.P | Status - Unfinished
+
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference dbUsername = database.getReference("UsersPlace");
+        DatabaseReference dbPassword;
+        final String[] userPass = new String[2];
+        final long[] limit = new long[1];
+        dbUsername.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //Get the amount of users on the app
+                limit[0] = snapshot.getChildrenCount();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                //Failure case
+            }
+        });
+
+        for(int i=0;i<limit[0];i++){
+            dbUsername = database.getReference("UsersPlace/"+i+"/username");
+            dbPassword = database.getReference("UsersPlace/"+i+"/password");
+
+            dbUsername.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    userPass[0] = snapshot.getValue(new GenericTypeIndicator<String>(){});
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+            dbPassword.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    userPass[1] = snapshot.getValue(new GenericTypeIndicator<String>(){});
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+            if(userPass[0].equals(username) && userPass[1].equals(password)){
+                dbUsername = database.getReference("UsersPlace/"+i);
+                dbUsername.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.getValue(new GenericTypeIndicator<User>() {}) != null) {
+                            GlobalAcross.currentUser = snapshot.getValue(new GenericTypeIndicator<User>() {});
+                            Toast.makeText(MainActivity.this, "sucess!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        }
+
     }
 
     @Override

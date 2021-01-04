@@ -152,11 +152,11 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
                             GlobalAcross.currentUser = null;
                             Intent intent = new Intent(ViewSummariesOnSubject.this,MainActivity.class);
                             Toast.makeText(ViewSummariesOnSubject.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT).show();
-                            sharedPreferences = getSharedPreferences(MainActivity.fileName, Context.MODE_PRIVATE);
+                            sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
 
                             SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.remove(MainActivity.Username); //Shared preferences - login keeper (key and value)
-                            editor.remove(MainActivity.Password); //Shared preferences - login keeper
+                            editor.remove(MainActivity.Index); //Shared preferences - login keeper (key and value)
+                            editor.remove(MainActivity.Logged); //Shared preferences - login keeper
                             editor.commit();
 
                             startActivity(intent);

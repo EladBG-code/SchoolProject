@@ -129,11 +129,11 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                             GlobalAcross.currentUser = null;
                             Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
                             Toast.makeText(ProfileActivity.this, "התנתקת בהצלחה.", Toast.LENGTH_SHORT - 5000).show();
-                            sharedPreferences = getSharedPreferences(MainActivity.fileName, Context.MODE_PRIVATE);
+                            sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
 
                             SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.remove(MainActivity.Username); //Shared preferences - login keeper (key and value)
-                            editor.remove(MainActivity.Password); //Shared preferences - login keeper
+                            editor.remove(MainActivity.Index); //Shared preferences - login keeper (key and value)
+                            editor.remove(MainActivity.Logged); //Shared preferences - login keeper
                             editor.commit();
 
                             startActivity(intent);

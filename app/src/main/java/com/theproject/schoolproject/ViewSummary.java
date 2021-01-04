@@ -55,6 +55,7 @@ public class ViewSummary extends AppCompatActivity implements NavigationView.OnN
             String summaryTitle = snapshot.child("title").getValue().toString();
             String summaryAuthor = snapshot.child("author").getValue().toString();
             String summaryDescription = snapshot.child("description").getValue().toString();
+
             tvSummaryTitle.setText(summaryTitle);
             tvSummaryAuthor.setText("סופר\\ת: "+summaryAuthor);
             tvSummaryDescription.setText(summaryDescription);
@@ -95,11 +96,11 @@ public class ViewSummary extends AppCompatActivity implements NavigationView.OnN
                             GlobalAcross.currentUser = null;
                             Intent intent = new Intent(ViewSummary.this, MainActivity.class);
                             Toast.makeText(ViewSummary.this, "התנתקת בהצלחה.", Toast.LENGTH_SHORT - 5000).show();
-                            sharedPreferences = getSharedPreferences(MainActivity.fileName, Context.MODE_PRIVATE);
+                            sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
 
                             SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.remove(MainActivity.Username); //Shared preferences - login keeper (key and value)
-                            editor.remove(MainActivity.Password); //Shared preferences - login keeper
+                            editor.remove(MainActivity.Index); //Shared preferences - login keeper (key and value)
+                            editor.remove(MainActivity.Logged); //Shared preferences - login keeper
                             editor.commit();
 
                             startActivity(intent);
