@@ -6,6 +6,7 @@ public class Summary {
     private String author;
     private String title;
     private String description;
+    private int amountOfLikes;
 
     public String getSubject() {
         return subject;
@@ -26,6 +27,7 @@ public class Summary {
         this.author = author;
         this.title = title;
         this.description = description;
+        this.amountOfLikes = 0;
     }
 
     //EDITOR NOTE: IF YOU HAVE TIME ADD AN IMAGE OF THE AUTHOR TO THE SUMMARY PAGE
@@ -62,4 +64,11 @@ public class Summary {
     }
 
 
+    public int getAmountOfLikes() {
+        return amountOfLikes;
+    }
+
+    public void setAmountOfLikes(int amountOfLikes) {
+        this.amountOfLikes = amountOfLikes;
+    }
 }
