@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.os.SystemClock;
 
 import androidx.annotation.NonNull;
 
@@ -53,7 +54,6 @@ public class notificationService extends Service {
                         ref.setValue(summaries);
                     }
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
 

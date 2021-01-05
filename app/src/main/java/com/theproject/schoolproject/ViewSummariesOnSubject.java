@@ -1,5 +1,6 @@
 package com.theproject.schoolproject;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -13,6 +14,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.content.res.XmlResourceParser;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -84,7 +89,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         holder.btnHeart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                model.setAmountOfLikes(model.getAmountOfLikes()+1);
+                /*model.setAmountOfLikes(model.getAmountOfLikes()+1);
                 final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName());
                 myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -95,24 +100,9 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
                             arrayList.get(position).setAmountOfLikes(arrayList.get(position).getAmountOfLikes()+1);
                             myRef.setValue(subject.getSummaries());
 
-                            /*
-███████╗██╗░░░██╗░█████╗░██╗░░██╗██╗███╗░░██╗░██████╗░  ██╗░░██╗░█████╗░░██████╗██╗░░██╗
-██╔════╝██║░░░██║██╔══██╗██║░██╔╝██║████╗░██║██╔════╝░  ██║░░██║██╔══██╗██╔════╝██║░░██║
-█████╗░░██║░░░██║██║░░╚═╝█████═╝░██║██╔██╗██║██║░░██╗░  ███████║███████║╚█████╗░███████║
-██╔══╝░░██║░░░██║██║░░██╗██╔═██╗░██║██║╚████║██║░░╚██╗  ██╔══██║██╔══██║░╚═══██╗██╔══██║
-██║░░░░░╚██████╔╝╚█████╔╝██║░╚██╗██║██║░╚███║╚██████╔╝  ██║░░██║██║░░██║██████╔╝██║░░██║
-╚═╝░░░░░░╚═════╝░░╚════╝░╚═╝░░╚═╝╚═╝╚═╝░░╚══╝░╚═════╝░  ╚═╝░░╚═╝╚═╝░░╚═╝╚═════╝░╚═╝░░╚═╝
 
-███╗░░░███╗░█████╗░██████╗░
-████╗░████║██╔══██╗██╔══██╗
-██╔████╔██║███████║██████╔╝
-██║╚██╔╝██║██╔══██║██╔═══╝░
-██║░╚═╝░██║██║░░██║██║░░░░░
-╚═╝░░░░░╚═╝╚═╝░░╚═╝╚═╝░░░░░
-                            */
 
-//COME BACK HERE AND FIX THIS PLEASE!
-
+                            //COME BACK HERE AND FIX THIS PLEASE! ! !
 
 
 
@@ -122,7 +112,8 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
                     public void onCancelled(@NonNull DatabaseError error) {
                         Toast.makeText(ViewSummariesOnSubject.this,"כן... זה לא עבד - נסה שוב", Toast.LENGTH_SHORT).show();
                     }
-                });
+                });*/
+
             }
         });
         holder.btnViewSummary.setOnClickListener(new View.OnClickListener() {

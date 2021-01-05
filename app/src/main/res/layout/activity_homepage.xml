@@ -66,8 +66,8 @@
                         android:src="@drawable/profile_icon_image_final_foreground"
                         app:layout_anchorGravity="top|right"
                         app:shapeAppearance="@style/roundedImageViewRounded"
-                        android:layout_marginRight="10sp"
-                        android:layout_marginTop="45sp"
+                        android:layout_marginRight="15sp"
+                        android:layout_marginTop="30sp"
                         app:strokeWidth="1sp" />
 
                 </FrameLayout>

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -26,6 +29,7 @@ public class LoadingActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference myRef;
     ProgressBar progressBar;
+    TextView loadingP;
     int pbStatus = 0;
     private Handler mHandler = new Handler();
 
@@ -35,8 +39,9 @@ public class LoadingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
-
-        startService(new Intent(this,notificationService.class)); //5 like notification service starter
+        //startService(new Intent(LoadingActivity.this,notificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
+        loadingP = findViewById(R.id.tvLoadingPercentage);
+        //startService(new Intent(this,notificationService.class)); //5 like notification service starter
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("UsersPlace");
         progressBar = findViewById(R.id.pbLoading);
@@ -48,6 +53,7 @@ public class LoadingActivity extends AppCompatActivity {
                 public void run() {
                     while (pbStatus < 100) {
                         pbStatus++;
+                        loadingP.setText(pbStatus+"%");
                         android.os.SystemClock.sleep(15);
                         mHandler.post(new Runnable() {
                             @Override
@@ -81,7 +87,7 @@ public class LoadingActivity extends AppCompatActivity {
                     //Checks if the user was logged in the device and places the correct path reference for his saved index and pulls out the class out of the arraylist in the firebase database
                     GenericTypeIndicator<ArrayList<User>> t = new GenericTypeIndicator<ArrayList<User>>() {};
                     GlobalAcross.currentUser = (dataSnapshot.getValue(t).get(sharedPreferences.getInt("index", 0)));
-                    Toast.makeText(LoadingActivity.this, "ברוכה השבה " + GlobalAcross.currentUser.getfName() + '.', Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoadingActivity.this, "ברוכים השבים " + GlobalAcross.currentUser.getfName() + '.', Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(LoadingActivity.this, Homepage.class);
                     startActivity(intent);
                     finish();
