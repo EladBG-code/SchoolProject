@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.imageview.ShapeableImageView;
 
 
 public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -16,6 +17,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
     TextView tvDescription;
     TextView tvAuthor;
     Button btnViewSummary;
+    ShapeableImageView btnHeart;
     View v;
 
     public MyViewHolder(@NonNull View itemView) {
@@ -25,6 +27,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
         tvDescription = itemView.findViewById(R.id.summaryDescription);
         tvAuthor = itemView.findViewById(R.id.summaryAuthor);
         btnViewSummary = itemView.findViewById(R.id.openSummaryBtn);
+        btnHeart = itemView.findViewById(R.id.rateBtn);
         v = itemView;
 
     }

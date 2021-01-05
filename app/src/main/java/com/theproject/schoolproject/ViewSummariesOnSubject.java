@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,8 +28,12 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,10 +77,54 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
     options = new FirebaseRecyclerOptions.Builder<Summary>().setQuery(summariesRef, Summary.class).build();
     adapter = new FirebaseRecyclerAdapter<Summary, MyViewHolder>(options) {
         @Override
-        protected void onBindViewHolder(@NonNull MyViewHolder holder, final int position, @NonNull Summary model) {
+        protected void onBindViewHolder(@NonNull final MyViewHolder holder, final int position, @NonNull final Summary model) {
         holder.tvTitle.setText(model.getTitle());
         holder.tvDescription.setText(model.getDescription());
         holder.tvAuthor.setText(model.getAuthor());
+        holder.btnHeart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                model.setAmountOfLikes(model.getAmountOfLikes()+1);
+                final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName());
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        GenericTypeIndicator<ArrayList<Summary>> t = new GenericTypeIndicator<ArrayList<Summary>>() {};
+                        if(snapshot.getValue(t) != null){
+                            ArrayList<Summary> arrayList = snapshot.getValue(t);
+                            arrayList.get(position).setAmountOfLikes(arrayList.get(position).getAmountOfLikes()+1);
+                            myRef.setValue(subject.getSummaries());
+
+                            /*
+███████╗██╗░░░██╗░█████╗░██╗░░██╗██╗███╗░░██╗░██████╗░  ██╗░░██╗░█████╗░░██████╗██╗░░██╗
+██╔════╝██║░░░██║██╔══██╗██║░██╔╝██║████╗░██║██╔════╝░  ██║░░██║██╔══██╗██╔════╝██║░░██║
+█████╗░░██║░░░██║██║░░╚═╝█████═╝░██║██╔██╗██║██║░░██╗░  ███████║███████║╚█████╗░███████║
+██╔══╝░░██║░░░██║██║░░██╗██╔═██╗░██║██║╚████║██║░░╚██╗  ██╔══██║██╔══██║░╚═══██╗██╔══██║
+██║░░░░░╚██████╔╝╚█████╔╝██║░╚██╗██║██║░╚███║╚██████╔╝  ██║░░██║██║░░██║██████╔╝██║░░██║
+╚═╝░░░░░░╚═════╝░░╚════╝░╚═╝░░╚═╝╚═╝╚═╝░░╚══╝░╚═════╝░  ╚═╝░░╚═╝╚═╝░░╚═╝╚═════╝░╚═╝░░╚═╝
+
+███╗░░░███╗░█████╗░██████╗░
+████╗░████║██╔══██╗██╔══██╗
+██╔████╔██║███████║██████╔╝
+██║╚██╔╝██║██╔══██║██╔═══╝░
+██║░╚═╝░██║██║░░██║██║░░░░░
+╚═╝░░░░░╚═╝╚═╝░░╚═╝╚═╝░░░░░
+                            */
+
+//COME BACK HERE AND FIX THIS PLEASE!
+
+
+
+
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(ViewSummariesOnSubject.this,"כן... זה לא עבד - נסה שוב", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
         holder.btnViewSummary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -117,7 +166,6 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         toolbar = findViewById(R.id.toolbarSubjectSelected);
         floatingUploadButton = findViewById(R.id.floatingUploadButton);
         tvSubjectName = findViewById(R.id.tvSubjectName);
-
     }
 
     public void initDrawer(){
@@ -153,7 +201,6 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
                             Intent intent = new Intent(ViewSummariesOnSubject.this,MainActivity.class);
                             Toast.makeText(ViewSummariesOnSubject.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT).show();
                             sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
-
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.remove(MainActivity.Index); //Shared preferences - login keeper (key and value)
                             editor.remove(MainActivity.Logged); //Shared preferences - login keeper

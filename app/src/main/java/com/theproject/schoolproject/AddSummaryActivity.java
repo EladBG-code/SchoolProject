@@ -2,6 +2,7 @@ package com.theproject.schoolproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -64,7 +65,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         }
         if(v == btnUpload){
             if(checkValid(summaryTitle,summaryDescription)){
-                Summary summary = new Summary(GlobalAcross.currentUser.getfName()+" "+GlobalAcross.currentUser.getlName(),summaryTitle.getText().toString(),summaryDescription.getText().toString());
+                Summary summary = new Summary(GlobalAcross.currentUser.getfName()+" "+GlobalAcross.currentUser.getlName(),summaryTitle.getText().toString(),summaryDescription.getText().toString(),getSharedPreferences("index", Context.MODE_PRIVATE));
                 addSummaryToDB(summary);
                 summariesRef = database.getReference(subject).push();
                 Toast.makeText(this, "העלית את הסיכום בהצלחה", Toast.LENGTH_SHORT).show();

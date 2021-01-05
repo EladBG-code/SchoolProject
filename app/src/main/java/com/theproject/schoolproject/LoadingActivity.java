@@ -36,6 +36,7 @@ public class LoadingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
 
+        startService(new Intent(this,notificationService.class)); //5 like notification service starter
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("UsersPlace");
         progressBar = findViewById(R.id.pbLoading);
