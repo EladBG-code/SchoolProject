@@ -39,7 +39,7 @@ public class LoadingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
-        //startService(new Intent(LoadingActivity.this,notificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
+        startService(new Intent(LoadingActivity.this,notificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
         loadingP = findViewById(R.id.tvLoadingPercentage);
         //startService(new Intent(this,notificationService.class)); //5 like notification service starter
         database = FirebaseDatabase.getInstance();
