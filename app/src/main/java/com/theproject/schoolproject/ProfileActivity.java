@@ -32,6 +32,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -191,10 +192,27 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         if(v == ivProfileIcon){
             //Uploading profile picture here - needs to be done
 
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(ProfileActivity.this);
+            builder.setMessage("לצלם או למשוך מהגלריה?")
+                    .setPositiveButton("מצלמה", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                            startActivityForResult(cameraIntent,0); // open camera
+                        }
+                    })
+                    .setNegativeButton("גלריה", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                            intent.setType("image/*");
 
-            startActivityForResult(Intent.createChooser(intent, "בחר\\י בתמונה עבור פרופילך"), 1);
+                            startActivityForResult(Intent.createChooser(intent, "בחר\\י בתמונה עבור פרופילך"), 1);
+                        }
+                    });
+
+            AlertDialog alert = builder.create();
+            alert.show();
         }
     }
 
@@ -232,6 +250,35 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
+            }
+        }
+        if (requestCode == 0 && resultCode == RESULT_OK) {
+            if (data.getExtras() != null) {
+                Bundle extras = data.getExtras();
+                final Bitmap bitmapPFP =  (Bitmap) extras.get("data");
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmapPFP.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                InputStream is = new ByteArrayInputStream(baos.toByteArray());
+                final String pfpPath = "profilePictures/" + UUID.randomUUID() + ".png";
+                firePfpRef = storage.getReference(pfpPath);
+                final ShapeableImageView profilePictureReference = findViewById(R.id.ivProfilePictureIcon);
+
+                UploadTask uploadTask = firePfpRef.putStream(is);
+                uploadTask.addOnSuccessListener(ProfileActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        //This function only activates when the upload of a new pfp is successful
+                        profilePictureReference.setScaleType(ImageView.ScaleType.FIT_XY);
+                        profilePictureReference.setForeground(null);
+                        profilePictureReference.setImageBitmap(bitmapPFP);
+
+                        GlobalAcross.currentUser.setPfpPath(firePfpRef.getPath());
+                        myRef.setValue(firePfpRef.getPath());
+
+                        Toast.makeText(ProfileActivity.this, "התמונת פרופיל שונתה בהצלחה!", Toast.LENGTH_LONG - 5000).show();
+                    }
+                });
             }
         }
     }

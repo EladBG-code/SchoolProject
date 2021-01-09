@@ -53,10 +53,9 @@ public class notificationService extends Service {
                                     if (summary.getCreatorIndex() == sharedPreferences.getInt("index", 0)) {
                                         summary.setHasNotified(true);
                                         ref.setValue(summaries);
-                                        /*String message = "הסיכום שלך בנושא "+summary.getSubject()+" "+"קיבל 5 לייקים או יותר!";
-                                        NotificationCompat.Builder builder = new NotificationCompat.Builder(
-                                                notificationService.this
-                                        )
+
+                                        /*String message = "הסיכום שלך בנושא "+subject+' '+"קיבל 5 לייקים או יותר!";
+                                        NotificationCompat.Builder builder = new NotificationCompat.Builder(notificationService.this)
                                                 .setContentTitle("התראה חדשה")
                                                 .setSmallIcon(R.drawable.like_icon)
                                                 .setContentText(message)
@@ -69,10 +68,9 @@ public class notificationService extends Service {
                                         PendingIntent pendingIntent = PendingIntent.getActivity(notificationService.this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
                                         builder.setContentIntent(pendingIntent);
 
-                                        NotificationManager notificationManager = (NotificationManager)getSystemService(
-                                                Context.NOTIFICATION_SERVICE
-                                        );
+                                        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
                                         notificationManager.notify(0,builder.build());*/
+
                                         Toast.makeText(notificationService.this,"הסיכום שלך בנושא "+subject+" "+"קיבל 5 לייקים או יותר!", Toast.LENGTH_SHORT).show();
                                     }
                                 }
@@ -88,6 +86,8 @@ public class notificationService extends Service {
         }
         //android.os.SystemClock.sleep(300000); //5 minutes thread sleep
         startService(new Intent(this,notificationService.class));
+        //android.os.SystemClock.sleep(300000); //5 minutes thread sleep
+        //SystemClock.sleep(30000);
         return super.onStartCommand(intent, flags, startId);
     }
 }
