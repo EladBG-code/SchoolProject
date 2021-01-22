@@ -52,7 +52,6 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
     FloatingActionButton floatingUploadButton;
     Subject subject;
     RecyclerView dataList;
-    List<Integer> images;
     List<String> titles;
     FirebaseDatabase database;
     DatabaseReference summariesRef;
@@ -68,13 +67,9 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         floatingUploadButton.setOnClickListener(this);
         subject = new Subject(getIntent().getStringExtra("SubjectSelected"));
         tvSubjectName.setText(getIntent().getStringExtra("SubjectSelected")); /*This line sets the name of the subject which was selected as the title of the subject's summary page*/
-
         titles = new ArrayList<>();
-        images = new ArrayList<>();
-
         database = FirebaseDatabase.getInstance();
         summariesRef = database.getReference(subject.getSubjectName());
-        Log.d("summariesRef", "onCreate: "+summariesRef.toString());
         loadSummariesListFromDB();
     }
 
@@ -89,24 +84,21 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         holder.btnHeart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                model.setAmountOfLikes(model.getAmountOfLikes()+1);
-                final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName());
+                String selectedKeySummary = getRef(position).getKey();
+                final int newLikes= model.getAmountOfLikes()+1;
+                summariesRef.getDatabase().getReference(subject.getSubjectName()).child(selectedKeySummary).child("amountOfLikes");
+                final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName()).child(selectedKeySummary);
                 myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        GenericTypeIndicator<ArrayList<Summary>> t = new GenericTypeIndicator<ArrayList<Summary>>() {};
-                        if(snapshot.getValue(t) != null){
-                            ArrayList<Summary> arrayList = snapshot.getValue(t);
-                            arrayList.get(position).setAmountOfLikes(arrayList.get(position).getAmountOfLikes()+1);
-                            myRef.setValue(subject.getSummaries());
+                        snapshot.child("amountOfLikes").setValue(newLikes);
 
-
-
-                            //COME BACK HERE AND FIX THIS PLEASE! ! !
-
-
-
-                        }
+//                        GenericTypeIndicator<ArrayList<Summary>> t = new GenericTypeIndicator<ArrayList<Summary>>() {};
+//                        if(snapshot.getValue(t) != null){
+//                            ArrayList<Summary> arrayList = snapshot.getValue(t);
+//                            arrayList.get(position).setAmountOfLikes(arrayList.get(position).getAmountOfLikes()+1);
+//                            myRef.setValue(subject.getSummaries());
+//                        }
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
@@ -116,6 +108,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
 
             }
         });
+
         holder.btnViewSummary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,6 +118,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
                 startActivity(intent);
             }
         });
+
         holder.v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

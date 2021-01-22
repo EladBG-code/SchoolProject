@@ -18,7 +18,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
     TextView tvAuthor;
     Button btnViewSummary;
     ShapeableImageView btnHeart;
-    View v;
+    View v; //this is the specific view model that the user pressed on
 
     public MyViewHolder(@NonNull View itemView) {
         super(itemView);

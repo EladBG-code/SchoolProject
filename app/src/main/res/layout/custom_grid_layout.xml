@@ -67,15 +67,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="194dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="Card Image"
-                android:scaleType="centerCrop"
-                app:backgroundTint="@color/material_on_surface_emphasis_medium"
-                app:backgroundTintMode="add" />
-
             <TextView
                 android:id="@+id/summaryDescription"
                 android:layout_width="wrap_content"
@@ -101,21 +92,13 @@ Ne eum solet altera. Cibo eligendi et est, electram theophrastus te vel eu." />
                     android:background="#80CBC4"
                     android:text="צפייה בסיכום" />
 
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/shareBtn"
-                        android:paddingTop="12dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_baseline_share_24" />
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/rateBtn"
-                        style="?attr/iconEndPadding"
-                        android:paddingTop="12dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:cropToPadding="false"
-                        android:src="@drawable/like_icon" />
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/rateBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:cropToPadding="false"
+                    android:paddingTop="12dp"
+                    android:src="@drawable/like_icon" />
 
 
             </LinearLayout>
