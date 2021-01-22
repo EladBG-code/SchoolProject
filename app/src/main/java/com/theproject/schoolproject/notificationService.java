@@ -1,11 +1,16 @@
 package com.theproject.schoolproject;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.widget.Toast;
@@ -71,7 +76,41 @@ public class notificationService extends Service {
                                         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
                                         notificationManager.notify(0,builder.build());*/
 
-                                        Toast.makeText(notificationService.this,"הסיכום שלך בנושא "+subject+" "+"קיבל 5 לייקים או יותר!", Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(notificationService.this,"הסיכום שלך בנושא "+subject+" "+"קיבל 5 לייקים או יותר!", Toast.LENGTH_SHORT).show();
+
+
+
+                                        int NOTIFICATION_ID = 234;
+                                        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                        String CHANNEL_ID = "XXX";
+
+                                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                            CharSequence name = "XXX";
+                                            String Description = "XXX";
+                                            int importance = NotificationManager.IMPORTANCE_HIGH;
+                                            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+                                            mChannel.setDescription(Description);
+                                            mChannel.enableLights(true);
+                                            mChannel.setLightColor(Color.RED);
+                                            mChannel.enableVibration(true);
+                                            mChannel.setShowBadge(false);
+                                            notificationManager.createNotificationChannel(mChannel);
+                                        }
+
+                                        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                                                .setSmallIcon(R.mipmap.ic_launcher)
+                                                .setContentTitle("עדכון")
+                                                .setContentText("הסיכום שלך בנושא "+subject+" הגיע לחמישה לייקים או יותר!")
+                                                .setSmallIcon(R.drawable.like_icon);
+
+                                        Intent resultIntent = new Intent(getApplicationContext(), LoadingActivity.class);
+                                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+                                        stackBuilder.addParentStack(LoadingActivity.class);
+                                        stackBuilder.addNextIntent(resultIntent);
+                                        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                                        builder.setContentIntent(resultPendingIntent);
+                                        notificationManager.notify(NOTIFICATION_ID, builder.build());
+
                                     }
                                 }
                             }

@@ -183,7 +183,6 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         if(item.getTitle().equals("התנתקות")){
 
             AlertDialog.Builder builder = new AlertDialog.Builder(ViewSummariesOnSubject.this);
-
             builder.setMessage("האם את\\ה בטוח\\ה שאת\\ה רוצה להתנתק?")
                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                         @Override
