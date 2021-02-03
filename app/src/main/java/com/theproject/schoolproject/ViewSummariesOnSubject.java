@@ -74,6 +74,11 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         loadSummariesListFromDB();
     }
 
+    public void updateLikes(String selectedKeySummary, int newLikes){
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName()).child(selectedKeySummary).child("amountOfLikes");
+        myRef.setValue(newLikes);
+    }
+
     public void loadSummariesListFromDB() {
     options = new FirebaseRecyclerOptions.Builder<Summary>().setQuery(summariesRef, Summary.class).build();
     adapter = new FirebaseRecyclerAdapter<Summary, MyViewHolder>(options) {
@@ -82,32 +87,28 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         holder.tvTitle.setText(model.getTitle());
         holder.tvDescription.setText(model.getDescription());
         holder.tvAuthor.setText(model.getAuthor());
-//            icon.setOnCheckedChangeListener { checkBox, isChecked ->
-//                // Respond to icon toggle
-//            }
 
         // this function is adding one like to the summary
-
-        holder.btnHeart.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-            String selectedKeySummary = getRef(position).getKey();
-            int newLikes;
-            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName()).child(selectedKeySummary).child("amountOfLikes");
-            if(!compoundButton.isChecked()){
-                newLikes= model.getAmountOfLikes()+1;
-                myRef.setValue(newLikes);
-                b=true;
-            }
-            else{
-                newLikes= model.getAmountOfLikes()-1;
-                myRef.setValue(newLikes);
-                b=false;
-            }
-
+        holder.btnHeart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String selectedKeySummary = getRef(position).getKey();
+                int newLikes=model.getAmountOfLikes();
+                
+                if(holder.btnHeart.isChecked()){
+//                   newLikes= newLikes+1;
+//                   updateLikes(selectedKeySummary, newLikes);
+                   Toast.makeText(ViewSummariesOnSubject.this, "הסיכום נשמר בסיכומים שלי", Toast.LENGTH_SHORT).show();
+                   holder.btnHeart.setChecked(true);
+                }
+                if(!holder.btnHeart.isChecked()){
+//                    newLikes= newLikes-1;
+//                    updateLikes(selectedKeySummary, newLikes);
+                    Toast.makeText(ViewSummariesOnSubject.this, "הסיכום הוסר בסיכומים שלי", Toast.LENGTH_SHORT).show();
+                    holder.btnHeart.setChecked(false);
+                }
             }
         });
-
 
         holder.btnViewSummary.setOnClickListener(new View.OnClickListener() {
             @Override
