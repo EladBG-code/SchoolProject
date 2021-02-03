@@ -82,30 +82,15 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         holder.tvDescription.setText(model.getDescription());
         holder.tvAuthor.setText(model.getAuthor());
         holder.btnHeart.setOnClickListener(new View.OnClickListener() {
+
+            //this function is adding one like to the summary
             @Override
             public void onClick(View v) {
                 String selectedKeySummary = getRef(position).getKey();
                 final int newLikes= model.getAmountOfLikes()+1;
-                summariesRef.getDatabase().getReference(subject.getSubjectName()).child(selectedKeySummary).child("amountOfLikes");
-                final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName()).child(selectedKeySummary);
-                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        snapshot.child("amountOfLikes").setValue(newLikes);
-
-//                        GenericTypeIndicator<ArrayList<Summary>> t = new GenericTypeIndicator<ArrayList<Summary>>() {};
-//                        if(snapshot.getValue(t) != null){
-//                            ArrayList<Summary> arrayList = snapshot.getValue(t);
-//                            arrayList.get(position).setAmountOfLikes(arrayList.get(position).getAmountOfLikes()+1);
-//                            myRef.setValue(subject.getSummaries());
-//                        }
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(ViewSummariesOnSubject.this,"כן... זה לא עבד - נסה שוב", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
+                DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName()).child(selectedKeySummary).child("amountOfLikes");
+                myRef.setValue(newLikes);
+                
             }
         });
 
