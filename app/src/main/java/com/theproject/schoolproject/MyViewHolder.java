@@ -2,6 +2,7 @@ package com.theproject.schoolproject;
 
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -17,7 +18,8 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
     TextView tvDescription;
     TextView tvAuthor;
     Button btnViewSummary;
-    ShapeableImageView btnHeart;
+    CheckBox btnHeart;
+//    ShapeableImageView btnHeart;
     View v; //this is the specific view model that the user pressed on
 
     public MyViewHolder(@NonNull View itemView) {

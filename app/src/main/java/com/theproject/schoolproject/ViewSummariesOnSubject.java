@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -81,18 +82,32 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         holder.tvTitle.setText(model.getTitle());
         holder.tvDescription.setText(model.getDescription());
         holder.tvAuthor.setText(model.getAuthor());
-        holder.btnHeart.setOnClickListener(new View.OnClickListener() {
+//            icon.setOnCheckedChangeListener { checkBox, isChecked ->
+//                // Respond to icon toggle
+//            }
 
-            //this function is adding one like to the summary
-            @Override
-            public void onClick(View v) {
-                String selectedKeySummary = getRef(position).getKey();
-                final int newLikes= model.getAmountOfLikes()+1;
-                DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName()).child(selectedKeySummary).child("amountOfLikes");
+        // this function is adding one like to the summary
+
+        holder.btnHeart.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            String selectedKeySummary = getRef(position).getKey();
+            int newLikes;
+            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName()).child(selectedKeySummary).child("amountOfLikes");
+            if(!compoundButton.isChecked()){
+                newLikes= model.getAmountOfLikes()+1;
                 myRef.setValue(newLikes);
-                
+                b=true;
+            }
+            else{
+                newLikes= model.getAmountOfLikes()-1;
+                myRef.setValue(newLikes);
+                b=false;
+            }
+
             }
         });
+
 
         holder.btnViewSummary.setOnClickListener(new View.OnClickListener() {
             @Override
