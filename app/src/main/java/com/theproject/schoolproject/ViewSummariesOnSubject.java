@@ -94,7 +94,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
             public void onClick(View view) {
                 String selectedKeySummary = getRef(position).getKey();
                 int newLikes=model.getAmountOfLikes();
-                
+
                 if(holder.btnHeart.isChecked()){
 //                   newLikes= newLikes+1;
 //                   updateLikes(selectedKeySummary, newLikes);
@@ -104,7 +104,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
                 if(!holder.btnHeart.isChecked()){
 //                    newLikes= newLikes-1;
 //                    updateLikes(selectedKeySummary, newLikes);
-                    Toast.makeText(ViewSummariesOnSubject.this, "הסיכום הוסר בסיכומים שלי", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ViewSummariesOnSubject.this, "הסיכום הוסר מהסיכומים שלי", Toast.LENGTH_SHORT).show();
                     holder.btnHeart.setChecked(false);
                 }
             }
