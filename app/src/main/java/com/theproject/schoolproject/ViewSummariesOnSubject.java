@@ -82,6 +82,13 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
     public void loadSummariesListFromDB() {
     options = new FirebaseRecyclerOptions.Builder<Summary>().setQuery(summariesRef, Summary.class).build();
     adapter = new FirebaseRecyclerAdapter<Summary, MyViewHolder>(options) {
+
+        @Override
+        public void onDataChanged() {
+            super.onDataChanged();
+            notifyDataSetChanged();
+        }
+
         @Override
         protected void onBindViewHolder(@NonNull final MyViewHolder holder, final int position, @NonNull final Summary model) {
         holder.tvTitle.setText(model.getTitle());
@@ -96,18 +103,20 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
                 int newLikes=model.getAmountOfLikes();
 
                 if(holder.btnHeart.isChecked()){
-//                   newLikes= newLikes+1;
-//                   updateLikes(selectedKeySummary, newLikes);
+                   newLikes= newLikes+1;
+                   updateLikes(selectedKeySummary, newLikes);
                    Toast.makeText(ViewSummariesOnSubject.this, "הסיכום נשמר בסיכומים שלי", Toast.LENGTH_SHORT).show();
                    holder.btnHeart.setChecked(true);
                 }
                 if(!holder.btnHeart.isChecked()){
-//                    newLikes= newLikes-1;
-//                    updateLikes(selectedKeySummary, newLikes);
+                    newLikes= newLikes-1;
+                    updateLikes(selectedKeySummary, newLikes);
                     Toast.makeText(ViewSummariesOnSubject.this, "הסיכום הוסר מהסיכומים שלי", Toast.LENGTH_SHORT).show();
                     holder.btnHeart.setChecked(false);
                 }
+                notifyDataSetChanged();
             }
+
         });
 
         holder.btnViewSummary.setOnClickListener(new View.OnClickListener() {
@@ -137,6 +146,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_grid_layout,parent,false);
             return new MyViewHolder(v);
         }
+
     };
     adapter.startListening();
     GridLayoutManager gridLayoutManager = new GridLayoutManager(this,2,GridLayoutManager.VERTICAL, false);

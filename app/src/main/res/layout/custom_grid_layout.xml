@@ -97,6 +97,8 @@ Ne eum solet altera. Cibo eligendi et est, electram theophrastus te vel eu." />
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:button="@drawable/sl_favourite_24dp"
+                    android:checked="false"
+                    android:clickable="true"
                     app:buttonTint="#FF0000" />
             </LinearLayout>
 
