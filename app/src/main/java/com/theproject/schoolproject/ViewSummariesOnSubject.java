@@ -74,11 +74,31 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         loadSummariesListFromDB();
     }
 
-    public void updateLikes(String selectedKeySummary, int newLikes){
+    //this function updates the number of liked in DB
+    public void updateLikesDB(String selectedKeySummary, int newLikes){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName()).child(selectedKeySummary).child("amountOfLikes");
         myRef.setValue(newLikes);
     }
 
+    //this function adds to the user the summaries that he liked, and add to the summary's users list the users that liked it
+    public void updateListOfLikes(String selectedKeySummary, boolean addOrRemove){
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/"+GlobalAcross.currentUserIndex);
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName()).child(selectedKeySummary);
+
+        if(addOrRemove){
+            usersRef.child("favoriteSummaries").child(selectedKeySummary).setValue(subject.getSubjectName());
+            myRef.child("usersThatLiked").setValue(String.valueOf(GlobalAcross.currentUserIndex));
+        }
+        else{
+            //complete this
+        }
+
+    }
+
+    //this function checks if the user liked the summary, it fills the heart
+    public void checkIfLikedSummary(MyViewHolder holder){
+
+    }
     public void loadSummariesListFromDB() {
     options = new FirebaseRecyclerOptions.Builder<Summary>().setQuery(summariesRef, Summary.class).build();
     adapter = new FirebaseRecyclerAdapter<Summary, MyViewHolder>(options) {
@@ -91,6 +111,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
 
         @Override
         protected void onBindViewHolder(@NonNull final MyViewHolder holder, final int position, @NonNull final Summary model) {
+        checkIfLikedSummary(holder);
         holder.tvTitle.setText(model.getTitle());
         holder.tvDescription.setText(model.getDescription());
         holder.tvAuthor.setText(model.getAuthor());
@@ -101,20 +122,21 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
             public void onClick(View view) {
                 String selectedKeySummary = getRef(position).getKey();
                 int newLikes=model.getAmountOfLikes();
-
                 if(holder.btnHeart.isChecked()){
                    newLikes= newLikes+1;
-                   updateLikes(selectedKeySummary, newLikes);
+                   updateLikesDB(selectedKeySummary, newLikes);
+                   updateListOfLikes(selectedKeySummary, true);
                    Toast.makeText(ViewSummariesOnSubject.this, "הסיכום נשמר בסיכומים שלי", Toast.LENGTH_SHORT).show();
                    holder.btnHeart.setChecked(true);
                 }
                 if(!holder.btnHeart.isChecked()){
                     newLikes= newLikes-1;
-                    updateLikes(selectedKeySummary, newLikes);
+                    updateLikesDB(selectedKeySummary, newLikes);
+                    updateListOfLikes(selectedKeySummary, false);
                     Toast.makeText(ViewSummariesOnSubject.this, "הסיכום הוסר מהסיכומים שלי", Toast.LENGTH_SHORT).show();
                     holder.btnHeart.setChecked(false);
                 }
-                notifyDataSetChanged();
+
             }
 
         });
