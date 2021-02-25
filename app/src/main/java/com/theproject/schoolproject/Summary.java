@@ -8,6 +8,7 @@ public class Summary {
     private String author;
     private String title;
     private String description;
+    private String id;
     private int amountOfLikes;
     private boolean hasNotified;
     private int creatorIndex;
@@ -33,6 +34,7 @@ public class Summary {
         this.description = description;
         this.amountOfLikes = 0;
         this.hasNotified = false;
+        this.id = "";
         this.creatorIndex = sharedPreferences.getInt("index",0);
     }
 
@@ -92,5 +94,13 @@ public class Summary {
 
     public void setCreatorIndex(int creatorIndex) {
         this.creatorIndex = creatorIndex;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

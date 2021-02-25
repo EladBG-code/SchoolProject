@@ -42,6 +42,7 @@ public class notificationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         String[] arr = {"מתמטיקה","היסטוריה","לשון","אזרחות","תנ"+'"'+"ך","ספרות","אנגלית","ביולוגיה","מדעי המחשב","כימיה","פיזיקה","תולדות האומנות","תקשורת","מדעי החברה"};
         //14 subjects
+        final ArrayList<String> keys = new ArrayList<>();
         final SharedPreferences sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
         for(final String subject : arr){
             final DatabaseReference ref = FirebaseDatabase.getInstance().getReference(subject);
@@ -57,7 +58,10 @@ public class notificationService extends Service {
                                 if (!summary.isHasNotified()) {
                                     if (summary.getCreatorIndex() == sharedPreferences.getInt("index", 0)) {
                                         summary.setHasNotified(true);
-                                        ref.setValue(summaries);
+                                        String key = summary.getId();
+                                        FirebaseDatabase.getInstance().getReference(summary.getSubject()).child(key).child("hasNotified").setValue(true);
+
+
 
                                         /*String message = "הסיכום שלך בנושא "+subject+' '+"קיבל 5 לייקים או יותר!";
                                         NotificationCompat.Builder builder = new NotificationCompat.Builder(notificationService.this)
@@ -112,9 +116,11 @@ public class notificationService extends Service {
                                         notificationManager.notify(NOTIFICATION_ID, builder.build());
 
                                     }
+
                                 }
                             }
                         }
+                        ref.setValue(summaries);
                     }
                 }
                 @Override

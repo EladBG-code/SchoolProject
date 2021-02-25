@@ -23,7 +23,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     FloatingActionButton floatingReturnButton;
     Button btnUpload;
     EditText summaryTitle,summaryDescription;
-    FirebaseDatabase database;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference summariesRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +65,12 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         }
         if(v == btnUpload){
             if(checkValid(summaryTitle,summaryDescription)){
+                String key = database.getReference(subject).push().getKey();
                 Summary summary = new Summary(GlobalAcross.currentUser.getfName()+" "+GlobalAcross.currentUser.getlName(),summaryTitle.getText().toString(),summaryDescription.getText().toString(),getSharedPreferences("index", Context.MODE_PRIVATE));
+                summary.setId(key);
                 addSummaryToDB(summary);
                 summariesRef = database.getReference(subject).push();
+
                 Toast.makeText(this, "העלית את הסיכום בהצלחה", Toast.LENGTH_SHORT).show();
                 super.onBackPressed();
             }
