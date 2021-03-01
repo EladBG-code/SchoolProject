@@ -23,6 +23,11 @@ public class GlobalAcross {
         //TEMP NOT CREATED
     }
 
+    public static String[] getAllSubjectsArr(){
+        String[] subjects = {"מתמטיקה","היסטוריה","לשון","אזרחות","תנ"+'"'+"ך","ספרות","אנגלית","ביולוגיה","מדעי המחשב","כימיה","פיזיקה","תולדות האומנות","תקשורת","מדעי החברה"};
+        return subjects;
+    }
+
     /*public static void logoutResetUser(){
         currentUser.setEmail("");
         currentUser.setfName("");

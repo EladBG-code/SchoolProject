@@ -6,11 +6,13 @@ import android.net.Uri;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class User {
 
     private String fName,lName,username,email,password,pfpPath;
     private int grade;
+    private ArrayList<String>[] userLikedSummariesIDs;
     private ArrayList<DatabaseReference> userSummariesList;
 
     public User(){
@@ -26,6 +28,7 @@ public class User {
         this.password = password;
         this.grade = grade;
         this.pfpPath = "none";
+        this.userLikedSummariesIDs = new ArrayList[14];
     }
 
     public String getfName() {

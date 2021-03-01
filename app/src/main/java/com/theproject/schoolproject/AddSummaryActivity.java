@@ -9,9 +9,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -25,6 +29,10 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     EditText summaryTitle,summaryDescription;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference summariesRef;
+    ShapeableImageView ivAddAttachment;
+    RadioButton isAttachment;
+    LinearLayout llAttachment;
+    boolean checkedRB;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,10 +41,16 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         btnUpload = findViewById(R.id.btnUpload);
         summaryTitle = findViewById(R.id.etSummaryTitle);
         summaryDescription = findViewById(R.id.etSummaryDescription);
+        ivAddAttachment = findViewById(R.id.ivAddAttachment);
+        isAttachment = findViewById(R.id.rbIsAttachment);
+        llAttachment = findViewById(R.id.llAttachments);
+        checkedRB = false;
 
         floatingReturnButton.setOnClickListener(this);
         btnUpload.setOnClickListener(this);
+        ivAddAttachment.setOnClickListener(this);
 
+        isAttachment.setOnClickListener(this);
         subject = getIntent().getStringExtra("Subject");
     }
 
@@ -61,9 +75,11 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onClick(View v) {
         if(v == floatingReturnButton){
+            // RETURN TO THE PAGE BEFORE THE CURRENT
             finish();
         }
         if(v == btnUpload){
+            // UPLOAD SUMMARY BUTTON
             if(checkValid(summaryTitle,summaryDescription)){
                 String key = database.getReference(subject).push().getKey();
                 Summary summary = new Summary(GlobalAcross.currentUser.getfName()+" "+GlobalAcross.currentUser.getlName(),summaryTitle.getText().toString(),summaryDescription.getText().toString(),getSharedPreferences("index", Context.MODE_PRIVATE));
@@ -74,7 +90,26 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
                 Toast.makeText(this, "העלית את הסיכום בהצלחה", Toast.LENGTH_SHORT).show();
                 super.onBackPressed();
             }
+        }
+        if(v == ivAddAttachment){
+            // ADD AN ATTACHMENT (FILE) TO THE SUMMARY
 
+        }
+
+
+        if(v == isAttachment){
+            // RADIO BUTTON THAT SETS THE ATTACHMENT LINEARLAYOUT TO VISIBLE / GONE FOR THE USER TO SEE IF THERE IS AN ATTACHMENT
+
+            if(checkedRB == false){
+                checkedRB=true;
+                isAttachment.setChecked(checkedRB);
+                llAttachment.setVisibility(View.VISIBLE);
+            }
+            else{
+                checkedRB=false;
+                isAttachment.setChecked(checkedRB);
+                llAttachment.setVisibility(View.GONE);
+            }
         }
     }
 

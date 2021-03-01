@@ -220,6 +220,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == 1) {
+            // PICK IMAGE FROM FILES (Gallery)
             final ShapeableImageView profilePictureReference = findViewById(R.id.ivProfilePictureIcon);
             try {
                 InputStream inputStream = getContentResolver().openInputStream(data.getData());
@@ -230,6 +231,11 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                 bitmapPFP.compress(Bitmap.CompressFormat.PNG, 100, baos);
                 byte[] byteArray = baos.toByteArray();
                 final String pfpPath = "profilePictures/" + UUID.randomUUID() + ".png";
+                // DELETES OLD PFP
+                if(!GlobalAcross.currentUser.getPfpPath().equals("none")){
+                    firePfpRef.delete();
+                }
+                // DELETES OLD PFP
                 firePfpRef = storage.getReference(pfpPath);
 
                 UploadTask uploadTask = firePfpRef.putBytes(byteArray);
@@ -253,6 +259,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
             }
         }
         if (requestCode == 0 && resultCode == RESULT_OK) {
+            // TAKE A PHOTO FROM CAMERA
             if (data.getExtras() != null) {
                 Bundle extras = data.getExtras();
                 final Bitmap bitmapPFP =  (Bitmap) extras.get("data");
@@ -261,6 +268,11 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                 bitmapPFP.compress(Bitmap.CompressFormat.PNG, 100, baos);
                 InputStream is = new ByteArrayInputStream(baos.toByteArray());
                 final String pfpPath = "profilePictures/" + UUID.randomUUID() + ".png";
+                // DELETES OLD PFP
+                if(!GlobalAcross.currentUser.getPfpPath().equals("none")){
+                    firePfpRef.delete();
+                }
+                // DELETES OLD PFP
                 firePfpRef = storage.getReference(pfpPath);
                 final ShapeableImageView profilePictureReference = findViewById(R.id.ivProfilePictureIcon);
 

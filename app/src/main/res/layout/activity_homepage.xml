@@ -68,7 +68,9 @@
                         app:shapeAppearance="@style/roundedImageViewRounded"
                         android:layout_marginRight="15sp"
                         android:layout_marginTop="30sp"
-                        app:strokeWidth="1sp" />
+                        app:strokeWidth="1sp"
+                        app:strokeColor="@color/colorPrimaryDark"
+                        />
 
                 </FrameLayout>
 
