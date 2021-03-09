@@ -1,12 +1,8 @@
 package com.theproject.schoolproject;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
-
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class User {
 
@@ -18,7 +14,6 @@ public class User {
     public User(){
 
     }
-
 
     public User(String fName, String lName, String username, String email, String password,int grade) {
         this.fName = fName;

@@ -1,6 +1,18 @@
 package com.theproject.schoolproject;
 
-import androidx.annotation.DrawableRes;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -10,39 +22,19 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.content.res.XmlResourceParser;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.theproject.schoolproject.GlobalAcross.currentUser;
+import static com.theproject.schoolproject.GlobalAcross.currentUserIndex;
 
 public class ViewSummariesOnSubject extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
@@ -76,21 +68,26 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
 
     //this function updates the number of liked in DB
     public void updateLikesDB(String selectedKeySummary, int newLikes){
+        Log.d("updateLikesDB", "Hi Im here");
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName()).child(selectedKeySummary).child("amountOfLikes");
         myRef.setValue(newLikes);
     }
 
     //this function adds to the user the summaries that he liked, and add to the summary's users list the users that liked it
-    public void updateListOfLikes(String selectedKeySummary, boolean addOrRemove){
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/"+GlobalAcross.currentUserIndex);
+    public void updateListOfLikes(String selectedKeySummary, boolean add){
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/"+ currentUserIndex);
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName()).child(selectedKeySummary);
 
-        if(addOrRemove){
+        //if add=1 - add the summary to the list of summaries that the user liked
+        if(add){
             usersRef.child("favoriteSummaries").child(selectedKeySummary).setValue(subject.getSubjectName());
-            myRef.child("usersThatLiked").setValue(String.valueOf(GlobalAcross.currentUserIndex));
+            myRef.child("usersThatLiked").setValue(String.valueOf(currentUserIndex));
         }
+
+        //if add=0 - remove the summary from the list of summaries that the user liked
         else{
-            //complete this
+            usersRef.child("favoriteSummaries").child(selectedKeySummary).removeValue();
+            myRef.child("usersThatLiked").child(String.valueOf(currentUserIndex)).removeValue();
         }
 
     }
@@ -214,7 +211,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            GlobalAcross.currentUser = null;
+                            currentUser = null;
                             Intent intent = new Intent(ViewSummariesOnSubject.this,MainActivity.class);
                             Toast.makeText(ViewSummariesOnSubject.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT).show();
                             sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
@@ -258,7 +255,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         }
         if(item.getTitle().equals("אודות")){
             androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(ViewSummariesOnSubject.this);
-            String info = "שלום "+GlobalAcross.currentUser.getfName()+", שמי אלעד ואני פיתחתי את אפליקציה זו. אשמח שתשלח\\י לי פידבק לאימייל: "+"eladbargal2@gmail.com";
+            String info = "שלום "+ currentUser.getfName()+", שמי אלעד ואני פיתחתי את אפליקציה זו. אשמח שתשלח\\י לי פידבק לאימייל: "+"eladbargal2@gmail.com";
             builder.setMessage(info)
                     .setNegativeButton("הבנתי",null);
 
