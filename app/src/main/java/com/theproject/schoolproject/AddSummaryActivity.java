@@ -1,15 +1,22 @@
 package com.theproject.schoolproject;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -19,16 +26,26 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class AddSummaryActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
@@ -36,7 +53,8 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     FloatingActionButton floatingReturnButton;
     Button btnUpload;
     EditText summaryTitle,summaryDescription;
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    FirebaseDatabase database = FirebaseDatabase.getInstance(); // is used for storing URLs of uploaded files...
+    FirebaseStorage storage = FirebaseStorage.getInstance(); //is used for uploadinf files... Examples: PDF, Word etc
     DatabaseReference summariesRef;
     ShapeableImageView ivAddAttachment;
     RadioButton isAttachment;
@@ -45,6 +63,9 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     NavigationView navigationView;
     MaterialToolbar toolbar;
     SharedPreferences sharedPreferences;
+    ProgressDialog progressDialog;
+    TextView notification;
+    Uri pdfUri; //Uri are URLs that are meant for local storage
     boolean checkedRB;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +81,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         ivAddAttachment = findViewById(R.id.ivAddAttachment);
         isAttachment = findViewById(R.id.rbIsAttachment);
         llAttachment = findViewById(R.id.llAttachments);
+        notification = findViewById(R.id.tvFileSelected);
         checkedRB = false;
 
         floatingReturnButton.setOnClickListener(this);
@@ -96,8 +118,12 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
             Toast.makeText(this, "אנא וודא\\י שיש לפחות 5 תווים בכותרת הסיכום", Toast.LENGTH_LONG).show();
             return false;
         }
-        if(description.getText().toString().length()<20){
-            Toast.makeText(this, "אנא וודא\\י שיש לפחות 20 תווים בתיאור הסיכום", Toast.LENGTH_LONG).show();
+        if(title.getText().toString().length()>20) {
+            Toast.makeText(this, "אנא וודא\\י שיש עד 15 תווים בכותרת הסיכום", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if(description.getText().toString().length()>46){
+            Toast.makeText(this, "אנא וודא\\י שיש עד 46 תווים בתיאור", Toast.LENGTH_LONG).show();
             return false;
         }
         return true;
@@ -108,24 +134,37 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         if(v == floatingReturnButton){
             // RETURN TO THE PAGE BEFORE THE CURRENT
+
             finish();
         }
         if(v == btnUpload){
             // UPLOAD SUMMARY BUTTON
-            if(checkValid(summaryTitle,summaryDescription)){
-                String key = database.getReference(subject).push().getKey();
-                Summary summary = new Summary(GlobalAcross.currentUser.getfName()+" "+GlobalAcross.currentUser.getlName(),summaryTitle.getText().toString(),summaryDescription.getText().toString(),getSharedPreferences("index", Context.MODE_PRIVATE));
-                summary.setId(key);
-                addSummaryToDB(summary);
-                summariesRef = database.getReference(subject).push();
 
-                Toast.makeText(this, "העלית את הסיכום בהצלחה", Toast.LENGTH_SHORT).show();
-                super.onBackPressed();
+            if (pdfUri != null) {
+                if (checkValid(summaryTitle, summaryDescription)) {
+                    uploadFile(pdfUri);
+                    Summary summary = new Summary(GlobalAcross.currentUser.getfName() + " " + GlobalAcross.currentUser.getlName(), summaryTitle.getText().toString(), summaryDescription.getText().toString(), getSharedPreferences("index", Context.MODE_PRIVATE));
+                    summary.setId(database.getReference(subject).push().getKey());
+                    addSummaryToDB(summary);
+                    summariesRef = database.getReference(subject).push();
+                    //Toast.makeText(this, "העלית את הסיכום בהצלחה", Toast.LENGTH_SHORT).show();
+                    super.onBackPressed();
+                }
+            }
+            else{
+                Toast.makeText(AddSummaryActivity.this, "בחרו קובץ.", Toast.LENGTH_SHORT).show();
             }
         }
         if(v == ivAddAttachment){
             // ADD AN ATTACHMENT (FILE) TO THE SUMMARY
 
+            if(ContextCompat.checkSelfPermission(AddSummaryActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){ //Checks if has the permission to read external storage
+                selectPDF();
+            }
+            else{
+                ActivityCompat.requestPermissions(AddSummaryActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9); //Asks the user to give it the permission to do so if it doesn't have it and sets the request code to 9
+                //onRequestPermissionResult will be the next line to this - all parameters are passed
+            }
         }
 
 
@@ -145,8 +184,97 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    private void uploadFile(Uri pdfUri) {
+        //Function that uploads the Uri to the storage cloud
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("מעלים את הקובץ...");
+        progressDialog.setProgress(0);
+
+        final String name = UUID.randomUUID().toString();
+        StorageReference storageReference = storage.getReference(); //Sets the root path
+        storageReference.child("SummariesFiles").child(name).putFile(pdfUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                        String url = taskSnapshot.getStorage().getDownloadUrl().toString(); //Returns the URL of the file that is being uploaded.
+                        //Storing the URL in the realtime database.
+                        progressDialog.show();
+
+                        DatabaseReference reference = database.getReference(); //Returns the path to the root
+                        reference.child(name).setValue(url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    Toast.makeText(AddSummaryActivity.this,"הקובץ הועלה בהצלחה.",Toast.LENGTH_SHORT).show();
+                                }
+                                else{
+                                    Toast.makeText(AddSummaryActivity.this,"נתקלנו בבעיה... בדקו את החיבור לאינטרנט - הקובץ לא הועלה.",Toast.LENGTH_LONG).show();
+                                }
+                                progressDialog.dismiss();
+                            }
+                        });
+
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                Toast.makeText(AddSummaryActivity.this,"נתקלנו בבעיה... בדקו את חיבורכם לאינטרנט - ההעלאה נכשלה.",Toast.LENGTH_LONG).show();
+
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                //Tracks the progress of our upload task (progressbar)
+
+                int currentProgress = (int) (100*snapshot.getBytesTransferred()/snapshot.getTotalByteCount()); //Formula to get the progress percentage of bytes transferred over total bytes times 100 casted into int
+                progressDialog.setProgress(currentProgress);
+
+            }
+        });
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if(requestCode == 9 && grantResults[0] == PackageManager.PERMISSION_GRANTED){ //Checks if the request code is 9 and that the user gave the app the permission in that string array as mentioned before
+            selectPDF();
+        }
+        else{
+            Toast.makeText(AddSummaryActivity.this, "אנא ספקו את האפליקציה את הרשות המבוקשת.", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void selectPDF() {
+        // Method for offering the user to select a PDF file using file manager with an intent
+
+        Intent intent = new Intent();
+        intent.setType("application/pdf");
+        intent.setAction(Intent.ACTION_GET_CONTENT); // in order to fetch the files - type of action
+        startActivityForResult(intent, 86);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        //This checks if the user has selected a file or not
+        if(requestCode == 86 && resultCode == RESULT_OK && data != null){
+            pdfUri = data.getData(); // This will return the Uri of the selected file
+            notification.setText("הקובץ: "+data.getData().getLastPathSegment()+" נבחר.");
+        }
+        else{
+            Toast.makeText(AddSummaryActivity.this,"אנא בחרו בקובץ.",Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public void addSummaryToDB(Summary summary) {
-        database = FirebaseDatabase.getInstance();
+        // Pushes the summary onto the database
+
         summariesRef = database.getReference(subject).push();
         summariesRef.setValue(summary);
     }

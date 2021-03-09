@@ -1,6 +1,7 @@
 package com.theproject.schoolproject;
 
 import android.content.SharedPreferences;
+import android.net.Uri;
 
 public class Summary {
 
@@ -9,6 +10,7 @@ public class Summary {
     private String title;
     private String description;
     private String id;
+    private String fileRef;
     private int amountOfLikes;
     private boolean hasNotified;
     private int creatorIndex;
@@ -35,6 +37,7 @@ public class Summary {
         this.amountOfLikes = 0;
         this.hasNotified = false;
         this.id = "";
+        this.fileRef = "none";
         this.creatorIndex = sharedPreferences.getInt("index",0);
     }
 
@@ -102,5 +105,13 @@ public class Summary {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getFileRef() {
+        return fileRef;
+    }
+
+    public void setFileUri(String fileRef) {
+        this.fileRef = fileRef;
     }
 }
