@@ -81,7 +81,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         //if add=1 - add the summary to the list of summaries that the user liked
         if(add){
             usersRef.child("favoriteSummaries").child(selectedKeySummary).setValue(subject.getSubjectName());
-            myRef.child("usersThatLiked").setValue(String.valueOf(currentUserIndex));
+            myRef.child("usersThatLiked").child(String.valueOf(currentUserIndex)).setValue(currentUser.getfName());
         }
 
         //if add=0 - remove the summary from the list of summaries that the user liked
