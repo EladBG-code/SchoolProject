@@ -1,7 +1,8 @@
 package com.theproject.schoolproject;
 
 import android.content.SharedPreferences;
-import android.net.Uri;
+
+import java.util.ArrayList;
 
 public class Summary {
 
@@ -11,9 +12,10 @@ public class Summary {
     private String description;
     private String id;
     private String fileRef;
-    private int amountOfLikes;
+    private long amountOfLikes;
     private boolean hasNotified;
     private int creatorIndex;
+    private ArrayList<String> usersThatLiked;
 
     public String getSubject() {
         return subject;
@@ -39,6 +41,7 @@ public class Summary {
         this.id = "";
         this.fileRef = "none";
         this.creatorIndex = sharedPreferences.getInt("index",0);
+
     }
 
     //EDITOR NOTE: IF YOU HAVE TIME ADD AN IMAGE OF THE AUTHOR TO THE SUMMARY PAGE
@@ -48,6 +51,23 @@ public class Summary {
         this.description = description;
         this.subject = subject;
         //EDITOR NOTE URGENT: ADD IMAGE\FILE UPLOADING SYSTEM
+    }
+    public Summary(String author, String title, String description, String subject, Long amountOfLikes, ArrayList<String> usersThatLiked) {
+        this.author = author;
+        this.title = title;
+        this.description = description;
+        this.subject = subject;
+        this.amountOfLikes=amountOfLikes;
+        this.usersThatLiked=usersThatLiked;
+        //EDITOR NOTE URGENT: ADD IMAGE\FILE UPLOADING SYSTEM
+    }
+
+    public ArrayList<String> getUsersThatLiked() {
+        return usersThatLiked;
+    }
+
+    public void setUsersThatLiked(ArrayList<String> usersThatLiked) {
+        this.usersThatLiked = usersThatLiked;
     }
 
     public String getAuthor() {
@@ -75,11 +95,11 @@ public class Summary {
     }
 
 
-    public int getAmountOfLikes() {
+    public long getAmountOfLikes() {
         return amountOfLikes;
     }
 
-    public void setAmountOfLikes(int amountOfLikes) {
+    public void setAmountOfLikes(long amountOfLikes) {
         this.amountOfLikes = amountOfLikes;
     }
 

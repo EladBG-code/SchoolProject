@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,9 +23,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.database.SnapshotParser;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -67,8 +68,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
     }
 
     //this function updates the number of liked in DB
-    public void updateLikesDB(String selectedKeySummary, int newLikes){
-        Log.d("updateLikesDB", "Hi Im here");
+    public void updateLikesDB(String selectedKeySummary, long newLikes){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName()).child(selectedKeySummary).child("amountOfLikes");
         myRef.setValue(newLikes);
     }
@@ -77,13 +77,11 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
     public void updateListOfLikes(String selectedKeySummary, boolean add){
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/"+ currentUserIndex);
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName()).child(selectedKeySummary);
-
         //if add=1 - add the summary to the list of summaries that the user liked
         if(add){
             usersRef.child("favoriteSummaries").child(selectedKeySummary).setValue(subject.getSubjectName());
-            myRef.child("usersThatLiked").child(String.valueOf(currentUserIndex)).setValue(currentUser.getfName());
+            myRef.child("usersThatLiked").child(String.valueOf(currentUserIndex)).setValue(currentUserIndex);
         }
-
         //if add=0 - remove the summary from the list of summaries that the user liked
         else{
             usersRef.child("favoriteSummaries").child(selectedKeySummary).removeValue();
@@ -92,12 +90,42 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
 
     }
 
-    //this function checks if the user liked the summary, it fills the heart
-    public void checkIfLikedSummary(MyViewHolder holder){
 
-    }
     public void loadSummariesListFromDB() {
-    options = new FirebaseRecyclerOptions.Builder<Summary>().setQuery(summariesRef, Summary.class).build();
+    options = new FirebaseRecyclerOptions.Builder<Summary>().setQuery(summariesRef, new SnapshotParser<Summary>() {
+        @NonNull
+        @Override
+        public Summary parseSnapshot(@NonNull DataSnapshot snapshot) {
+            //Todo: Add subject here somehow !
+            String author="", title="", description="", subject1="" ;
+            long amountOfLikes = 0;
+            ArrayList<String> usersThatLiked = null;
+            for (DataSnapshot child : snapshot.getChildren()) {
+                if(child.getKey().equals("author")) {
+                    author= (String) child.getValue();
+                }
+                else if(child.getKey().equals("title")) {
+                    title= (String) child.getValue();
+                }
+                else if(child.getKey().equals("description")) {
+                    description= (String) child.getValue();
+                }
+                else if(child.getKey().equals("amountOfLikes")){
+                    amountOfLikes= (Long) child.getValue();
+                }
+                else if(child.getKey().equals("usersThatLiked")) {
+                    if(child.getValue().equals("none")){
+                        usersThatLiked=null;
+                    }
+                    else {
+                        usersThatLiked = (ArrayList<String>) child.getValue();
+                    }
+                }
+            }
+            Summary summary = new Summary(author, title, description,subject1,amountOfLikes,usersThatLiked);
+            return summary;
+        }
+    }).build();
     adapter = new FirebaseRecyclerAdapter<Summary, MyViewHolder>(options) {
 
         @Override
@@ -108,17 +136,26 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
 
         @Override
         protected void onBindViewHolder(@NonNull final MyViewHolder holder, final int position, @NonNull final Summary model) {
-        checkIfLikedSummary(holder);
         holder.tvTitle.setText(model.getTitle());
         holder.tvDescription.setText(model.getDescription());
         holder.tvAuthor.setText(model.getAuthor());
-
+        if(model.getUsersThatLiked()==null){
+            holder.btnHeart.setChecked(false);
+        }
+       else {
+            ArrayList <String> usersThatLikedTemp= model.getUsersThatLiked();
+            if(usersThatLikedTemp.contains(Long.valueOf(currentUserIndex)))
+            holder.btnHeart.setChecked(true);
+            else{
+                holder.btnHeart.setChecked(false);
+            }
+        }
         // this function is adding one like to the summary
         holder.btnHeart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String selectedKeySummary = getRef(position).getKey();
-                int newLikes=model.getAmountOfLikes();
+                long newLikes=model.getAmountOfLikes();
                 if(holder.btnHeart.isChecked()){
                    newLikes= newLikes+1;
                    updateLikesDB(selectedKeySummary, newLikes);
