@@ -1,14 +1,5 @@
 package com.theproject.schoolproject;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -18,16 +9,23 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -44,7 +42,6 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class AddSummaryActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
@@ -191,18 +188,16 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setTitle("מעלים את הקובץ...");
         progressDialog.setProgress(0);
+        progressDialog.show();
 
         final String name = UUID.randomUUID().toString();
         StorageReference storageReference = storage.getReference(); //Sets the root path
-        storageReference.child("SummariesFiles").child(name).putFile(pdfUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        storageReference.child("SummariesFiles").child(name).putFile(pdfUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
                         String url = taskSnapshot.getStorage().getDownloadUrl().toString(); //Returns the URL of the file that is being uploaded.
                         //Storing the URL in the realtime database.
-                        progressDialog.show();
-
+                        //progressDialog.show();
                         DatabaseReference reference = database.getReference(); //Returns the path to the root
                         reference.child(name).setValue(url).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
@@ -213,27 +208,33 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
                                 else{
                                     Toast.makeText(AddSummaryActivity.this,"נתקלנו בבעיה... בדקו את החיבור לאינטרנט - הקובץ לא הועלה.",Toast.LENGTH_LONG).show();
                                 }
-                                progressDialog.dismiss();
+                                try {
+                                    if ((progressDialog != null) && progressDialog.isShowing()) {
+                                        progressDialog.dismiss();
+                                    }
+                                } catch (final IllegalArgumentException e) {
+                                    // Handle or log or ignore
+                                } catch (final Exception e) {
+                                    // Handle or log or ignore
+                                } finally {
+                                    progressDialog = null;
+                                }
+
+
                             }
                         });
-
-
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
                 Toast.makeText(AddSummaryActivity.this,"נתקלנו בבעיה... בדקו את חיבורכם לאינטרנט - ההעלאה נכשלה.",Toast.LENGTH_LONG).show();
-
             }
         }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
                 //Tracks the progress of our upload task (progressbar)
-
                 int currentProgress = (int) (100*snapshot.getBytesTransferred()/snapshot.getTotalByteCount()); //Formula to get the progress percentage of bytes transferred over total bytes times 100 casted into int
                 progressDialog.setProgress(currentProgress);
-
             }
         });
 
@@ -246,14 +247,13 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
             selectPDF();
         }
         else{
-            Toast.makeText(AddSummaryActivity.this, "אנא ספקו את האפליקציה את הרשות המבוקשת.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddSummaryActivity.this, "אנא אשרו לאפליקציה את לעלות את הקובץ כדי לצרף אותו לסיכום.", Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    private void selectPDF() {
+    public void selectPDF() {
         // Method for offering the user to select a PDF file using file manager with an intent
-
         Intent intent = new Intent();
         intent.setType("application/pdf");
         intent.setAction(Intent.ACTION_GET_CONTENT); // in order to fetch the files - type of action
@@ -263,12 +263,12 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //This checks if the user has selected a file or not
-        if(requestCode == 86 && resultCode == RESULT_OK && data != null){
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 86 && resultCode == RESULT_OK && data != null) {
             pdfUri = data.getData(); // This will return the Uri of the selected file
-            notification.setText("הקובץ: "+data.getData().getLastPathSegment()+" נבחר.");
-        }
-        else{
-            Toast.makeText(AddSummaryActivity.this,"אנא בחרו בקובץ.",Toast.LENGTH_SHORT).show();
+            notification.setText("הקובץ: " + data.getData().getLastPathSegment() + " נבחר.");
+        } else {
+            Toast.makeText(AddSummaryActivity.this, "אנא בחרו קובץ", Toast.LENGTH_SHORT).show();
         }
     }
 
