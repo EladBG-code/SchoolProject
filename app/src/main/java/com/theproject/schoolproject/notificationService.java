@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.StringTokenizer;
 
 public class notificationService extends Service {
     public notificationService() {
@@ -60,9 +61,6 @@ public class notificationService extends Service {
                                         summary.setHasNotified(true);
                                         String key = summary.getId();
                                         FirebaseDatabase.getInstance().getReference(summary.getSubject()).child(key).child("hasNotified").setValue(true);
-
-
-
                                         /*String message = "הסיכום שלך בנושא "+subject+' '+"קיבל 5 לייקים או יותר!";
                                         NotificationCompat.Builder builder = new NotificationCompat.Builder(notificationService.this)
                                                 .setContentTitle("התראה חדשה")

@@ -99,6 +99,7 @@ public class Summary {
         return amountOfLikes;
     }
 
+
     public void setAmountOfLikes(long amountOfLikes) {
         this.amountOfLikes = amountOfLikes;
     }

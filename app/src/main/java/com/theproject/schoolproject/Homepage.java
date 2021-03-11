@@ -53,7 +53,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
-
+        //startService(new Intent(Homepage.this,notificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbarHome);
@@ -61,9 +61,6 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
         ivLibraryIcon = findViewById(R.id.ivLibraryIcon);
         tvToSummaries = findViewById(R.id.tvToSummaries);
         ivProfilePictureHomepage = findViewById(R.id.ivProfilePictureIconHomepage);
-
-        
-
         tvWelcomeMessage.setText("ברוכים השבים "+GlobalAcross.currentUser.getfName()); /*Tells the user a welcome message with their own name! */
 
         setSupportActionBar(toolbar);

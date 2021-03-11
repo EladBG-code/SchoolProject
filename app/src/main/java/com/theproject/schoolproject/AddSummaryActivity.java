@@ -195,6 +195,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         storageReference.child("SummariesFiles").child(name).putFile(pdfUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
                         String url = taskSnapshot.getStorage().getDownloadUrl().toString(); //Returns the URL of the file that is being uploaded.
                         //Storing the URL in the realtime database.
                         //progressDialog.show();
@@ -219,8 +220,6 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
                                 } finally {
                                     progressDialog = null;
                                 }
-
-
                             }
                         });
                     }
