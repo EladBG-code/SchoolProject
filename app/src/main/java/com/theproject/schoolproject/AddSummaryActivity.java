@@ -145,7 +145,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
                     addSummaryToDB(summary);
                     summariesRef = database.getReference(subject).push();
                     //Toast.makeText(this, "העלית את הסיכום בהצלחה", Toast.LENGTH_SHORT).show();
-                    super.onBackPressed();
+                    //super.onBackPressed();
                 }
             }
             else{
@@ -205,6 +205,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
                                     Toast.makeText(AddSummaryActivity.this,"הקובץ הועלה בהצלחה.",Toast.LENGTH_SHORT).show();
+                                    onBackPressed();
                                 }
                                 else{
                                     Toast.makeText(AddSummaryActivity.this,"נתקלנו בבעיה... בדקו את החיבור לאינטרנט - הקובץ לא הועלה.",Toast.LENGTH_LONG).show();
