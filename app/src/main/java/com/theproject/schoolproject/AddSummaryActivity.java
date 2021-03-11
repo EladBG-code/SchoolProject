@@ -50,6 +50,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     FloatingActionButton floatingReturnButton;
     Button btnUpload;
     EditText summaryTitle,summaryDescription;
+    String summaryID;
     FirebaseDatabase database = FirebaseDatabase.getInstance(); // is used for storing URLs of uploaded files...
     FirebaseStorage storage = FirebaseStorage.getInstance(); //is used for uploadinf files... Examples: PDF, Word etc
     DatabaseReference summariesRef;
@@ -62,6 +63,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     SharedPreferences sharedPreferences;
     ProgressDialog progressDialog;
     TextView notification;
+    Summary summary;
     Uri pdfUri; //Uri are URLs that are meant for local storage
     boolean checkedRB;
     @Override
@@ -139,12 +141,13 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
 
             if (pdfUri != null) {
                 if (checkValid(summaryTitle, summaryDescription)) {
-                    uploadFile(pdfUri);
-                    Summary summary = new Summary(GlobalAcross.currentUser.getfName() + " " + GlobalAcross.currentUser.getlName(), summaryTitle.getText().toString(), summaryDescription.getText().toString(), getSharedPreferences("index", Context.MODE_PRIVATE));
+                    summary = new Summary(GlobalAcross.currentUser.getfName() + " " + GlobalAcross.currentUser.getlName(), summaryTitle.getText().toString(), summaryDescription.getText().toString(), getSharedPreferences("index", Context.MODE_PRIVATE));
                     summary.setId(database.getReference(subject).push().getKey());
-                    addSummaryToDB(summary);
+                    summaryID=summary.getId();
+//                    addSummaryToDB(summary);
                     summariesRef = database.getReference(subject).push();
-                    //Toast.makeText(this, "העלית את הסיכום בהצלחה", Toast.LENGTH_SHORT).show();
+                    uploadFile(pdfUri);
+//                    Toast.makeText(this, "העלית את הסיכום בהצלחה", Toast.LENGTH_SHORT).show();
                     //super.onBackPressed();
                 }
             }
@@ -183,7 +186,6 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
 
     private void uploadFile(Uri pdfUri) {
         //Function that uploads the Uri to the storage cloud
-
         progressDialog = new ProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setTitle("מעלים את הקובץ...");
@@ -199,12 +201,15 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
                         String url = taskSnapshot.getStorage().getDownloadUrl().toString(); //Returns the URL of the file that is being uploaded.
                         //Storing the URL in the realtime database.
                         //progressDialog.show();
-                        DatabaseReference reference = database.getReference(); //Returns the path to the root
-                        reference.child(name).setValue(url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        summary.setFileRef(name);
+//                        summariesRef.setValue(summary);
+
+//                        DatabaseReference reference = database.getReference().child(subject).child(summaryID); //Returns the path to the root
+                        summariesRef.setValue(summary).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
-                                    Toast.makeText(AddSummaryActivity.this,"הקובץ הועלה בהצלחה.",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(AddSummaryActivity.this,"הסיכום הועלה בהצלחה.",Toast.LENGTH_SHORT).show();
                                     onBackPressed();
                                 }
                                 else{

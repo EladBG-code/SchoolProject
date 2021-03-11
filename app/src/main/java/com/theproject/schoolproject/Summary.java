@@ -132,7 +132,7 @@ public class Summary {
         return fileRef;
     }
 
-    public void setFileUri(String fileRef) {
+    public void setFileRef(String fileRef) {
         this.fileRef = fileRef;
     }
 }
