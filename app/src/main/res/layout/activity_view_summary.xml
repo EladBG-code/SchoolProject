@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     tools:context=".ViewSummary">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -104,7 +104,7 @@
                 <ScrollView
                     android:id="@+id/ScrollView01"
                     android:layout_width="fill_parent"
-                    android:layout_height="441dp"
+                    android:layout_height="79dp"
                     android:layout_marginTop="54sp"
                     android:scrollbarStyle="insideOverlay"
                     app:layout_anchor="@+id/spline"
@@ -114,9 +114,8 @@
                         android:id="@+id/viewSummaryDescription"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="20sp"
-                        android:text="Description"/>
-
+                        android:text="Description"
+                        android:textSize="20sp" />
 
                 </ScrollView>
 

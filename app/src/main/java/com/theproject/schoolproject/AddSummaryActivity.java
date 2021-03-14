@@ -142,7 +142,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
             if (pdfUri != null) {
                 if (checkValid(summaryTitle, summaryDescription)) {
                     summary = new Summary(GlobalAcross.currentUser.getfName() + " " + GlobalAcross.currentUser.getlName(), summaryTitle.getText().toString(), summaryDescription.getText().toString(), getSharedPreferences("index", Context.MODE_PRIVATE));
-                    summary.setId(database.getReference(subject).push().getKey());
+                    summary.setId("/SummariesFiles/"+database.getReference(subject).push().getKey());
                     summaryID=summary.getId();
 //                    addSummaryToDB(summary);
                     summariesRef = database.getReference(subject).push();
