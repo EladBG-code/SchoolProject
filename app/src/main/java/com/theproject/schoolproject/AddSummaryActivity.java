@@ -142,7 +142,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
             if (pdfUri != null) {
                 if (checkValid(summaryTitle, summaryDescription)) {
                     summary = new Summary(GlobalAcross.currentUser.getfName() + " " + GlobalAcross.currentUser.getlName(), summaryTitle.getText().toString(), summaryDescription.getText().toString(), getSharedPreferences("index", Context.MODE_PRIVATE));
-                    summary.setId("/SummariesFiles/"+database.getReference(subject).push().getKey());
+                    summary.setId(database.getReference(subject).push().getKey());
                     summaryID=summary.getId();
 //                    addSummaryToDB(summary);
                     summariesRef = database.getReference(subject).push();
@@ -198,10 +198,11 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                        String url = taskSnapshot.getStorage().getDownloadUrl().toString(); //Returns the URL of the file that is being uploaded.
+//                        String url = taskSnapshot.getStorage().getDownloadUrl().toString(); //Returns the URL of the file that is being uploaded.
                         //Storing the URL in the realtime database.
                         //progressDialog.show();
-                        summary.setFileRef(name);
+                        String namePdfUri = "/SummariesFiles/"+name;
+                        summary.setFileRef(namePdfUri);
 //                        summariesRef.setValue(summary);
 
 //                        DatabaseReference reference = database.getReference().child(subject).child(summaryID); //Returns the path to the root
@@ -277,12 +278,12 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    public void addSummaryToDB(Summary summary) {
-        // Pushes the summary onto the database
-
-        summariesRef = database.getReference(subject).push();
-        summariesRef.setValue(summary);
-    }
+//    public void addSummaryToDB(Summary summary) {
+//        // Pushes the summary onto the database
+//
+//        summariesRef = database.getReference(subject).push();
+//        summariesRef.setValue(summary);
+//    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
