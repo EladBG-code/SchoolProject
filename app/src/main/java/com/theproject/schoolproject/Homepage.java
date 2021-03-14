@@ -53,7 +53,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
-        //startService(new Intent(Homepage.this,notificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
+
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbarHome);
@@ -104,6 +104,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
                 }
 
         }
+        //startService(new Intent(Homepage.this,notificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
     }
 
     @Override

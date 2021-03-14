@@ -103,6 +103,7 @@ public class notificationService extends Service {
                                                 .setSmallIcon(R.mipmap.ic_launcher)
                                                 .setContentTitle("עדכון")
                                                 .setContentText("הסיכום שלך בנושא "+subject+" הגיע לחמישה לייקים או יותר!")
+                                                .setOngoing(true)
                                                 .setSmallIcon(R.drawable.like_icon);
 
                                         Intent resultIntent = new Intent(getApplicationContext(), LoadingActivity.class);
