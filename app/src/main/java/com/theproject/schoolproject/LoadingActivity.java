@@ -86,7 +86,7 @@ public class LoadingActivity extends AppCompatActivity {
                     //Checks if the user was logged in the device and places the correct path reference for his saved index and pulls out the class out of the arraylist in the firebase database
                     currentUser = dataSnapshot.getValue(t).get(sharedPreferences.getInt("index", 0));
                     Toast.makeText(LoadingActivity.this, "ברוכים השבים " + currentUser.getfName() + '.', Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(LoadingActivity.this, Homepage.class);
+                    Intent intent = new Intent(LoadingActivity.this, HomepageActivity.class);
                     startActivity(intent);
                 }
                 else {

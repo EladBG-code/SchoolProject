@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     editor.putBoolean(Logged,true);
                     editor.commit();
 
-                    Intent intent = new Intent(this, Homepage.class);
+                    Intent intent = new Intent(this, HomepageActivity.class);
                     startActivity(intent);
                     finish();
                 } else {

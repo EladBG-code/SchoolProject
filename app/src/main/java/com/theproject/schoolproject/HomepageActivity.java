@@ -32,7 +32,7 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 
-public class Homepage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+public class HomepageActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -112,15 +112,15 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
         //Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
         if(item.getTitle().equals("התנתקות")){
 
-               androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(Homepage.this);
+               androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(HomepageActivity.this);
 
             builder.setMessage("האם את\\ה בטוח\\ה שאת\\ה רוצה להתנתק?")
                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             GlobalAcross.currentUser = null; /*Temp disable*/
-                            Intent intent = new Intent(Homepage.this,MainActivity.class);
-                            Toast.makeText(Homepage.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT-5000).show();
+                            Intent intent = new Intent(HomepageActivity.this,MainActivity.class);
+                            Toast.makeText(HomepageActivity.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT-5000).show();
                             sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
 
                             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -140,19 +140,19 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
 
         }
         if(item.getTitle().equals("סיכומים")){
-            Intent intent = new Intent(Homepage.this,SummariesSubjects.class);
+            Intent intent = new Intent(HomepageActivity.this,SummariesSubjects.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
         }
         if(item.getTitle().equals("הגדרות")){
-            Intent intent = new Intent(Homepage.this, SettingsUser.class);
+            Intent intent = new Intent(HomepageActivity.this, SettingsUserActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
         }
         if(item.getTitle().equals("פרופיל")){
-            Intent intent = new Intent(Homepage.this,ProfileActivity.class);
+            Intent intent = new Intent(HomepageActivity.this,ProfileActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
@@ -162,7 +162,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
             return false;
         }
         if(item.getTitle().equals("אודות")){
-            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(Homepage.this);
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(HomepageActivity.this);
             String info = "שלום "+GlobalAcross.currentUser.getfName()+", שמי אלעד ואני פיתחתי את אפליקציה זו. אשמח שתשלח\\י לי פידבק לאימייל: "+"eladbargal2@gmail.com";
             builder.setMessage(info)
                     .setNegativeButton("הבנתי",null);
@@ -194,7 +194,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
             //finish();
         }
         if(v == ivProfilePictureHomepage){
-            Intent intent = new Intent(Homepage.this,ProfileActivity.class);
+            Intent intent = new Intent(HomepageActivity.this,ProfileActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
         }

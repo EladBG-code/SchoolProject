@@ -178,7 +178,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         holder.btnViewSummary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ViewSummariesOnSubject.this,ViewSummary.class);
+                Intent intent = new Intent(ViewSummariesOnSubject.this,ViewSummaryActivity.class);
                 intent.putExtra("summaryKey",getRef(position).getKey());
                 intent.putExtra("subject",subject.getSubjectName());
                 startActivity(intent);
@@ -188,7 +188,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         holder.v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ViewSummariesOnSubject.this,ViewSummary.class);
+                Intent intent = new Intent(ViewSummariesOnSubject.this,ViewSummaryActivity.class);
                 intent.putExtra("summaryKey",getRef(position).getKey());
                 intent.putExtra("subject",subject.getSubjectName());
                 startActivity(intent);
@@ -273,7 +273,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
             return false;
         }
         if(item.getTitle().equals("הגדרות")){
-            Intent intent = new Intent(ViewSummariesOnSubject.this, SettingsUser.class);
+            Intent intent = new Intent(ViewSummariesOnSubject.this, SettingsUserActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
@@ -285,7 +285,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
             return false;
         }
         if(item.getTitle().equals("מסך הבית")){
-            Intent intent = new Intent(this,Homepage.class);
+            Intent intent = new Intent(this,HomepageActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;

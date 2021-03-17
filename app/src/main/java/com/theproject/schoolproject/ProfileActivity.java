@@ -155,7 +155,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
             return false;
         }
         if (item.getTitle().equals("הגדרות")) {
-            Intent intent = new Intent(ProfileActivity.this, SettingsUser.class);
+            Intent intent = new Intent(ProfileActivity.this, SettingsUserActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
@@ -164,7 +164,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
             return false;
         }
         if (item.getTitle().equals("מסך הבית")) {
-            Intent intent = new Intent(ProfileActivity.this, Homepage.class);
+            Intent intent = new Intent(ProfileActivity.this, HomepageActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;

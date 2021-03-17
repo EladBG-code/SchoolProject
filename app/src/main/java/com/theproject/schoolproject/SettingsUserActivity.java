@@ -19,7 +19,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.Set;
 
-public class SettingsUser extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class SettingsUserActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -52,14 +52,14 @@ public class SettingsUser extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         if (item.getTitle().equals("התנתקות")) {
 
-            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(SettingsUser.this);
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(SettingsUserActivity.this);
             builder.setMessage("האם את\\ה בטוח\\ה שאת\\ה רוצה להתנתק?")
                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             GlobalAcross.currentUser = null;
-                            Intent intent = new Intent(SettingsUser.this, MainActivity.class);
-                            Toast.makeText(SettingsUser.this, "התנתקת בהצלחה.", Toast.LENGTH_SHORT - 5000).show();
+                            Intent intent = new Intent(SettingsUserActivity.this, MainActivity.class);
+                            Toast.makeText(SettingsUserActivity.this, "התנתקת בהצלחה.", Toast.LENGTH_SHORT - 5000).show();
                             sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
 
                             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -79,7 +79,7 @@ public class SettingsUser extends AppCompatActivity implements NavigationView.On
 
         }
         if (item.getTitle().equals("סיכומים")) {
-            Intent intent = new Intent(SettingsUser.this, SummariesSubjects.class);
+            Intent intent = new Intent(SettingsUserActivity.this, SummariesSubjects.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
@@ -88,19 +88,19 @@ public class SettingsUser extends AppCompatActivity implements NavigationView.On
             return false;
         }
         if (item.getTitle().equals("פרופיל")) {
-            Intent intent = new Intent(SettingsUser.this, ProfileActivity.class);
+            Intent intent = new Intent(SettingsUserActivity.this, ProfileActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
         }
         if (item.getTitle().equals("מסך הבית")) {
-            Intent intent = new Intent(SettingsUser.this, Homepage.class);
+            Intent intent = new Intent(SettingsUserActivity.this, HomepageActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
         }
         if(item.getTitle().equals("אודות")){
-            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(SettingsUser.this);
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(SettingsUserActivity.this);
             String info = "שלום "+GlobalAcross.currentUser.getfName()+", שמי אלעד ואני פיתחתי את אפליקציה זו. אשמח שתשלח\\י לי פידבק לאימייל: "+"eladbargal2@gmail.com";
             builder.setMessage(info)
                     .setNegativeButton("הבנתי",null);

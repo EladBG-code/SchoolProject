@@ -30,12 +30,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingsUser"
+            android:name=".SettingsUserActivity"
             android:screenOrientation="locked" />
         <activity
             android:name=".ProfileActivity"
             android:screenOrientation="locked" />
-        <activity android:name=".ViewSummary" />
+        <activity android:name=".ViewSummaryActivity" />
         <activity
             android:name=".AddSummaryActivity"
             android:screenOrientation="locked" />
@@ -46,7 +46,7 @@
             android:name=".SummariesSubjects"
             android:screenOrientation="locked" />
         <activity
-            android:name=".Homepage"
+            android:name=".HomepageActivity"
             android:screenOrientation="locked" />
         <activity
             android:name=".RegisterActivity"

@@ -321,7 +321,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
             return false;
         }
         if(item.getTitle().equals("הגדרות")){
-            Intent intent = new Intent(AddSummaryActivity.this, SettingsUser.class);
+            Intent intent = new Intent(AddSummaryActivity.this, SettingsUserActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
@@ -333,7 +333,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
             return false;
         }
         if(item.getTitle().equals("מסך הבית")){
-            Intent intent = new Intent(this,Homepage.class);
+            Intent intent = new Intent(this,HomepageActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;

@@ -24,7 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class ViewSummary extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class ViewSummaryActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private TextView tvSummaryTitle;
     private TextView tvSummaryAuthor;
@@ -87,15 +87,15 @@ public class ViewSummary extends AppCompatActivity implements NavigationView.OnN
         //Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
         if (item.getTitle().equals("התנתקות")) {
 
-            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(ViewSummary.this);
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(ViewSummaryActivity.this);
 
             builder.setMessage("האם את\\ה בטוח\\ה שאת\\ה רוצה להתנתק?")
                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             GlobalAcross.currentUser = null;
-                            Intent intent = new Intent(ViewSummary.this, MainActivity.class);
-                            Toast.makeText(ViewSummary.this, "התנתקת בהצלחה.", Toast.LENGTH_SHORT - 5000).show();
+                            Intent intent = new Intent(ViewSummaryActivity.this, MainActivity.class);
+                            Toast.makeText(ViewSummaryActivity.this, "התנתקת בהצלחה.", Toast.LENGTH_SHORT - 5000).show();
                             sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
 
                             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -115,30 +115,32 @@ public class ViewSummary extends AppCompatActivity implements NavigationView.OnN
 
         }
         if (item.getTitle().equals("סיכומים")) {
-            Intent intent = new Intent(ViewSummary.this, SummariesSubjects.class);
+            Intent intent = new Intent(ViewSummaryActivity.this, SummariesSubjects.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
         }
         if (item.getTitle().equals("הגדרות")) {
             //Will be added in the future
-            Toast.makeText(this, "מסך ההגדרות יהיה זמין לשימוש בעתיד.", Toast.LENGTH_LONG - 5000).show();
+            Intent intent = new Intent(ViewSummaryActivity.this, SettingsUserActivity.class);
+            drawerLayout.closeDrawers();
+            startActivity(intent);
             return false;
         }
         if (item.getTitle().equals("פרופיל")) {
-            Intent intent = new Intent(ViewSummary.this, ProfileActivity.class);
+            Intent intent = new Intent(ViewSummaryActivity.this, ProfileActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
         }
         if (item.getTitle().equals("מסך הבית")) {
-            Intent intent = new Intent(ViewSummary.this, Homepage.class);
+            Intent intent = new Intent(ViewSummaryActivity.this, HomepageActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
         }
         if(item.getTitle().equals("אודות")){
-            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(ViewSummary.this);
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(ViewSummaryActivity.this);
             String info = "שלום "+GlobalAcross.currentUser.getfName()+", שמי אלעד ואני פיתחתי את אפליקציה זו. אשמח שתשלח\\י לי פידבק לאימייל: "+"eladbargal2@gmail.com";
             builder.setMessage(info)
                     .setNegativeButton("הבנתי",null);
