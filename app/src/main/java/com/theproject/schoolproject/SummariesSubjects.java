@@ -171,9 +171,10 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             GlobalAcross.currentUser = null;
-                            Intent intent = new Intent(SummariesSubjects.this,MainActivity.class);
+                            Intent intent = new Intent(SummariesSubjects.this,LoadingActivity.class);
                             Toast.makeText(SummariesSubjects.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT).show();
                             sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+                            GlobalAcross.currentUser = null;
 
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.remove(MainActivity.Index); //Shared preferences - login keeper (key and value)

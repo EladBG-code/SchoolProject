@@ -58,9 +58,10 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             GlobalAcross.currentUser = null;
-                            Intent intent = new Intent(SettingsUserActivity.this, MainActivity.class);
+                            Intent intent = new Intent(SettingsUserActivity.this, LoadingActivity.class);
                             Toast.makeText(SettingsUserActivity.this, "התנתקת בהצלחה.", Toast.LENGTH_SHORT - 5000).show();
                             sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+                            GlobalAcross.currentUser = null;
 
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.remove(MainActivity.Index); //Shared preferences - login keeper (key and value)

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,8 +21,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
@@ -29,6 +32,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -53,6 +57,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     DatabaseReference myRef;
     StorageReference firePfpRef;
     SharedPreferences sharedPreferences;
+    ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,8 +133,9 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             GlobalAcross.currentUser = null;
-                            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                            Intent intent = new Intent(ProfileActivity.this, LoadingActivity.class);
                             Toast.makeText(ProfileActivity.this, "התנתקת בהצלחה.", Toast.LENGTH_SHORT - 5000).show();
+                            GlobalAcross.currentUser = null;
                             sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
 
                             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -221,6 +227,11 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == 1) {
             // PICK IMAGE FROM FILES (Gallery)
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setTitle("מעלים את התמונה...");
+            progressDialog.setProgress(0);
+            progressDialog.show();
             final ShapeableImageView profilePictureReference = findViewById(R.id.ivProfilePictureIcon);
             try {
                 InputStream inputStream = getContentResolver().openInputStream(data.getData());
@@ -248,9 +259,35 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                         profilePictureReference.setImageBitmap(bitmapPFP);
 
                         GlobalAcross.currentUser.setPfpPath(firePfpRef.getPath());
-                        myRef.setValue(firePfpRef.getPath());
-
-                        Toast.makeText(ProfileActivity.this, "התמונת פרופיל שונתה בהצלחה!", Toast.LENGTH_LONG - 5000).show();
+                        myRef.setValue(firePfpRef.getPath()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    Toast.makeText(ProfileActivity.this,"התמונה הועלתה בהצלחה.",Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
+                                else{
+                                    Toast.makeText(ProfileActivity.this,"נתקלנו בבעיה... בדקו את החיבור לאינטרנט - התמונה לא הועלתה.",Toast.LENGTH_LONG).show();
+                                }
+                                try {
+                                    if ((progressDialog != null) && progressDialog.isShowing()) {
+                                        progressDialog.dismiss();
+                                    }
+                                } catch (final IllegalArgumentException e) {
+                                    // Handle or log or ignore
+                                } catch (final Exception e) {
+                                    // Handle or log or ignore
+                                } finally {
+                                    progressDialog = null;
+                                }
+                            }
+                        });
+                    }
+                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                        int currentProgress = (int) (100*snapshot.getBytesTransferred()/snapshot.getTotalByteCount()); //Formula to get the progress percentage of bytes transferred over total bytes times 100 casted into int
+                        progressDialog.setProgress(currentProgress);
                     }
                 });
 
@@ -261,6 +298,11 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         if (requestCode == 0 && resultCode == RESULT_OK) {
             // TAKE A PHOTO FROM CAMERA
             if (data.getExtras() != null) {
+                progressDialog = new ProgressDialog(this);
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                progressDialog.setTitle("מעלים את התמונה...");
+                progressDialog.setProgress(0);
+                progressDialog.show();
                 Bundle extras = data.getExtras();
                 final Bitmap bitmapPFP =  (Bitmap) extras.get("data");
 
@@ -286,9 +328,37 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                         profilePictureReference.setImageBitmap(bitmapPFP);
 
                         GlobalAcross.currentUser.setPfpPath(firePfpRef.getPath());
-                        myRef.setValue(firePfpRef.getPath());
+                        myRef.setValue(firePfpRef.getPath()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    Toast.makeText(ProfileActivity.this,"התמונה הועלתה בהצלחה.",Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
+                                else{
+                                    Toast.makeText(ProfileActivity.this,"נתקלנו בבעיה... בדקו את החיבור לאינטרנט - התמונה לא הועלתה.",Toast.LENGTH_LONG).show();
+                                }
+                                try {
+                                    if ((progressDialog != null) && progressDialog.isShowing()) {
+                                        progressDialog.dismiss();
+                                    }
+                                } catch (final IllegalArgumentException e) {
+                                    // Handle or log or ignore
+                                } catch (final Exception e) {
+                                    // Handle or log or ignore
+                                } finally {
+                                    progressDialog = null;
+                                }
+                            }
+                        });
 
                         Toast.makeText(ProfileActivity.this, "התמונת פרופיל שונתה בהצלחה!", Toast.LENGTH_LONG - 5000).show();
+                    }
+                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                        int currentProgress = (int) (100*snapshot.getBytesTransferred()/snapshot.getTotalByteCount()); //Formula to get the progress percentage of bytes transferred over total bytes times 100 casted into int
+                        progressDialog.setProgress(currentProgress);
                     }
                 });
             }

@@ -2,6 +2,7 @@ package com.theproject.schoolproject;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,9 +29,9 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText etPassword,etUsername;
-    Button btnLogin;
     TextView tvRegister;
     FirebaseDatabase database;
+    CardView cvLoginBtn;
     DatabaseReference myRef;
 
     SharedPreferences sharedPreferences;
@@ -45,15 +46,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         etPassword = findViewById(R.id.etPasswordL);
         etUsername = findViewById(R.id.etUsernameL);
-        btnLogin = findViewById(R.id.btnLogin);
         /*btnAutoFill = findViewById(R.id.btnAutoFill); */ //Remove this line once you're done with testing
         tvRegister = findViewById(R.id.tvRegister);
+        cvLoginBtn = findViewById(R.id.cvLoginBtn);
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("UsersPlace");
 
+        cvLoginBtn.setOnClickListener(this);
         tvRegister.setOnClickListener(this);
-        btnLogin.setOnClickListener(this);
         /*btnAutoFill.setOnClickListener(this); */ //Remove this line once you're done with testing
 
 
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(this, RegisterActivity.class);
             startActivity(intent);
         }
-        if (v == btnLogin) {
+        if(v == cvLoginBtn){
             if (etUsername.getText().toString().isEmpty() || etPassword.getText().toString().isEmpty()) {
                 vibratePhone(200);
                 Toast.makeText(this, "אנא בדקו אם מלאתם את שדה הסיסמה ושם המשתמש.", Toast.LENGTH_SHORT).show();
@@ -78,35 +79,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             else{
                 //loginV2(etUsername.getText().toString(),etPassword.getText().toString());   ----> W.I.P - Very important function!
 
-            int index = findIndexOfUser(etUsername.getText().toString());
-            if (index != -1) {
-                if (GlobalAcross.allUsers.get(index).getPassword().equals(etPassword.getText().toString())) {
-                    GlobalAcross.currentUser = GlobalAcross.allUsers.get(index);
-                    //Create an intent for the homepage and redirect the user to there - SUCCESSFUL LOGIN
-                    Toast.makeText(this, "התחברת בהצלחה " + GlobalAcross.currentUser.getfName() + '!', Toast.LENGTH_SHORT).show();
-                    sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putInt(Index,index);
-                    editor.putBoolean(Logged,true);
-                    editor.commit();
+                int index = findIndexOfUser(etUsername.getText().toString());
+                if (index != -1) {
+                    if (GlobalAcross.allUsers.get(index).getPassword().equals(etPassword.getText().toString())) {
+                        GlobalAcross.currentUser = GlobalAcross.allUsers.get(index);
+                        //Create an intent for the homepage and redirect the user to there - SUCCESSFUL LOGIN
+                        Toast.makeText(this, "התחברת בהצלחה " + GlobalAcross.currentUser.getfName() + '!', Toast.LENGTH_SHORT).show();
+                        sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putInt(Index,index);
+                        editor.putBoolean(Logged,true);
+                        editor.commit();
 
-                    Intent intent = new Intent(this, HomepageActivity.class);
-                    startActivity(intent);
-                    finish();
+                        Intent intent = new Intent(this, HomepageActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        //Incorrect password
+                        vibratePhone(200);
+                        Toast.makeText(this, "הסיסמה שגויה. תקן ונסה שוב.", Toast.LENGTH_SHORT).show();
+                    }
+                    //Login successful
                 } else {
-                    //Incorrect password
+                    //User doesn't exist
                     vibratePhone(200);
-                    Toast.makeText(this, "הסיסמה שגויה. תקן ונסה שוב.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "המשתמש אינו קיים במערכת כלל.", Toast.LENGTH_SHORT).show();
                 }
-                //Login successful
-            } else {
-                //User doesn't exist
-                vibratePhone(200);
-                Toast.makeText(this, "המשתמש אינו קיים במערכת כלל.", Toast.LENGTH_SHORT).show();
             }
         }
-        }
-    }
+            }
 
     public static int findIndexOfUser(String username)
     {

@@ -28,6 +28,12 @@ public class GlobalAcross {
         return subjects;
     }
 
+    public static void logoutFunction(){
+        allUsers = null;
+        currentUser = null;
+        //currentUserIndex = -1;
+    }
+
     /*public static void logoutResetUser(){
         currentUser.setEmail("");
         currentUser.setfName("");

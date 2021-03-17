@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -249,9 +250,10 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             currentUser = null;
-                            Intent intent = new Intent(ViewSummariesOnSubject.this,MainActivity.class);
+                            Intent intent = new Intent(ViewSummariesOnSubject.this, LoadingActivity.class);
                             Toast.makeText(ViewSummariesOnSubject.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT).show();
                             sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+                            GlobalAcross.currentUser = null;
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.remove(MainActivity.Index); //Shared preferences - login keeper (key and value)
                             editor.remove(MainActivity.Logged); //Shared preferences - login keeper

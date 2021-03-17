@@ -42,7 +42,6 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
     TextView tvWelcomeMessage,tvToSummaries;
     ImageView ivLibraryIcon;
     ShapeableImageView ivProfilePictureHomepage;
-    StorageReference firePfpRef;
 
     SharedPreferences sharedPreferences;
 
@@ -119,7 +118,7 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             GlobalAcross.currentUser = null; /*Temp disable*/
-                            Intent intent = new Intent(HomepageActivity.this,MainActivity.class);
+                            Intent intent = new Intent(HomepageActivity.this,LoadingActivity.class);
                             Toast.makeText(HomepageActivity.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT-5000).show();
                             sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
 

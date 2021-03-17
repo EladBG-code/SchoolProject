@@ -94,9 +94,10 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             GlobalAcross.currentUser = null;
-                            Intent intent = new Intent(ViewSummaryActivity.this, MainActivity.class);
+                            Intent intent = new Intent(ViewSummaryActivity.this, LoadingActivity.class);
                             Toast.makeText(ViewSummaryActivity.this, "התנתקת בהצלחה.", Toast.LENGTH_SHORT - 5000).show();
                             sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+                            GlobalAcross.currentUser = null;
 
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.remove(MainActivity.Index); //Shared preferences - login keeper (key and value)

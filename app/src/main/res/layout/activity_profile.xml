@@ -19,7 +19,7 @@
             android:id="@+id/toolbarProfile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_blue_dark"
+            android:background="@color/colorPrimaryDark"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
             app:menu="@menu/main_menu"
@@ -68,7 +68,10 @@
                         app:layout_anchorGravity="top|center"
                         app:shapeAppearance="@style/roundedImageViewRounded"
                         android:layout_marginTop="25sp"
-                        app:strokeWidth="1sp" />
+                        android:layout_marginBottom="30sp"
+                        app:strokeWidth="1sp"
+                        app:strokeColor="@color/colorPrimary"
+                        />
 
                 </FrameLayout>
 
