@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.LayoutInflater;
@@ -62,6 +63,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         floatingUploadButton.setOnClickListener(this);
         subject = new Subject(getIntent().getStringExtra("SubjectSelected"));
         tvSubjectName.setText(getIntent().getStringExtra("SubjectSelected")); /*This line sets the name of the subject which was selected as the title of the subject's summary page*/
+        tvSubjectName.setPaintFlags(tvSubjectName.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG); //Makes the subject name textview bold
         titles = new ArrayList<>();
         database = FirebaseDatabase.getInstance();
         summariesRef = database.getReference(subject.getSubjectName());

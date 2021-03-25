@@ -54,9 +54,9 @@
                 android:layout_height="match_parent"
                 android:id="@+id/tvSubjectName"
                 android:layout_marginTop="56sp"
-                android:textSize="35sp"
+                android:textSize="34sp"
                 android:text="Subject name"
-                android:gravity="right"
+                android:gravity="center|top"
                 />
 
 

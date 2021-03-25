@@ -16,6 +16,8 @@
         android:clickable="true"
         android:focusable="true"
         android:minHeight="130dp"
+        app:cardCornerRadius="10sp"
+        android:outlineAmbientShadowColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

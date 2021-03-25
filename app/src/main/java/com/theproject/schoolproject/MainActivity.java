@@ -52,9 +52,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("UsersPlace");
-
+        
         cvLoginBtn.setOnClickListener(this);
         tvRegister.setOnClickListener(this);
+
         /*btnAutoFill.setOnClickListener(this); */ //Remove this line once you're done with testing
 
 
