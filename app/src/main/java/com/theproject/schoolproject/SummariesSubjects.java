@@ -85,7 +85,7 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
     }
 
     public void nextPageOfButton(Button subject){
-        Intent intent = new Intent(this,ViewSummariesOnSubject.class);
+        Intent intent = new Intent(this,ViewSummariesOnSubjectActivity.class);
         intent.putExtra("SubjectSelected",subject.getText());
         startActivity(intent);
     }

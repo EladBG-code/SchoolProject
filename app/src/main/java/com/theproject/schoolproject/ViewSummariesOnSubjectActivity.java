@@ -39,7 +39,7 @@ import java.util.List;
 import static com.theproject.schoolproject.GlobalAcross.currentUser;
 import static com.theproject.schoolproject.GlobalAcross.currentUserIndex;
 
-public class ViewSummariesOnSubject extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -163,14 +163,14 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
                    newLikes= newLikes+1;
                    updateLikesDB(selectedKeySummary, newLikes);
                    updateListOfLikes(selectedKeySummary, true);
-                   Toast.makeText(ViewSummariesOnSubject.this, "הסיכום נשמר בסיכומים שלי", Toast.LENGTH_SHORT).show();
+                   Toast.makeText(ViewSummariesOnSubjectActivity.this, "הסיכום נשמר בסיכומים שלי", Toast.LENGTH_SHORT).show();
                    holder.btnHeart.setChecked(true);
                 }
                 if(!holder.btnHeart.isChecked()){
                     newLikes= newLikes-1;
                     updateLikesDB(selectedKeySummary, newLikes);
                     updateListOfLikes(selectedKeySummary, false);
-                    Toast.makeText(ViewSummariesOnSubject.this, "הסיכום הוסר מהסיכומים שלי", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ViewSummariesOnSubjectActivity.this, "הסיכום הוסר מהסיכומים שלי", Toast.LENGTH_SHORT).show();
                     holder.btnHeart.setChecked(false);
                 }
 
@@ -181,7 +181,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         holder.btnViewSummary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ViewSummariesOnSubject.this,ViewSummaryActivity.class);
+                Intent intent = new Intent(ViewSummariesOnSubjectActivity.this,ViewSummaryActivity.class);
                 intent.putExtra("summaryKey",getRef(position).getKey());
                 intent.putExtra("subject",subject.getSubjectName());
                 startActivity(intent);
@@ -191,7 +191,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
         holder.v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ViewSummariesOnSubject.this,ViewSummaryActivity.class);
+                Intent intent = new Intent(ViewSummariesOnSubjectActivity.this,ViewSummaryActivity.class);
                 intent.putExtra("summaryKey",getRef(position).getKey());
                 intent.putExtra("subject",subject.getSubjectName());
                 startActivity(intent);
@@ -246,14 +246,14 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         if(item.getTitle().equals("התנתקות")){
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(ViewSummariesOnSubject.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(ViewSummariesOnSubjectActivity.this);
             builder.setMessage("האם את\\ה בטוח\\ה שאת\\ה רוצה להתנתק?")
                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             currentUser = null;
-                            Intent intent = new Intent(ViewSummariesOnSubject.this, LoadingActivity.class);
-                            Toast.makeText(ViewSummariesOnSubject.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(ViewSummariesOnSubjectActivity.this, LoadingActivity.class);
+                            Toast.makeText(ViewSummariesOnSubjectActivity.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT).show();
                             sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
                             GlobalAcross.currentUser = null;
                             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -277,13 +277,13 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
             return false;
         }
         if(item.getTitle().equals("הגדרות")){
-            Intent intent = new Intent(ViewSummariesOnSubject.this, SettingsUserActivity.class);
+            Intent intent = new Intent(ViewSummariesOnSubjectActivity.this, SettingsUserActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
         }
         if(item.getTitle().equals("פרופיל")){
-            Intent intent = new Intent(ViewSummariesOnSubject.this,ProfileActivity.class);
+            Intent intent = new Intent(ViewSummariesOnSubjectActivity.this,ProfileActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
@@ -295,7 +295,7 @@ public class ViewSummariesOnSubject extends AppCompatActivity implements Navigat
             return false;
         }
         if(item.getTitle().equals("אודות")){
-            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(ViewSummariesOnSubject.this);
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(ViewSummariesOnSubjectActivity.this);
             String info = "שלום "+ currentUser.getfName()+", שמי אלעד ואני פיתחתי את אפליקציה זו. אשמח שתשלח\\י לי פידבק לאימייל: "+"eladbargal2@gmail.com";
             builder.setMessage(info)
                     .setNegativeButton("הבנתי",null);

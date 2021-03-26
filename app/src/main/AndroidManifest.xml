@@ -40,7 +40,7 @@
             android:name=".AddSummaryActivity"
             android:screenOrientation="locked" />
         <activity
-            android:name=".ViewSummariesOnSubject"
+            android:name=".ViewSummariesOnSubjectActivity"
             android:screenOrientation="locked" />
         <activity
             android:name=".SummariesSubjects"
