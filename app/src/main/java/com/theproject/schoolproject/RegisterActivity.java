@@ -1,6 +1,7 @@
 package com.theproject.schoolproject;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.imageview.ShapeableImageView;
@@ -38,10 +40,12 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
     String[] arrClasses = {"י'" ,"י"+'"'+"א", "י"+'"'+"ב"};
     //To here
 
-    Button btnRegister,btnLoginBack;
+    Button btnRegister;
     EditText etFName,etLName,etUsername,etEmail,etPassword;
     FirebaseDatabase database;
     DatabaseReference myRef;
+    TextView tvLoginBack;
+    CardView cvRegisterBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,16 +60,16 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         //Sets the Spinner and its Items
 
         spinnerClass = findViewById(R.id.spinnerClass);
+        tvLoginBack = findViewById(R.id.tvLoginBack);
+        cvRegisterBtn = findViewById(R.id.cvRegisterBtn);
 
         adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,arrClasses);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinnerClass.setAdapter(adapter);
-        btnLoginBack = findViewById(R.id.btnLoginBack);
-        btnRegister = findViewById(R.id.btnRegister);
 
-        btnRegister.setOnClickListener(this);
-        btnLoginBack.setOnClickListener(this);
+        tvLoginBack.setOnClickListener(this);
+        cvRegisterBtn.setOnClickListener(this);
         spinnerClass.setOnItemSelectedListener(this);
 
         etFName = findViewById(R.id.etFName);
@@ -118,7 +122,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
             if (fName.isEmpty()) {
                 //This section makes the phone vibrate and display a toast telling the user to recheck their details if the field is empty
                 vibratePhone(200);
-                Toast.makeText(this, "חזור ומלא את הפרטים בשדה השם הפרטי", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "חזרו ומלאו את הפרטים בשדה השם הפרטי", Toast.LENGTH_SHORT).show();
                 return false;
             }
             if (!fName.matches("[א-ת]+")) {
@@ -126,7 +130,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
                 //This section makes the phone vibrate and display a toast telling the user to recheck their details
                 vibratePhone(200);
-                Toast.makeText(this, "חזור ובדוק את תקינות שדה השם הפרטי", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "חזורו ובדוקו את תקינות שדה השם הפרטי", Toast.LENGTH_SHORT).show();
                 return false;
             }
 
@@ -134,7 +138,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
             if (lName.isEmpty()) {
                 //This section makes the phone vibrate and display a toast telling the user to recheck their details if the field is empty
                 vibratePhone(200);
-                Toast.makeText(this, "חזור ומלא את הפרטים בשדה שם המשפחה", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "חזורו ומלאו את הפרטים בשדה שם המשפחה", Toast.LENGTH_SHORT).show();
                 return false;
             }
             if (!lName.matches("[א-ת]+") || strContainArr(lName, illegalCharacters)) {
@@ -142,7 +146,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
                 //This section makes the phone vibrate and display a toast telling the user to recheck their details
                 vibratePhone(200);
-                Toast.makeText(this, "חזור ובדוק את תקינות שדה שם המשפחה", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "חזורו ובדוקו את תקינות שדה שם המשפחה", Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
@@ -180,8 +184,8 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
     }
 
     @Override
-    public void onClick(View view) {
-        if(view == btnRegister){
+    public void onClick(View v) {
+        if(v == cvRegisterBtn){
             if(validDetails(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString())){
                 User newUser = new User(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString(),classNum);
                 GlobalAcross.allUsers.add(newUser);
@@ -195,7 +199,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 finish();
             }
         }
-        if(view == btnLoginBack){
+        if(v == tvLoginBack){
             super.onBackPressed();
         }
     }
