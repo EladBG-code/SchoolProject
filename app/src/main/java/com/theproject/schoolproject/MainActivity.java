@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -69,8 +70,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         /*if(v == btnAutoFill){etPassword.setText("e123456"); etUsername.setText("eladbg");} */ //Remove this line once you're done with testing
         if (v == tvRegister) {
-            Intent intent = new Intent(this, RegisterActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(this, RegisterActivity.class), ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }
         if(v == cvLoginBtn){
             if (etUsername.getText().toString().isEmpty() || etPassword.getText().toString().isEmpty()) {
@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         if(super.getClass() == RegisterActivity.class){
-            super.onBackPressed();
+            startActivity(new Intent(this, RegisterActivity.class), ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }
         else{
             this.finishAffinity();

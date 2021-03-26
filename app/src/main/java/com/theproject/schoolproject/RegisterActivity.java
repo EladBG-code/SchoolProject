@@ -3,36 +3,32 @@ package com.theproject.schoolproject;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.transition.TransitionManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.imageview.ShapeableImageView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import static androidx.core.content.ContextCompat.getSystemService;
-
-public class RegisterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class RegisterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener{
     //XML Spinner items insertion below
     int classNum;
     Spinner spinnerClass;
@@ -40,17 +36,31 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
     String[] arrClasses = {"י'" ,"י"+'"'+"א", "י"+'"'+"ב"};
     //To here
 
-    Button btnRegister;
     EditText etFName,etLName,etUsername,etEmail,etPassword;
     FirebaseDatabase database;
     DatabaseReference myRef;
-    TextView tvLoginBack;
+    TextView tvLoginBack,tvCharCountUsername,tvCharCountPassword,tvCharCountEmail;
     CardView cvRegisterBtn;
+    ColorFilter cfTemp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        etLName = findViewById(R.id.etLName);
+        etFName = findViewById(R.id.etFName);
+        etUsername = findViewById(R.id.etUsername);
+        etEmail = findViewById(R.id.etEmailReg);
+        etPassword = findViewById(R.id.etPassword);
+
+        cfTemp = etLName.getBackground().getColorFilter(); //Gets the color filter before it changes to red
+
+        tvCharCountUsername = findViewById(R.id.tvCharCountUsername);
+        tvCharCountEmail = findViewById(R.id.tvCharCountEmail);
+        tvCharCountPassword = findViewById(R.id.tvCharCountPassword);
+
         setSpinner();
+
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("UsersPlace");
 
@@ -72,12 +82,53 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         cvRegisterBtn.setOnClickListener(this);
         spinnerClass.setOnItemSelectedListener(this);
 
-        etFName = findViewById(R.id.etFName);
-        etLName = findViewById(R.id.etLName);
-        etUsername = findViewById(R.id.etUsername);
-        etEmail = findViewById(R.id.etEmailReg);
-        etPassword = findViewById(R.id.etPassword);
+        etTextChangeListeners(etUsername,tvCharCountUsername,14);
+        etTextChangeListeners(etEmail,tvCharCountEmail,55);
+        etTextChangeListeners(etPassword,tvCharCountPassword,30);
 
+
+    }
+
+    public void etTextChangeListeners(final EditText et , final TextView tvCharCountET, final int maxCount){
+        et.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                count = et.getText().toString().length();
+                if(count == 0) {
+                    tvCharCountET.setVisibility(View.GONE);
+                    et.getBackground().mutate().setColorFilter(cfTemp); //sets the color filter back to default of the edittext
+                }
+                    else{
+                    tvCharCountET.setVisibility(View.VISIBLE);
+                    tvCharCountET.setText(count+"/"+maxCount);
+
+                    if(count - 1 == maxCount){
+                        vibratePhone(200);
+                    }
+                    if(count > maxCount || (count < 4 && count > 0)) {
+                        tvCharCountET.setTextColor(Color.RED);
+                        et.getBackground().mutate().setColorFilter(getResources().getColor(android.R.color.holo_red_light), PorterDuff.Mode.SRC_ATOP); //sets the color filter to red of (the edittext because it's too many chars)
+
+                    }
+                    else{
+                        et.getBackground().mutate().setColorFilter(cfTemp); //sets the color filter back to default of the edittext
+                        tvCharCountET.setTextColor(Color.BLACK);
+                    }
+                }
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     @Override
@@ -130,7 +181,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
                 //This section makes the phone vibrate and display a toast telling the user to recheck their details
                 vibratePhone(200);
-                Toast.makeText(this, "חזורו ובדוקו את תקינות שדה השם הפרטי", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "חזרו ובדקו את תקינות שדה השם הפרטי", Toast.LENGTH_SHORT).show();
                 return false;
             }
 
@@ -138,7 +189,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
             if (lName.isEmpty()) {
                 //This section makes the phone vibrate and display a toast telling the user to recheck their details if the field is empty
                 vibratePhone(200);
-                Toast.makeText(this, "חזורו ומלאו את הפרטים בשדה שם המשפחה", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "חזרו ומלאו את הפרטים בשדה שם המשפחה", Toast.LENGTH_SHORT).show();
                 return false;
             }
             if (!lName.matches("[א-ת]+") || strContainArr(lName, illegalCharacters)) {
@@ -146,7 +197,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
                 //This section makes the phone vibrate and display a toast telling the user to recheck their details
                 vibratePhone(200);
-                Toast.makeText(this, "חזורו ובדוקו את תקינות שדה שם המשפחה", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "חזורו ובדקו את תקינות שדה שם המשפחה", Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
@@ -200,13 +251,13 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
             }
         }
         if(v == tvLoginBack){
-            super.onBackPressed();
+            onBackPressed();
         }
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        startActivity(new Intent(this, MainActivity.class),ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
     }
 
 }
