@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:orientation="vertical"
+    android:background="@drawable/layered_waves_svg_bg"
     >
 
     <TextView
@@ -14,7 +15,8 @@
         android:gravity="center"
         android:text="התחברות"
         android:layout_marginBottom="10sp"
-        android:layout_marginTop="50sp"
+        android:layout_marginTop="20sp"
+        android:textColor="@color/colorPrimaryDark"
         android:textStyle="bold"
         android:textSize="25sp" />
 
@@ -22,43 +24,59 @@
         android:layout_width="200sp"
         android:layout_height="200sp"
         android:src="@drawable/applogo"
+        android:layout_marginBottom="10sp"
         android:layout_gravity="center"
         />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50sp"
-        android:orientation="horizontal">
-
-    <EditText
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/etUsernameL"
-        android:hint="שם משתמש"
-        android:drawableStart="@drawable/icon_username_login"
-        android:layout_marginRight="20sp"
-        android:layout_marginLeft="20sp"
-        />
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50sp"
-        android:orientation="horizontal"
+        android:layout_marginRight="15sp"
+        android:layout_marginLeft="15sp"
+        app:cardCornerRadius="25sp"
+        app:cardElevation="10sp"
         >
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/etPasswordL"
-        android:inputType="textPassword"
-        android:hint="סיסמה"
-        android:gravity="right"
-        android:drawableStart="@drawable/icon_lock_password"
-        android:layout_marginRight="20sp"
-        android:layout_marginLeft="20sp"
-        />
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5sp"
+            android:layout_marginRight="5sp"
+            android:orientation="vertical">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/etUsernameL"
+                android:hint="שם משתמש"
+                android:drawableStart="@drawable/icon_username_login"
+                android:layout_marginTop="5sp"
+                android:layout_marginLeft="5sp"
+                android:layout_marginRight="5sp"
+                />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/etPasswordL"
+                android:inputType="textPassword"
+                android:hint="סיסמה"
+                android:gravity="right"
+                android:layout_marginTop="5sp"
+                android:drawableStart="@drawable/icon_lock_password"
+                android:layout_marginBottom="5sp"
+                android:layout_marginLeft="5sp"
+                android:layout_marginRight="5sp"
+                />
+
+        </LinearLayout>
+
+
+
+
+
+
+
+    </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cvLoginBtn"
@@ -95,12 +113,4 @@
         android:textColor="@color/colorPrimaryDark"
         android:layout_marginBottom="50sp"
         />
-<!--
-    <Button
-        android:layout_width="200sp"
-        android:layout_height="60sp"
-        android:text="REMOVE ME ONCE YOU'RE DONE TESTING (Autofill)"
-        android:id="@+id/btnAutoFill"
-        />
--->
 </LinearLayout>
