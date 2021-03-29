@@ -101,16 +101,34 @@
             android:textColor="@color/cardview_light_background"
             android:textStyle="bold" />
     </androidx.cardview.widget.CardView>
-    <TextView
-        android:layout_marginTop="17sp"
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="17sp"
         android:layout_gravity="center"
-        android:textSize="18sp"
-        android:text="אין לך עדיין חשבון?"
-        android:textStyle="bold"
-        android:id="@+id/tvRegister"
-        android:textColor="@color/colorPrimaryDark"
-        android:layout_marginBottom="50sp"
-        />
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text=" הירשמו"
+            android:textStyle="bold"
+            android:id="@+id/tvRegister"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_marginBottom="50sp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="אין לכם עדיין חשבון?"
+            android:textColor="@color/white"
+            android:layout_marginBottom="50sp"
+            />
+
+    </LinearLayout>
+
 </LinearLayout>
