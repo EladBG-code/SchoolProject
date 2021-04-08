@@ -48,6 +48,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/etUsernameL"
                 android:hint="שם משתמש"
+                android:maxLines="1"
+                android:inputType="text"
                 android:drawableStart="@drawable/icon_username_login"
                 android:layout_marginTop="5sp"
                 android:layout_marginLeft="5sp"

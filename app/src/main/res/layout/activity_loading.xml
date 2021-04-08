@@ -7,7 +7,6 @@
     tools:context=".LoadingActivity"
     android:orientation="horizontal"
     android:gravity="center_horizontal"
-    android:background="@drawable/layered_waves_svg_bg"
     >
     <RelativeLayout
         android:layout_width="match_parent"

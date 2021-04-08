@@ -4,19 +4,24 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,11 +44,11 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     MaterialToolbar toolbar;
-    TextView tvWelcomeMessage,tvToSummaries;
-    ImageView ivLibraryIcon;
+    TextView tvWelcomeMessage;
     ShapeableImageView ivProfilePictureHomepage;
-
+    CardView cvToSummaries,cvDownloadPDFapp;
     SharedPreferences sharedPreferences;
+    LinearLayout llFirstSuggestionLayout;
 
     //public static final String fileName = "login";
     //public static final String Username = "username";
@@ -57,8 +62,9 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbarHome);
         tvWelcomeMessage = findViewById(R.id.tvHomeWelcome);
-        ivLibraryIcon = findViewById(R.id.ivLibraryIcon);
-        tvToSummaries = findViewById(R.id.tvToSummaries);
+        cvToSummaries = findViewById(R.id.cvToSummaries);
+        cvDownloadPDFapp = findViewById(R.id.cvDownloadPDFapp);
+        llFirstSuggestionLayout = findViewById(R.id.llFirstSuggestionLayout);
         ivProfilePictureHomepage = findViewById(R.id.ivProfilePictureIconHomepage);
         tvWelcomeMessage.setText("ברוכים השבים "+GlobalAcross.currentUser.getfName()); /*Tells the user a welcome message with their own name! */
 
@@ -69,9 +75,9 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
-        ivLibraryIcon.setOnClickListener(this);
-        tvToSummaries.setOnClickListener(this);
         ivProfilePictureHomepage.setOnClickListener(this);
+        cvToSummaries.setOnClickListener(this);
+        cvDownloadPDFapp.setOnClickListener(this);
 
         if(!GlobalAcross.currentUser.getPfpPath().equals("none")){
             //Gets the image of the user and displays it on the homepage top right corner
@@ -103,6 +109,15 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
                 }
 
         }
+
+        if(GlobalAcross.firstLoginSuggestion){
+            GlobalAcross.firstLoginSuggestion = false;
+            //First login --> show the user the ad to use the pdf scanner here
+            llFirstSuggestionLayout.setVisibility(View.VISIBLE);
+        }
+
+
+
         //startService(new Intent(Homepage.this,notificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
     }
 
@@ -187,7 +202,16 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     public void onClick(View v) {
-        if(v == ivLibraryIcon || v == tvToSummaries){
+        if(v == cvDownloadPDFapp){
+            //Open link to the app
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.adobe.scan.android")));
+            }
+            catch (ActivityNotFoundException e){
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.adobe.scan.android")));
+            }
+        }
+        if(v == cvToSummaries){
             Intent intent = new Intent(this,SummariesSubjects.class);
             startActivity(intent);
             //finish();

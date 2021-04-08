@@ -6,6 +6,7 @@ public class GlobalAcross {
     public static ArrayList<User> allUsers; //The ArrayList of all users (used for login - needs to be replaced)
     public static User currentUser; //Current logged in user
     public static int currentUserIndex;
+    public static boolean firstLoginSuggestion = false;
 
     //Useful global functions across the application : for the current user
     public static String getCurrentUserGradeString(){
