@@ -46,35 +46,35 @@ public class LoadingActivity extends AppCompatActivity {
         // Read from the database
         sharedPreferences = getSharedPreferences("index", Context.MODE_PRIVATE);
 
-         new Thread(new Runnable() { //This makes a thread that runs in the background regardless of the UI loading in here that does both actions
-                @Override
-                public void run() {
-                    while (pbStatus < 100) {
-                        pbStatus++;
-                        loadingP.setText(pbStatus+"%");
-                        android.os.SystemClock.sleep(15);
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                progressBar.setProgress(pbStatus);
-                            }
-                        });
-                    }
+        new Thread(new Runnable() { //This makes a thread that runs in the background regardless of the UI loading in here that does both actions
+            @Override
+            public void run() {
+                while (pbStatus < 100) {
+                    pbStatus++;
+                    loadingP.setText(pbStatus+"%");
+                    android.os.SystemClock.sleep(15);
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            loadingFunc();
+                            progressBar.setProgress(pbStatus);
                         }
                     });
                 }
-            }).start();
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadingFunc();
+                    }
+                });
+            }
+        }).start();
 
 
 
-        }
+    }
 
 
-        //loadingFunc();
+    //loadingFunc();
     public void loadingFunc() {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
