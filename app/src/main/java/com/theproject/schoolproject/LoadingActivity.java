@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ public class LoadingActivity extends AppCompatActivity {
     TextView loadingP;
     int pbStatus = 0;
     private Handler mHandler = new Handler();
+    boolean finishedLoad = false;
 
     SharedPreferences sharedPreferences;
 
@@ -46,13 +48,13 @@ public class LoadingActivity extends AppCompatActivity {
         // Read from the database
         sharedPreferences = getSharedPreferences("index", Context.MODE_PRIVATE);
 
-        new Thread(new Runnable() { //This makes a thread that runs in the background regardless of the UI loading in here that does both actions
+        Thread thread = new Thread(new Runnable() { //This makes a thread that runs in the background regardless of the UI loading in here that does both actions
             @Override
             public void run() {
-                while (pbStatus < 100) {
+                while (pbStatus < 100 && !finishedLoad) {
                     pbStatus++;
-                    loadingP.setText(pbStatus+"%");
-                    android.os.SystemClock.sleep(15);
+                    loadingP.setText(pbStatus + "%");
+                    SystemClock.sleep(15);
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -67,14 +69,15 @@ public class LoadingActivity extends AppCompatActivity {
                     }
                 });
             }
-        }).start();
+        });
+        thread.start();
 
 
 
-    }
+        }
 
 
-    //loadingFunc();
+        //loadingFunc();
     public void loadingFunc() {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -95,6 +98,7 @@ public class LoadingActivity extends AppCompatActivity {
                     if (dataSnapshot.getValue(t) != null) {
                         allUsers.addAll(dataSnapshot.getValue(t));
                     }
+                    finishedLoad = true;
                     Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
                     startActivity(intent);
                 }

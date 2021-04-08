@@ -98,6 +98,10 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                /*if(et.getText().toString().charAt(et.getText().length()-1) == '\n')
+                {
+                    et.setText(et.getText().toString().substring(0,et.getText().length()-2));
+                }*/
                 count = et.getText().toString().length();
                 if(count == 0) {
                     tvCharCountET.setVisibility(View.GONE);
