@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import static com.theproject.schoolproject.GlobalAcross.allUsers;
 import static com.theproject.schoolproject.GlobalAcross.currentUser;
+import static com.theproject.schoolproject.GlobalAcross.currentUserIndex;
 
 public class LoadingActivity extends AppCompatActivity {
 
@@ -63,7 +64,7 @@ public class LoadingActivity extends AppCompatActivity {
                 while (pbStatus < 100) {
                     pbStatus++;
                     loadingP.setText(pbStatus + "%");
-                    SystemClock.sleep(15);
+                    //SystemClock.sleep(15);
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -98,6 +99,9 @@ public class LoadingActivity extends AppCompatActivity {
                     //Checks if the user was logged in the device and places the correct path reference for his saved index and pulls out the class out of the arraylist in the firebase database
                     currentUser = snapshot.getValue(t).get(sharedPreferences.getInt("index", 0));
                     Toast.makeText(LoadingActivity.this, "ברוכים השבים " + currentUser.getfName() + '.', Toast.LENGTH_SHORT).show();
+                    currentUserIndex = sharedPreferences.getInt("index",0);
+                    progressBar.setProgress(100);
+                    loadingP.setText(100 + "%");
                     Intent intent = new Intent(LoadingActivity.this, HomepageActivity.class);
                     startActivity(intent);
                 }
@@ -114,7 +118,7 @@ public class LoadingActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(LoadingActivity.this,"אאוץ! נתקלנו בשגיאה! נסו לפתוח את האפליקציה שוב.", Toast.LENGTH_SHORT).show();
+
             }
         });
 

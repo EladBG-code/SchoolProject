@@ -79,42 +79,45 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         cvToSummaries.setOnClickListener(this);
         cvDownloadPDFapp.setOnClickListener(this);
 
-        if(!GlobalAcross.currentUser.getPfpPath().equals("none")){
-            //Gets the image of the user and displays it on the homepage top right corner
-            StorageReference firePfpRef;
-            String pfpPath = GlobalAcross.currentUser.getPfpPath();
-                firePfpRef = storage.getInstance().getReference().child(GlobalAcross.currentUser.getPfpPath());
-
-                try {
-                    final File localFile = File.createTempFile("profilePicture","png");
-                    firePfpRef.getFile(localFile)
-                            .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                    ShapeableImageView ivPFP = findViewById(R.id.ivProfilePictureIconHomepage);
-                                    Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                                    ivPFP.setScaleType(ImageView.ScaleType.FIT_XY);
-                                    ivPFP.setForeground(null);
-                                    ivPFP.setImageBitmap(bitmap);
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-                        }
-                    });
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-        }
+        tryCatchPFP();
 
         globalAcrossActions();
 
 
+        startService(new Intent(HomepageActivity.this,notificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
+    }
 
-        //startService(new Intent(HomepageActivity.this,notificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
+    public void tryCatchPFP(){
+        //This function checks if the user has a pfp path in the database and creates a temporary file and downloads it to it if they have a pfp
+        if(!GlobalAcross.currentUser.getPfpPath().equals("none")){
+            //Gets the image of the user and displays it on the homepage top right corner
+            StorageReference firePfpRef;
+            String pfpPath = GlobalAcross.currentUser.getPfpPath();
+            firePfpRef = storage.getInstance().getReference().child(GlobalAcross.currentUser.getPfpPath());
+
+            try {
+                final File localFile = File.createTempFile("profilePicture","png");
+                firePfpRef.getFile(localFile)
+                        .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                ShapeableImageView ivPFP = findViewById(R.id.ivProfilePictureIconHomepage);
+                                Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                                ivPFP.setScaleType(ImageView.ScaleType.FIT_XY);
+                                ivPFP.setForeground(null);
+                                ivPFP.setImageBitmap(bitmap);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void globalAcrossActions(){
@@ -134,8 +137,7 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         //Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
         if(item.getTitle().equals("התנתקות")){
 
-               androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(HomepageActivity.this);
-
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(HomepageActivity.this);
             builder.setMessage("האם את\\ה בטוח\\ה שאת\\ה רוצה להתנתק?")
                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                         @Override
