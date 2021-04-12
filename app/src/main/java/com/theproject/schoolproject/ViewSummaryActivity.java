@@ -34,6 +34,7 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
     NavigationView navigationView;
     MaterialToolbar toolbar;
     SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,13 +53,13 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
         database.child(summaryKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-            String summaryTitle = snapshot.child("title").getValue().toString();
-            String summaryAuthor = snapshot.child("author").getValue().toString();
-            String summaryDescription = snapshot.child("description").getValue().toString();
+                String summaryTitle = snapshot.child("title").getValue().toString();
+                String summaryAuthor = snapshot.child("author").getValue().toString();
+                String summaryDescription = snapshot.child("description").getValue().toString();
 
-            tvSummaryTitle.setText(summaryTitle);
-            tvSummaryAuthor.setText("סופר\\ת: "+summaryAuthor);
-            tvSummaryDescription.setText(summaryDescription);
+                tvSummaryTitle.setText(summaryTitle);
+                tvSummaryAuthor.setText("סופר\\ת: " + summaryAuthor);
+                tvSummaryDescription.setText(summaryDescription);
             }
 
             @Override
@@ -68,7 +69,8 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
         });
 
     }
-    public void setToolbarAndDrawer(){
+
+    public void setToolbarAndDrawer() {
         drawerLayout = findViewById(R.id.drawer_layout_view_summary);
         navigationView = findViewById(R.id.nav_view_view_summary);
         toolbar = findViewById(R.id.toolbarViewSummary);
@@ -96,7 +98,7 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
                             GlobalAcross.currentUser = null;
                             Intent intent = new Intent(ViewSummaryActivity.this, LoadingActivity.class);
                             Toast.makeText(ViewSummaryActivity.this, "התנתקת בהצלחה.", Toast.LENGTH_SHORT - 5000).show();
-                            sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+                            sharedPreferences = getSharedPreferences("index", Context.MODE_PRIVATE);
                             GlobalAcross.currentUser = null;
 
                             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -140,15 +142,20 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
             startActivity(intent);
             return false;
         }
-        if(item.getTitle().equals("אודות")){
+        if (item.getTitle().equals("אודות")) {
             androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(ViewSummaryActivity.this);
             builder.setMessage(GlobalAcross.infoMessage)
-                    .setNegativeButton("הבנתי",null);
+                    .setNegativeButton("הבנתי", null);
 
             AlertDialog alert = builder.create();
             alert.show();
             return false;
         }
         return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(ViewSummaryActivity.this,HomepageActivity.class));
     }
 }

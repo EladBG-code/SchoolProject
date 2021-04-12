@@ -115,10 +115,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
-            android:text=" הירשמו"
-            android:textStyle="bold"
-            android:id="@+id/tvRegister"
-            android:textColor="@color/colorPrimaryDark"
+            android:text="אין לכם עדיין חשבון?"
+            android:textColor="@color/white"
             android:layout_marginBottom="50sp"
             />
 
@@ -126,10 +124,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
-            android:text="אין לכם עדיין חשבון?"
-            android:textColor="@color/white"
+            android:text=" הירשמו"
+            android:textStyle="bold"
+            android:id="@+id/tvRegister"
+            android:textColor="@color/colorPrimaryDark"
             android:layout_marginBottom="50sp"
             />
+
+
 
     </LinearLayout>
 

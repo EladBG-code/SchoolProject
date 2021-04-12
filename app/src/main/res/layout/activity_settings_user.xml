@@ -50,6 +50,18 @@
                     android:layout_marginRight="2sp"
                     >
 
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:layout_gravity="right"
+                        android:gravity="right"
+                        android:text="למחוק את התמונת פרופיל הקיימת?   "
+                        />
+
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cvDeletePFP"
                         android:layout_width="wrap_content"
@@ -78,16 +90,6 @@
                             android:textStyle="bold" />
 
                     </androidx.cardview.widget.CardView>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:layout_gravity="right"
-                        android:gravity="right"
-                        android:text="למחוק את התמונת פרופיל הקיימת?   "
-                        />
 
 
                 </LinearLayout>

@@ -94,14 +94,37 @@ Ne eum solet altera. Cibo eligendi et est, electram theophrastus te vel eu." />
                     android:background="#80CBC4"
                     android:text="צפייה בסיכום" />
 
-                <com.google.android.material.checkbox.MaterialCheckBox
-                    android:id="@+id/rateBtn"
+                <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:button="@drawable/sl_favourite_24dp"
-                    android:checked="false"
-                    android:clickable="true"
-                    app:buttonTint="#FF0000" />
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    >
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/rateBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@drawable/sl_favourite_24dp"
+                        android:gravity="center"
+                        android:checked="false"
+                        android:clickable="true"
+                        app:buttonTint="#FF0000"
+                        />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/mtvLikesNum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="99"
+                        android:textSize="9sp"
+                        android:layout_marginRight="6sp"
+                        android:gravity="center_horizontal|center_vertical"
+                        />
+                </RelativeLayout>
+
+
+
             </LinearLayout>
 
 

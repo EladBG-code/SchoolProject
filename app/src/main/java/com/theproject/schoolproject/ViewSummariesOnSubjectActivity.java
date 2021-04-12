@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Looper;
@@ -29,6 +30,7 @@ import com.firebase.ui.database.SnapshotParser;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -137,18 +139,49 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
             notifyDataSetChanged();
         }
 
+        public String amountOfLikesFunc(long amountOfLikes) {
+
+            if (amountOfLikes > 5 && amountOfLikes < 10){
+                return "5+";
+            }
+            if(amountOfLikes > 10 && amountOfLikes < 20){
+                return "10+";
+            }
+            if(amountOfLikes > 20 && amountOfLikes < 40){
+                return "20+";
+            }
+            if(amountOfLikes > 40 && amountOfLikes < 60){
+                return "40+";
+            }
+            if(amountOfLikes > 60 && amountOfLikes < 80){
+                return "60+";
+            }
+            if (amountOfLikes > 80 && amountOfLikes < 100){
+                return "80+";
+            }
+            if(amountOfLikes > 100){
+                return "100+";
+            }
+            return amountOfLikes+"";
+        }
+
         @Override
         protected void onBindViewHolder(@NonNull final MyViewHolder holder, final int position, @NonNull final Summary model) {
         holder.tvTitle.setText(model.getTitle());
         holder.tvDescription.setText(model.getDescription());
         holder.tvAuthor.setText(model.getAuthor());
+
+        holder.mtvLikesNum.setText(amountOfLikesFunc(model.getAmountOfLikes()));
+
         if(model.getUsersThatLiked()==null){
             holder.btnHeart.setChecked(false);
         }
        else {
             ArrayList <String> usersThatLikedTemp= model.getUsersThatLiked();
-            if(usersThatLikedTemp.contains(Long.valueOf(currentUserIndex)))
-            holder.btnHeart.setChecked(true);
+            if(usersThatLikedTemp.contains(Long.valueOf(currentUserIndex))) {
+                holder.btnHeart.setChecked(true);
+                holder.mtvLikesNum.setTextColor(Color.RED);
+            }
             else{
                 holder.btnHeart.setChecked(false);
             }
@@ -172,6 +205,8 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
                     updateListOfLikes(selectedKeySummary, false);
                     Toast.makeText(ViewSummariesOnSubjectActivity.this, "הסיכום הוסר מהסיכומים שלי", Toast.LENGTH_SHORT).show();
                     holder.btnHeart.setChecked(false);
+                    holder.mtvLikesNum.setTextColor(Color.BLACK);
+
                 }
 
             }
@@ -213,6 +248,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     dataList.setAdapter(adapter);
 
     }
+
 
     public void initComponents() {
         dataList = (RecyclerView)findViewById(R.id.recyclerView);
