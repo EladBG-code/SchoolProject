@@ -7,6 +7,7 @@ public class GlobalAcross {
     public static User currentUser; //Current logged in user
     public static int currentUserIndex;
     public static boolean firstLoginSuggestion = false;
+    public static String infoMessage;
 
     //Useful global functions across the application : for the current user
     public static String getCurrentUserGradeString(){

@@ -208,7 +208,7 @@
                             android:outlineSpotShadowColor="@color/black"
                             app:cardBackgroundColor="@color/colorPrimaryDark"
                             app:cardCornerRadius="25sp"
-                            app:cardElevation="10sp">
+                     >
 
                             <TextView
                                 android:id="@+id/tvToSummaries"

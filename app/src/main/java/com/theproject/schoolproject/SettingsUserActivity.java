@@ -102,8 +102,7 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
         }
         if(item.getTitle().equals("אודות")){
             androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(SettingsUserActivity.this);
-            String info = "שלום "+GlobalAcross.currentUser.getfName()+", שמי אלעד ואני פיתחתי את אפליקציה זו. אשמח שתשלח\\י לי פידבק לאימייל: "+"eladbargal2@gmail.com";
-            builder.setMessage(info)
+            builder.setMessage(GlobalAcross.infoMessage)
                     .setNegativeButton("הבנתי",null);
 
             AlertDialog alert = builder.create();

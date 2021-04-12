@@ -177,10 +177,8 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         }
         if(item.getTitle().equals("אודות")){
             androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(ProfileActivity.this);
-            String info = "שלום "+GlobalAcross.currentUser.getfName()+", שמי אלעד ואני פיתחתי את אפליקציה זו. אשמח שתשלח\\י לי פידבק לאימייל: "+"eladbargal2@gmail.com";
-            builder.setMessage(info)
+            builder.setMessage(GlobalAcross.infoMessage)
                     .setNegativeButton("הבנתי",null);
-
             AlertDialog alert = builder.create();
             alert.show();
             return false;
@@ -264,7 +262,6 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
                                     Toast.makeText(ProfileActivity.this,"התמונה הועלתה בהצלחה.",Toast.LENGTH_SHORT).show();
-                                    finish();
                                 }
                                 else{
                                     Toast.makeText(ProfileActivity.this,"נתקלנו בבעיה... בדקו את החיבור לאינטרנט - התמונה לא הועלתה.",Toast.LENGTH_LONG).show();
@@ -295,6 +292,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                 e.printStackTrace();
             }
         }
+
         if (requestCode == 0 && resultCode == RESULT_OK) {
             // TAKE A PHOTO FROM CAMERA
             if (data.getExtras() != null) {
@@ -333,7 +331,6 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
                                     Toast.makeText(ProfileActivity.this,"התמונה הועלתה בהצלחה.",Toast.LENGTH_SHORT).show();
-                                    finish();
                                 }
                                 else{
                                     Toast.makeText(ProfileActivity.this,"נתקלנו בבעיה... בדקו את החיבור לאינטרנט - התמונה לא הועלתה.",Toast.LENGTH_LONG).show();

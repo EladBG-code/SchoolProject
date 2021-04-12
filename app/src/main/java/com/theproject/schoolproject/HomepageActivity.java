@@ -110,15 +110,23 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
 
         }
 
+        globalAcrossActions();
+
+
+
+        //startService(new Intent(HomepageActivity.this,notificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
+    }
+
+    public void globalAcrossActions(){
+
         if(GlobalAcross.firstLoginSuggestion){
             GlobalAcross.firstLoginSuggestion = false;
             //First login --> show the user the ad to use the pdf scanner here
             llFirstSuggestionLayout.setVisibility(View.VISIBLE);
+            tvWelcomeMessage.setText("ברוכים הבאים "+GlobalAcross.currentUser.getfName()+"!");
         }
 
-
-
-        //startService(new Intent(Homepage.this,notificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
+        GlobalAcross.infoMessage ="שלום "+GlobalAcross.currentUser.getfName()+" שמי אלעד ואני פיתחתי את אפליקציה זו. אשמח לקבל פידבק ל E-mail שלי: "+"eladbgbusiness@gmail.com";
     }
 
     @Override
@@ -177,8 +185,7 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         }
         if(item.getTitle().equals("אודות")){
             androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(HomepageActivity.this);
-            String info = "שלום "+GlobalAcross.currentUser.getfName()+", שמי אלעד ואני פיתחתי את אפליקציה זו. אשמח שתשלח\\י לי פידבק לאימייל: "+"eladbargal2@gmail.com";
-            builder.setMessage(info)
+            builder.setMessage(GlobalAcross.infoMessage)
                     .setNegativeButton("הבנתי",null);
 
             AlertDialog alert = builder.create();
