@@ -67,8 +67,8 @@
                     android:layout_height="match_parent"
                     android:maxLines="1"
                     android:inputType="text"
-                    android:id="@+id/etLName"
-                    android:hint="שם משפחה"/>
+                    android:id="@+id/etFName"
+                    android:hint="שם פרטי" />
 
                 <EditText
                     android:layout_marginTop="5sp"
@@ -76,9 +76,8 @@
                     android:layout_height="match_parent"
                     android:maxLines="1"
                     android:inputType="text"
-                    android:id="@+id/etFName"
-                    android:hint="שם פרטי" />
-
+                    android:id="@+id/etLName"
+                    android:hint="שם משפחה"/>
 
             </LinearLayout>
 
@@ -86,7 +85,7 @@
                     android:layout_marginTop="5sp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:drawableStart="@drawable/icon_username_login"
+                    android:drawableEnd="@drawable/icon_username_login"
                     android:maxLines="1"
                     android:inputType="text"
                     android:id="@+id/etUsername"
@@ -115,7 +114,7 @@
                     android:id="@+id/etEmailReg"
                     android:hint="אימייל"
                     android:inputType="textEmailAddress"
-                    android:drawableStart="@drawable/email_icon"
+                    android:drawableEnd="@drawable/email_icon"
                     />
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -140,7 +139,7 @@
                     android:id="@+id/etPassword"
                     android:inputType="textPassword"
                     android:gravity="right"
-                    android:drawableStart="@drawable/icon_lock_password"
+                    android:drawableEnd="@drawable/icon_lock_password"
                     android:hint="סיסמה"
                     android:layout_marginBottom="12sp"
                     />

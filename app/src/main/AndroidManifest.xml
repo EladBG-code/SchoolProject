@@ -30,13 +30,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".SettingsUserActivity"
             android:screenOrientation="locked" />
         <activity
             android:name=".ProfileActivity"
             android:screenOrientation="locked" />
-        <activity android:name=".ViewSummaryActivity" />
+
+        <activity android:name=".ViewSummaryActivity"
+            android:screenOrientation="locked">
+        </activity>
+
         <activity
             android:name=".AddSummaryActivity"
             android:screenOrientation="locked" />

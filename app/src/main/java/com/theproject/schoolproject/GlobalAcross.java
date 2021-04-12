@@ -1,5 +1,7 @@
 package com.theproject.schoolproject;
 
+import android.widget.ArrayAdapter;
+
 import java.util.ArrayList;
 
 public class GlobalAcross {
@@ -28,6 +30,15 @@ public class GlobalAcross {
     public static String[] getAllSubjectsArr(){
         String[] subjects = {"מתמטיקה","היסטוריה","לשון","אזרחות","תנ"+'"'+"ך","ספרות","אנגלית","ביולוגיה","מדעי המחשב","כימיה","פיזיקה","תולדות האומנות","תקשורת","מדעי החברה"};
         return subjects;
+    }
+
+    public static ArrayList<String> getAllSubjectsArrayList(){
+        String[] subjectsArr = getAllSubjectsArr();
+        ArrayList<String> subjectsArrayList = new ArrayList<>();
+        for(int i=0;i<getAllSubjectsArr().length;i++){
+            subjectsArrayList.add(subjectsArr[i]);
+        }
+        return subjectsArrayList;
     }
 
     public static void logoutFunction(){

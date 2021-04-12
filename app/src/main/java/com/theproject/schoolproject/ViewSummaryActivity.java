@@ -6,25 +6,27 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class ViewSummaryActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class ViewSummaryActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private TextView tvSummaryTitle;
     private TextView tvSummaryAuthor;
@@ -34,6 +36,9 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
     NavigationView navigationView;
     MaterialToolbar toolbar;
     SharedPreferences sharedPreferences;
+    ShapeableImageView sivEditSummary;
+    String summarySubject,summaryKey;
+    int summaryCreatorIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,16 +51,29 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
         tvSummaryTitle = findViewById(R.id.viewSummaryTitle);
         tvSummaryDescription = findViewById(R.id.viewSummaryDescription);
 
-        String summaryKey = getIntent().getStringExtra("summaryKey");
-        String subject = getIntent().getStringExtra("subject");
+        summaryKey = getIntent().getStringExtra("summaryKey");
+        summarySubject = getIntent().getStringExtra("subject");
 
-        database = FirebaseDatabase.getInstance().getReference().child(subject);
-        database.child(summaryKey).addValueEventListener(new ValueEventListener() {
+        database = FirebaseDatabase.getInstance().getReference().child(summarySubject);
+        getIndexKeyAndSubject();
+
+    }
+
+    public void getIndexKeyAndSubject(){
+        sivEditSummary = findViewById(R.id.sivEditSummary);
+        sivEditSummary.setOnClickListener(this);
+
+        database.child(summaryKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String summaryTitle = snapshot.child("title").getValue().toString();
                 String summaryAuthor = snapshot.child("author").getValue().toString();
                 String summaryDescription = snapshot.child("description").getValue().toString();
+                summaryCreatorIndex = Integer.valueOf(snapshot.child("creatorIndex").getValue().toString());
+                if(summaryCreatorIndex == GlobalAcross.currentUserIndex){
+                    //Enables the edit shapableimage in the toolbar if the currentuserindex is equal to the summary creator's index
+                    sivEditSummary.setVisibility(View.VISIBLE);
+                }
 
                 tvSummaryTitle.setText(summaryTitle);
                 tvSummaryAuthor.setText("סופר\\ת: " + summaryAuthor);
@@ -67,7 +85,6 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
 
             }
         });
-
     }
 
     public void setToolbarAndDrawer() {
@@ -75,11 +92,13 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
         navigationView = findViewById(R.id.nav_view_view_summary);
         toolbar = findViewById(R.id.toolbarViewSummary);
 
+
         setSupportActionBar(toolbar);
         navigationView.bringToFront();
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
 
         navigationView.setNavigationItemSelectedListener(this);
     }
@@ -156,6 +175,23 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(ViewSummaryActivity.this,HomepageActivity.class));
+        if(super.getClass() == ViewSummariesOnSubjectActivity.class){
+            startActivity(new Intent(ViewSummaryActivity.this,ViewSummariesOnSubjectActivity.class));
+        }
+        else{
+            startActivity(new Intent(ViewSummaryActivity.this,HomepageActivity.class));
+        }
     }
+
+    @Override
+    public void onClick(View v) {
+        if(v == sivEditSummary){
+            //If the editing pencil in the view summary is clicked
+            Intent intent = new Intent(ViewSummaryActivity.this,EditSummaryActivity.class);
+            intent.putExtra("key",summaryKey);
+            intent.putExtra("subject",summarySubject);
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+        }
+    }
+
 }
