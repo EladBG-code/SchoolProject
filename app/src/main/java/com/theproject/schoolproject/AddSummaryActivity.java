@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.transition.TransitionManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -26,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.transition.Scene;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -133,7 +135,6 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         if(v == floatingReturnButton){
             // RETURN TO THE PAGE BEFORE THE CURRENT
-
             finish();
         }
         if(v == btnUpload){

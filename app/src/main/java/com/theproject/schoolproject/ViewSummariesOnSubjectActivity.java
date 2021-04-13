@@ -7,9 +7,11 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.os.Looper;
+
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -30,7 +32,6 @@ import com.firebase.ui.database.SnapshotParser;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -274,14 +275,14 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
             drawerLayout.closeDrawer(GravityCompat.START);
         }
         else{
-            super.onBackPressed();
+            finish();
         }
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        if(item.getTitle().equals("התנתקות")){
 
+        if(item.getTitle().equals("התנתקות")){
             AlertDialog.Builder builder = new AlertDialog.Builder(ViewSummariesOnSubjectActivity.this);
             builder.setMessage("האם את\\ה בטוח\\ה שאת\\ה רוצה להתנתק?")
                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
@@ -352,6 +353,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         }
 
     }
+
 
 
 }

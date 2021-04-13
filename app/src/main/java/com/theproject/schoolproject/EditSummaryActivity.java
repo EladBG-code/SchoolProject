@@ -238,89 +238,114 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         }
         if(v == cvDeleteSummary){
             //Activates if the delete summary cardview is pressed on
-            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject).child(summaryKey);
-            //    myRef.child("usersThatLiked").child(String.valueOf(currentUserIndex)).removeValue();
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progressDialog.setTitle("מוחקים את הסיכום שלך...");
-            progressDialog.setProgress(0);
-            progressDialog.show();
 
-            myRef.child("usersThatLiked").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot != null) {
-                        //Checks if the summary even has likes to start with the deletion
+            Drawable temp = getResources().getDrawable(R.drawable.info_icon);
+            temp.setTint(Color.RED);
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(EditSummaryActivity.this);
+            builder.setMessage("אתם בטוחים שאתם רוצים למחוק את הסיכום?")
+                    .setPositiveButton("כן", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
-                        final ArrayList<String> usersThatLikedCertainSummary = new ArrayList<>(); //ArrayList for indexes of users who liked the summary that's about to me deleted
-                        for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
-                            usersThatLikedCertainSummary.add(child.getValue() + "");
-                        }
-                        for (int i = 0; i < usersThatLikedCertainSummary.size(); i++) {
-                            final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/" + usersThatLikedCertainSummary.get(i));
-                            usersRef.child("favoriteSummaries").child(summaryKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject).child(summaryKey);
+                            //    myRef.child("usersThatLiked").child(String.valueOf(currentUserIndex)).removeValue();
+                            progressDialog = new ProgressDialog(EditSummaryActivity.this);
+                            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                            progressDialog.setTitle("מוחקים את הסיכום שלך...");
+                            progressDialog.setProgress(0);
+                            progressDialog.show();
+
+                            myRef.child("usersThatLiked").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
-                                public void onSuccess(Void aVoid) {
-                                    deletionProgress += (100 / (usersThatLikedCertainSummary.size()+2));
-                                    //System.out.println(deletionProgress);
-                                    progressDialog.setProgress(deletionProgress);
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot != null) {
+                                        //Checks if the summary even has likes to start with the deletion
 
-                                }
-                            });
-                        }
-                        //The code gets here once it deletes all of the data the users who had the this summary as a favorite
+                                        final ArrayList<String> usersThatLikedCertainSummary = new ArrayList<>(); //ArrayList for indexes of users who liked the summary that's about to me deleted
+                                        for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
+                                            usersThatLikedCertainSummary.add(child.getValue() + "");
+                                        }
+                                        for (int i = 0; i < usersThatLikedCertainSummary.size(); i++) {
+                                            final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/" + usersThatLikedCertainSummary.get(i));
+                                            usersRef.child("favoriteSummaries").child(summaryKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    deletionProgress += (100 / (usersThatLikedCertainSummary.size()+2));
+                                                    //System.out.println(deletionProgress);
+                                                    progressDialog.setProgress(deletionProgress);
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
 
-                        //The string file in the reference inside the realtime database is opened and a storageref is opening and deleting the included file
-                        FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("fileRef").addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                StorageReference storageRef = storage.getInstance().getReference().child(snapshot.getValue().toString());
-                                storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        deletionProgress += 100/(usersThatLikedCertainSummary.size()+2);
-                                        progressDialog.setProgress(deletionProgress);
-                                    }
-                                });
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                            }
-                        });
+                                                }
+                                            });
+                                        }
+                                        //The code gets here once it deletes all of the data the users who had the this summary as a favorite
 
-                        //Deletes the entire summary from the realtime database
-                        FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                deletionProgress += 100/(usersThatLikedCertainSummary.size()+2); //The last piece to get 100% on the progressbar after the entire summary is removed from the realtime database
-                                progressDialog.setProgress(deletionProgress);
-                                progressDialog.dismiss();
-                                Intent intent = new Intent(EditSummaryActivity.this,ViewSummariesOnSubjectActivity.class);
-                                intent.putExtra("SubjectSelected",subject);
-                                Toast.makeText(EditSummaryActivity.this,"הסיכום שלך נמחק בהצלחה!",Toast.LENGTH_SHORT).show();
-                                startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                                finishAffinity();
-                            }
-                        });
+                                        //The string file in the reference inside the realtime database is opened and a storageref is opening and deleting the included file
+                                        FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("fileRef").addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                StorageReference storageRef = storage.getInstance().getReference().child(snapshot.getValue().toString());
+                                                storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        deletionProgress += 100/(usersThatLikedCertainSummary.size()+2);
+                                                        progressDialog.setProgress(deletionProgress);
+                                                    }
+                                                });
+                                            }
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+                                            }
+                                        });
 
-                        //This prints the indexes of the users who liked the summary
+                                        //Deletes the entire summary from the realtime database
+                                        FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                deletionProgress += 100/(usersThatLikedCertainSummary.size()+2); //The last piece to get 100% on the progressbar after the entire summary is removed from the realtime database
+                                                progressDialog.setProgress(deletionProgress);
+                                                progressDialog.dismiss();
+                                                Intent intent = new Intent(EditSummaryActivity.this,ViewSummariesOnSubjectActivity.class);
+                                                intent.putExtra("SubjectSelected",subject);
+                                                Toast.makeText(EditSummaryActivity.this,"הסיכום שלך נמחק בהצלחה!",Toast.LENGTH_SHORT).show();
+                                                startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+                                                finishAffinity();
+                                            }
+                                        });
+
+                                        //This prints the indexes of the users who liked the summary
 //                        for(int i=0;i<usersThatLikedCertainSummary.size();i++) {
 //                            System.out.println(usersThatLikedCertainSummary.get(i));
 //                        }
 
-                    }
-                    finish();
+                                    }
+                                    finish();
 
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
-                }
-            });
+                                }
+                            });
+
+
+
+
+
+                        }
+                    })
+                    .setNegativeButton("לא", null)
+                    .setIcon(temp)
+                    .setTitle("אזהרה")
+            ;
+            AlertDialog alert = builder.create();
+            alert.show();
+
+
+
         }
     }
 
