@@ -12,7 +12,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/aplViewSummary"
+        android:id="@+id/aplEditSummary"
         >
 
         <com.google.android.material.appbar.MaterialToolbar
@@ -24,8 +24,41 @@
             android:theme="?attr/actionBarTheme"
             app:menu="@menu/main_menu"
             app:navigationIcon="@drawable/navigation_icon"
-            app:popupTheme="@menu/main_menu"
-            />
+            app:popupTheme="@menu/main_menu">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="עריכת סיכום"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="110sp"
+                    />
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="?actionBarSize"
+                    android:src="@drawable/save_icon"
+                    android:tint="@color/black"
+                    android:id="@+id/sivSaveEditedSummary"
+                    android:clickable="true"
+                    android:layout_marginLeft="10sp"
+                    app:shapeAppearance="@style/roundedImageViewRounded"
+                    />
+
+            </LinearLayout>
+
+
+
+
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
     </com.google.android.material.appbar.AppBarLayout>
 
 
@@ -38,29 +71,29 @@
         tools:openDrawer="start"
         >
 
-        <ScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            >
-            <androidx.coordinatorlayout.widget.CoordinatorLayout
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center|top"
+            android:orientation="vertical">
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="?actionBarSize"
+                android:gravity="top|center"
                 >
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:layout_marginTop="10sp"
                     >
-
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="right"
+                        android:layout_height="wrap_content"
                         android:text="נושא הסיכום: "
-                        android:textSize="17sp"
+                        android:textSize="16sp"
                         android:textStyle="bold"
                         />
 
@@ -68,71 +101,316 @@
                         android:id="@+id/spinnerEditSubject"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAlignment="center"
                         />
-
-
-
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
-                    android:layout_marginTop="27sp"
-                    android:gravity="center"
+                    android:layout_height="65sp"
+                    android:gravity="center|bottom"
                     >
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="שם הסיכום: "
-                        android:textStyle="bold"
-                        android:textSize="17sp"
-                        />
-                    <EditText
+                        android:text="כותרת הסיכום"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="15sp"
+                    android:layout_marginLeft="15sp"
+                    android:layout_marginTop="65sp"
+                    android:gravity="center"
+                    >
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="SummaryTitleEdit"
+                    android:id="@+id/etEditSummaryName"
+                    android:maxLines="1"
+                    android:inputType="text"
+                    />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="115sp"
+                    >
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="summary Name"
-                        android:id="@+id/etEditSummaryName"
-                        android:maxLines="1"
-                        android:inputType="text"
-                        />
+                        android:text="תיאור הסיכום"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="120sp"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginRight="10sp"
+                    >
+                    <EditText
+                        android:layout_marginTop="15sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="SummaryTitleEdit"
+                        android:id="@+id/etEditSummaryDescription"
+                        android:inputType="none"
+                        android:maxLines="5"
+                        />
                 </LinearLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
-                    android:layout_marginTop="75sp"
-                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="375sp"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        >
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cvReplaceFile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="@color/cardview_dark_background"
+                            android:clickable="true"
+                            android:layout_gravity="top"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            android:outlineAmbientShadowColor="@color/black"
+                            android:outlineSpotShadowColor="@color/black"
+                            app:cardBackgroundColor="@color/colorPrimaryDark"
+                            app:cardCornerRadius="12sp"
+                            >
+
+                            <TextView
+                                android:layout_marginRight="7sp"
+                                android:layout_marginLeft="7sp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="right"
+                                android:layout_gravity="right"
+                                android:text="החלפת קובץ PDF "
+                                android:drawableEnd="@drawable/refresh_icon"
+                                android:drawableTint="@color/white"
+                                android:textColor="@color/cardview_light_background"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:layout_marginTop="28sp"
+                    >
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cvDeleteSummary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@color/cardview_dark_background"
+                        android:clickable="true"
+                        android:layout_gravity="bottom|center"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:outlineAmbientShadowColor="@color/black"
+                        android:outlineSpotShadowColor="@color/black"
+                        app:cardBackgroundColor="@color/red"
+                        app:cardCornerRadius="12sp"
+                        >
+
+                        <TextView
+                            android:layout_marginRight="7sp"
+                            android:layout_marginLeft="7sp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:layout_gravity="right"
+                            android:text="מחיקת סיכום "
+                            android:drawableEnd="@drawable/trashbin_icon"
+                            android:drawableTint="@color/white"
+                            android:textColor="@color/cardview_light_background"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+
+
+                </RelativeLayout>
+
+
+                <!--
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cvDeleteSummary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/cardview_dark_background"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:outlineAmbientShadowColor="@color/black"
+                    android:outlineSpotShadowColor="@color/black"
+                    app:cardBackgroundColor="@color/red"
+                    app:cardCornerRadius="12sp"
+                    >
+
+                    <TextView
+                        android:layout_marginRight="7sp"
+                        android:layout_marginLeft="7sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:layout_gravity="right"
+                        android:text="מחיקה"
+                        android:drawableEnd="@drawable/trashbin_icon"
+                        android:drawableTint="@color/white"
+                        android:textColor="@color/cardview_light_background"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                </androidx.cardview.widget.CardView>
+                -->
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <!--
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="right"
+                android:orientation="vertical"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="?actionBarSize"
+                    >
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:text="נושא הסיכום: "
+                            android:textSize="17sp"
+                            android:textStyle="bold"
+                            />
+
+                        <Spinner
+                            android:id="@+id/spinnerEditSubject"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:gravity="right"
+                            android:text="שם הסיכום: "
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="summaryName"
+                            android:id="@+id/etEditSummaryName"
+                            android:textSize="17sp"
+                            />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
                     >
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="תיאור הסיכום: "
-                        android:textSize="15sp"
+                        android:textSize="17sp"
                         android:textStyle="bold"
-                        android:gravity="center|top"
-
                         />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
                     <EditText
+                        android:id="@+id/etEditSummaryDescription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="summary Name"
-                        android:gravity="right|bottom"
-                        android:layout_marginRight="7sp"
-                        android:layout_marginLeft="7sp"
-                        android:layout_marginTop="15sp"
-                        android:id="@+id/etEditSummaryDescription"
+                        android:text="summary Description"
                         />
+                </LinearLayout>
+            </LinearLayout>
+            -->
 
-                </RelativeLayout>
+
+
+
+
                 <!-- Put stuff here -->
 
-
-
-            </androidx.coordinatorlayout.widget.CoordinatorLayout>
-        </ScrollView>
 
 
         <com.google.android.material.navigation.NavigationView

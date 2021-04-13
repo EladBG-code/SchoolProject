@@ -83,7 +83,7 @@
                             android:gravity="right"
                             android:layout_gravity="right"
                             android:text="מחיקה"
-                            android:drawableStart="@drawable/trashbin_icon"
+                            android:drawableEnd="@drawable/trashbin_icon"
                             android:drawableTint="@color/white"
                             android:textColor="@color/cardview_light_background"
                             android:textSize="15sp"

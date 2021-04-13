@@ -175,12 +175,10 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
 
     @Override
     public void onBackPressed() {
-        if(super.getClass() == ViewSummariesOnSubjectActivity.class){
-            startActivity(new Intent(ViewSummaryActivity.this,ViewSummariesOnSubjectActivity.class));
+        if(!super.getClass().isLocalClass()){
+            startActivity(new Intent(ViewSummaryActivity.this,HomepageActivity.class), ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }
-        else{
-            startActivity(new Intent(ViewSummaryActivity.this,HomepageActivity.class));
-        }
+        super.onBackPressed();
     }
 
     @Override
