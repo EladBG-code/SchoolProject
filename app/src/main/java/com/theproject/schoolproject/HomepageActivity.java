@@ -201,8 +201,11 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
     @Override
     public void onBackPressed() {
         //This function makes sure the app doesn't close down if someone is back pressing in their phone
+        if(super.getClass() == EditSummaryActivity.class){
+            finish();
+        }
         if(drawerLayout.isDrawerOpen(GravityCompat.START)){
-           finish();
+           finishAffinity();
         }
         else{
             drawerLayout.openDrawer(GravityCompat.START);

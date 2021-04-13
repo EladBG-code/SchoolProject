@@ -9,7 +9,6 @@ public class User {
     private String fName,lName,username,email,password,pfpPath;
     private int grade;
     private ArrayList<String>[] userLikedSummariesIDs;
-    private ArrayList<DatabaseReference> userSummariesList;
 
     public User(){
 

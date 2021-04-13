@@ -150,7 +150,7 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
                                 }).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        Toast.makeText(SettingsUserActivity.this, "התמונה נמחקה מהמסד נתונים בהצלחה!", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SettingsUserActivity.this, "התמונה נמחקה בהצלחה!", Toast.LENGTH_SHORT).show();
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
