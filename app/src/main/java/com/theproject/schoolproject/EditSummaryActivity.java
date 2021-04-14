@@ -1,23 +1,29 @@
 package com.theproject.schoolproject;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.Manifest;
 import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.MenuItem;
@@ -41,11 +47,13 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.theproject.schoolproject.GlobalAcross.currentUserIndex;
 
@@ -60,8 +68,9 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
     ArrayList<String> spinnerArray;
     DatabaseReference database;
     ShapeableImageView sivSaveEditedSummary;
-    CardView cvDeleteSummary;
+    CardView cvDeleteSummary,cvReplaceFile;
     ProgressDialog progressDialog;
+    Uri pdfUri;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     int deletionProgress = 0;
     @Override
@@ -72,6 +81,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         subject = getIntent().getStringExtra("subject");
         summaryKey = getIntent().getStringExtra("key");
         database = FirebaseDatabase.getInstance().getReference().child(subject);
+        pdfUri = null;
         setToolbarAndDrawer();
         setEveryAttribute();
         spinnerEditSubject.setOnItemSelectedListener(this);
@@ -127,6 +137,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         sivSaveEditedSummary = findViewById(R.id.sivSaveEditedSummary);
         etEditSummaryDescription = findViewById(R.id.etEditSummaryDescription);
         cvDeleteSummary = findViewById(R.id.cvDeleteSummary);
+        cvReplaceFile = findViewById(R.id.cvReplaceFile);
 
         setSupportActionBar(toolbar);
         navigationView.bringToFront();
@@ -135,6 +146,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         toggle.syncState();
 
         cvDeleteSummary.setOnClickListener(this);
+        cvReplaceFile.setOnClickListener(this);
         sivSaveEditedSummary.setOnClickListener(this);
         navigationView.setNavigationItemSelectedListener(this);
         setSpinnerEditSubject();
@@ -210,33 +222,219 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         return false;
     }
 
+
     @Override
     public void onClick(View v) {
-        if(v == sivSaveEditedSummary){
+        if (v == sivSaveEditedSummary) {
             //Save shapable image view in clicker in the toolbar
 
             //First of all we check if the user even changed anything
+            if (GlobalAcross.checkValid(etEditSummaryName, etEditSummaryDescription,EditSummaryActivity.this)) {
 
-            if(subject != spinnerSubjectCurrent){
+
+                progressDialog = new ProgressDialog(EditSummaryActivity.this);
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                progressDialog.setTitle("שומרים את השינויים שלך...");
+                progressDialog.setProgress(0);
+                //Editor's note - add an app check for the new values lengths entered to the edittexts while changing
+
+                database.child(summaryKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        GlobalAcross.editingTemp = 0;
+                        if (!subject.equals(spinnerSubjectCurrent)) {
+                            GlobalAcross.editingTemp++;
+                        }
+                        if (!snapshot.child("title").getValue().toString().equals(etEditSummaryName.getText().toString())) {
+                            GlobalAcross.editingTemp++;
+                        }
+                        if (!snapshot.child("description").getValue().toString().equals(etEditSummaryDescription.getText().toString())) {
+                            GlobalAcross.editingTemp++;
+                        }
+                        if(pdfUri != null){
+                            GlobalAcross.editingTemp += 2;   //adds 2 : one for deletion & one for uploading the new PDF
+                        }
+
+                        //FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("amountOfItemsToEdit").setValue(GlobalAcross.editingTemp); /*experiment*/
+                        //Toast.makeText(EditSummaryActivity.this,temp,Toast.LENGTH_SHORT).show(); /*experiment*/
+
+
+                        if(GlobalAcross.editingTemp != 0){
+                            //Checks if any changes have even been made
+                            progressDialog.show();
+
+                            if (!snapshot.child("title").getValue().toString().equals(etEditSummaryName.getText().toString())) { //This function checks if the new title is different than the existing one and sets the on the realtime database as the new one
+                                FirebaseDatabase.getInstance().getReference().child(subject).child(summaryKey).child("title").setValue(etEditSummaryName.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
+                                        if(progressDialog.getProgress() == 100){
+                                            progressDialog.dismiss();
+                                            finish();
+                                        }
+
+                                    }
+                                });
+                            }
+
+
+                            if (!snapshot.child("description").getValue().toString().equals(etEditSummaryDescription.getText().toString())) { //This function checks if the new description is different than the existing one and sets the on the realtime database as the new one
+                                FirebaseDatabase.getInstance().getReference().child(subject).child(summaryKey).child("description").setValue(etEditSummaryDescription.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
+                                        if(progressDialog.getProgress() == 100){
+                                            progressDialog.dismiss();
+                                            Toast.makeText(EditSummaryActivity.this,"השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
+                                            finish();
+                                        }
+                                    }
+                                });
+                            }
+
+                            if(pdfUri != null){
+                                FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("fileRef").addListenerForSingleValueEvent(new ValueEventListener() { //This section deletes the old PDF if a new one is selected
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        final StorageReference storageRef = storage.getInstance().getReference().child(snapshot.getValue().toString());
+                                        storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                //Successfully deleted old summary on the first try
+
+
+                                                    //Will upload the new File here
+                                                    final String newFileName = UUID.randomUUID().toString();
+                                                storage.getReference().child("SummariesFiles").child(newFileName).putFile(pdfUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                    @Override
+                                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                                        progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
+                                                        if(progressDialog.getProgress() == 100){
+                                                            progressDialog.dismiss();
+                                                        }
+                                                        FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("fileRef").setValue("/SummariesFiles/"+newFileName).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                //Success - changed the file reference of the summary in the realtime database to its actual new reference
+                                                                Toast.makeText(EditSummaryActivity.this,"השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
+                                                                finish();
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                                }
+
+                                        }).addOnFailureListener(new OnFailureListener() { //This onfailurelistener tries to delete the file a second time inside of it
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                storageRef.delete().addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        //Fails to delete the old summary file on the storage for the second time
+
+                                                        Toast.makeText(EditSummaryActivity.this,"אאוץ'! נתקלנו בשגיאה - לא הצלחנו למחוק את הקובץ PDF הישן.", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        //Successfully deleted old summary on the second try
+
+                                                        progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
+                                                        if(progressDialog.getProgress() == 100) {
+                                                            progressDialog.dismiss();
+                                                            Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
+                                                            finish();
+                                                        }
+                                                        //Will upload the new File here
+                                                            final String newFileName = UUID.randomUUID().toString();
+                                                            storage.getReference().child("SummariesFiles").child(newFileName).putFile(pdfUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                                @Override
+                                                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                                                    progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
+                                                                    if(progressDialog.getProgress() == 100){
+                                                                        progressDialog.dismiss();
+                                                                        Toast.makeText(EditSummaryActivity.this,"השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
+                                                                    }
+                                                                    FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("fileRef").setValue("/SummariesFiles/"+newFileName).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                        @Override
+                                                                        public void onSuccess(Void aVoid) {
+                                                                            //Success - changed the file reference of the summary in the realtime database to its actual new reference
+                                                                            Toast.makeText(EditSummaryActivity.this,"השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
+                                                                            finish();
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Toast.makeText(EditSummaryActivity.this,"אאוץ'! נתקלנו בשגיאה - נסו שוב מאוחר יותר", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }
+                                });
+
+                            }
+
+                        }
+
+                        else {
+                            progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(),"לא נעשו שינויים בסיכום.",Toast.LENGTH_SHORT).show();
+
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(EditSummaryActivity.this,"אאוץ'! נתקלנו בשגיאה - נסו שוב מאוחר יותר", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+//                if (subject != spinnerSubjectCurrent) {
+//                    //Toast.makeText(EditSummaryActivity.this,spinnerSubjectCurrent,Toast.LENGTH_SHORT).show();
+//
+//                }
+
+//            database.child(summaryKey).addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    if (subject != spinnerEditSubject.toString()){
+//
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                }
+//            });
+
 
             }
 
-            database.child(summaryKey).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (subject != spinnerEditSubject.toString()){
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
 
         }
-        if(v == cvDeleteSummary){
+
+        if (v == cvReplaceFile) {
+            //Activates if the replace PDF cardview is selected
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) { //Checks if has the permission to read external storage
+                selectPDF();
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9); //Asks the user to give it the permission to do so if it doesn't have it and sets the request code to 9
+                //onRequestPermissionResult will be the next line to this - all parameters are passed
+            }
+        }
+
+        if (v == cvDeleteSummary) {
             //Activates if the delete summary cardview is pressed on
 
             Drawable temp = getResources().getDrawable(R.drawable.info_icon);
@@ -270,7 +468,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                             usersRef.child("favoriteSummaries").child(summaryKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
-                                                    deletionProgress += (100 / (usersThatLikedCertainSummary.size()+2));
+                                                    deletionProgress += (100 / (usersThatLikedCertainSummary.size() + 2));
                                                     //System.out.println(deletionProgress);
                                                     progressDialog.setProgress(deletionProgress);
                                                 }
@@ -291,11 +489,12 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                                 storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
-                                                        deletionProgress += 100/(usersThatLikedCertainSummary.size()+2);
+                                                        deletionProgress += 100 / (usersThatLikedCertainSummary.size() + 2);
                                                         progressDialog.setProgress(deletionProgress);
                                                     }
                                                 });
                                             }
+
                                             @Override
                                             public void onCancelled(@NonNull DatabaseError error) {
                                             }
@@ -305,13 +504,13 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                         FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                deletionProgress += 100/(usersThatLikedCertainSummary.size()+2); //The last piece to get 100% on the progressbar after the entire summary is removed from the realtime database
+                                                deletionProgress += 100 / (usersThatLikedCertainSummary.size() + 2); //The last piece to get 100% on the progressbar after the entire summary is removed from the realtime database
                                                 progressDialog.setProgress(deletionProgress);
                                                 progressDialog.dismiss();
-                                                Intent intent = new Intent(EditSummaryActivity.this,ViewSummariesOnSubjectActivity.class);
-                                                intent.putExtra("SubjectSelected",subject);
-                                                Toast.makeText(EditSummaryActivity.this,"הסיכום שלך נמחק בהצלחה!",Toast.LENGTH_SHORT).show();
-                                                startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+                                                Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+                                                intent.putExtra("SubjectSelected", subject);
+                                                Toast.makeText(EditSummaryActivity.this, "הסיכום שלך נמחק בהצלחה!", Toast.LENGTH_SHORT).show();
+                                                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
                                                 finishAffinity();
                                             }
                                         });
@@ -323,31 +522,45 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
                                     }
                                     finish();
-
                                 }
+
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
-
+                                    Toast.makeText(EditSummaryActivity.this,"אאוץ'! נתקלנו בשגיאה.", Toast.LENGTH_SHORT).show();
                                 }
                             });
-
-
-
 
 
                         }
                     })
                     .setNegativeButton("לא", null)
                     .setIcon(temp)
-                    .setTitle("אזהרה")
-            ;
+                    .setTitle("אזהרה");
             AlertDialog alert = builder.create();
             alert.show();
-
-
-
         }
     }
+
+    public void selectPDF() {
+        // Method for offering the user to select a PDF file using file manager with an intent
+        Intent intent = new Intent();
+        intent.setType("application/pdf");
+        intent.setAction(Intent.ACTION_GET_CONTENT); // in order to fetch the files - type of action
+        startActivityForResult(intent, 86);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        //This checks if the user has selected a file or not
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 86 && resultCode == RESULT_OK && data != null) {
+            pdfUri = data.getData(); // This will return the Uri of the selected file
+            Toast.makeText(EditSummaryActivity.this,"הקובץ: "+data.getData().getLastPathSegment()+" נבחר.",Toast.LENGTH_LONG);
+        } else {
+            Toast.makeText(EditSummaryActivity.this, "אנא בחרו קובץ", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

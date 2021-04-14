@@ -1,6 +1,9 @@
 package com.theproject.schoolproject;
 
+import android.content.Context;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -10,6 +13,7 @@ public class GlobalAcross {
     public static int currentUserIndex;
     public static boolean firstLoginSuggestion = false;
     public static String infoMessage;
+    public static int editingTemp;
 
     //Useful global functions across the application : for the current user
     public static String getCurrentUserGradeString(){
@@ -45,6 +49,23 @@ public class GlobalAcross {
         allUsers = null;
         currentUser = null;
         //currentUserIndex = -1;
+    }
+
+    public static boolean checkValid(EditText title, EditText description, Context context){
+        //This function checks if the entered parameters in the description and title of the summary withhold and are valid
+        if(title.getText().toString().length()<5){
+            Toast.makeText(context, "אנא וודא\\י שיש לפחות 5 תווים בכותרת הסיכום", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if(title.getText().toString().length()>20) {
+            Toast.makeText(context, "אנא וודא\\י שיש עד 15 תווים בכותרת הסיכום", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if(description.getText().toString().length()>46){
+            Toast.makeText(context, "אנא וודא\\י שיש עד 46 תווים בתיאור", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
     }
 
     /*public static void logoutResetUser(){
