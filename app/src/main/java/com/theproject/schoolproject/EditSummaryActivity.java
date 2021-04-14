@@ -270,7 +270,12 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                         progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
                                         if(progressDialog.getProgress() == 100){
                                             progressDialog.dismiss();
-                                            finish();
+
+                                            Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+                                            intent.putExtra("SubjectSelected", subject);
+                                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+                                            finishAffinity();
+
                                         }
 
                                     }
@@ -286,7 +291,12 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                         if(progressDialog.getProgress() == 100){
                                             progressDialog.dismiss();
                                             Toast.makeText(EditSummaryActivity.this,"השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                                            finish();
+
+                                            Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+                                            intent.putExtra("SubjectSelected", subject);
+                                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+                                            finishAffinity();
+
                                         }
                                     }
                                 });
@@ -305,7 +315,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
                                                     //Will upload the new File here
                                                     final String newFileName = UUID.randomUUID().toString();
-                                                storage.getReference().child("SummariesFiles").child(newFileName).putFile(pdfUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                    storage.getReference().child("SummariesFiles").child(newFileName).putFile(pdfUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                                     @Override
                                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                                         progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
@@ -317,7 +327,12 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                                             public void onSuccess(Void aVoid) {
                                                                 //Success - changed the file reference of the summary in the realtime database to its actual new reference
                                                                 Toast.makeText(EditSummaryActivity.this,"השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                                                                finish();
+
+                                                                Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+                                                                intent.putExtra("SubjectSelected", subject);
+                                                                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+                                                                finishAffinity();
+
                                                             }
                                                         });
                                                     }
@@ -343,7 +358,12 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                                         if(progressDialog.getProgress() == 100) {
                                                             progressDialog.dismiss();
                                                             Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                                                            finish();
+
+                                                            Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+                                                            intent.putExtra("SubjectSelected", subject);
+                                                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+                                                            finishAffinity();
+
                                                         }
                                                         //Will upload the new File here
                                                             final String newFileName = UUID.randomUUID().toString();
@@ -360,7 +380,12 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                                                         public void onSuccess(Void aVoid) {
                                                                             //Success - changed the file reference of the summary in the realtime database to its actual new reference
                                                                             Toast.makeText(EditSummaryActivity.this,"השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                                                                            finish();
+
+                                                                            Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+                                                                            intent.putExtra("SubjectSelected", subject);
+                                                                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+                                                                            finishAffinity();
+
                                                                         }
                                                                     });
                                                                 }
