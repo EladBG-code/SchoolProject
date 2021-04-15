@@ -41,7 +41,6 @@ public class Summary {
         this.id = "";
         this.fileRef = "none";
         this.creatorIndex = sharedPreferences.getInt("index",0);
-
     }
 
     //EDITOR NOTE: IF YOU HAVE TIME ADD AN IMAGE OF THE AUTHOR TO THE SUMMARY PAGE
@@ -58,7 +57,17 @@ public class Summary {
         this.description = description;
         this.subject = subject;
         this.amountOfLikes=amountOfLikes;
-        this.usersThatLiked=usersThatLiked;
+        this.usersThatLiked = usersThatLiked;
+        //EDITOR NOTE URGENT: ADD IMAGE\FILE UPLOADING SYSTEM
+    }
+
+    public Summary(String author, String title, String description, String subject, Long amountOfLikes) {
+        this.author = author;
+        this.title = title;
+        this.description = description;
+        this.subject = subject;
+        this.amountOfLikes=amountOfLikes;
+        this.usersThatLiked = null;
         //EDITOR NOTE URGENT: ADD IMAGE\FILE UPLOADING SYSTEM
     }
 

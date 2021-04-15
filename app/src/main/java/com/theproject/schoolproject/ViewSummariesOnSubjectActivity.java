@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,15 +30,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.theproject.schoolproject.GlobalAcross.currentUser;
 import static com.theproject.schoolproject.GlobalAcross.currentUserIndex;
@@ -92,6 +99,11 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         else{
             usersRef.child("favoriteSummaries").child(selectedKeySummary).removeValue();
             myRef.child("usersThatLiked").child(String.valueOf(currentUserIndex)).removeValue();
+
+            DatabaseReference arrayListRef = myRef.child("usersThatLiked");
+
+
+
         }
 
     }
@@ -120,7 +132,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
                     amountOfLikes= (Long) child.getValue();
                 }
                 else if(child.getKey().equals("usersThatLiked")) {
-                    if(child.getValue().equals("none")){
+                    if(!child.hasChildren()){
                         usersThatLiked=null;
                     }
                     else {
@@ -206,7 +218,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
                     updateListOfLikes(selectedKeySummary, false);
                     Toast.makeText(ViewSummariesOnSubjectActivity.this, "הסיכום הוסר מהסיכומים שלי", Toast.LENGTH_SHORT).show();
                     holder.btnHeart.setChecked(false);
-                    holder.mtvLikesNum.setTextColor(Color.BLACK);
+                    //holder.mtvLikesNum.setTextColor(Color.BLACK);
 
                 }
 
@@ -247,7 +259,6 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     GridLayoutManager gridLayoutManager = new GridLayoutManager(this,2,GridLayoutManager.VERTICAL, false);
     dataList.setLayoutManager(gridLayoutManager);
     dataList.setAdapter(adapter);
-
     }
 
 

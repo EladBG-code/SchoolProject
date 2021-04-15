@@ -227,7 +227,6 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
     public void onClick(View v) {
         if (v == sivSaveEditedSummary) {
             //Save shapable image view in clicker in the toolbar
-
             //First of all we check if the user even changed anything
             if (GlobalAcross.checkValid(etEditSummaryName, etEditSummaryDescription,EditSummaryActivity.this)) {
 
@@ -236,6 +235,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 progressDialog.setTitle("שומרים את השינויים שלך...");
                 progressDialog.setProgress(0);
+                progressDialog.show();
                 //Editor's note - add an app check for the new values lengths entered to the edittexts while changing
 
                 database.child(summaryKey).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -262,7 +262,6 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                         if(GlobalAcross.editingTemp != 0){
                             //Checks if any changes have even been made
                             progressDialog.show();
-
                             if (!snapshot.child("title").getValue().toString().equals(etEditSummaryName.getText().toString())) { //This function checks if the new title is different than the existing one and sets the on the realtime database as the new one
                                 FirebaseDatabase.getInstance().getReference().child(subject).child(summaryKey).child("title").setValue(etEditSummaryName.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -270,12 +269,10 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                         progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
                                         if(progressDialog.getProgress() == 100){
                                             progressDialog.dismiss();
-
-                                            Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+                                            Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
                                             intent.putExtra("SubjectSelected", subject);
                                             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
                                             finishAffinity();
-
                                         }
 
                                     }
@@ -291,12 +288,10 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                         if(progressDialog.getProgress() == 100){
                                             progressDialog.dismiss();
                                             Toast.makeText(EditSummaryActivity.this,"השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-
-                                            Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+                                            Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
                                             intent.putExtra("SubjectSelected", subject);
                                             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
                                             finishAffinity();
-
                                         }
                                     }
                                 });
@@ -311,34 +306,33 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                                 //Successfully deleted old summary on the first try
-
-
-                                                    //Will upload the new File here
-                                                    final String newFileName = UUID.randomUUID().toString();
-                                                    storage.getReference().child("SummariesFiles").child(newFileName).putFile(pdfUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
+                                                //Will upload the new File here
+                                                final String newFileName = UUID.randomUUID().toString();
+                                                storage.getReference().child("SummariesFiles").child(newFileName).putFile(pdfUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                                     @Override
                                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                                         progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
-                                                        if(progressDialog.getProgress() == 100){
-                                                            progressDialog.dismiss();
-                                                        }
-                                                        FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("fileRef").setValue("/SummariesFiles/"+newFileName).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                                                        FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("fileRef").setValue("/SummariesFiles/" + newFileName).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override
                                                             public void onSuccess(Void aVoid) {
                                                                 //Success - changed the file reference of the summary in the realtime database to its actual new reference
-                                                                Toast.makeText(EditSummaryActivity.this,"השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-
-                                                                Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
-                                                                intent.putExtra("SubjectSelected", subject);
-                                                                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                                                                finishAffinity();
-
+                                                                if (progressDialog.getProgress() == 100) {
+                                                                    progressDialog.dismiss();
+                                                                    Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
+                                                                    Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
+                                                                    intent.putExtra("SubjectSelected", subject);
+                                                                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+                                                                    finishAffinity();
+                                                                }
+                                                                //aSyncSubjectIf();
                                                             }
                                                         });
                                                     }
                                                 });
-                                                }
 
+                                            }
                                         }).addOnFailureListener(new OnFailureListener() { //This onfailurelistener tries to delete the file a second time inside of it
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
@@ -348,6 +342,11 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                                         //Fails to delete the old summary file on the storage for the second time
 
                                                         Toast.makeText(EditSummaryActivity.this,"אאוץ'! נתקלנו בשגיאה - לא הצלחנו למחוק את הקובץ PDF הישן.", Toast.LENGTH_SHORT).show();
+                                                        progressDialog.dismiss();
+                                                        Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
+                                                        intent.putExtra("SubjectSelected", subject);
+                                                        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+                                                        finishAffinity();
                                                     }
                                                 }).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
@@ -355,37 +354,27 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                                         //Successfully deleted old summary on the second try
 
                                                         progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
-                                                        if(progressDialog.getProgress() == 100) {
-                                                            progressDialog.dismiss();
-                                                            Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-
-                                                            Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
-                                                            intent.putExtra("SubjectSelected", subject);
-                                                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                                                            finishAffinity();
-
-                                                        }
                                                         //Will upload the new File here
                                                             final String newFileName = UUID.randomUUID().toString();
                                                             storage.getReference().child("SummariesFiles").child(newFileName).putFile(pdfUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                                                 @Override
                                                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                                                     progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
-                                                                    if(progressDialog.getProgress() == 100){
-                                                                        progressDialog.dismiss();
-                                                                        Toast.makeText(EditSummaryActivity.this,"השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                                                                    }
                                                                     FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("fileRef").setValue("/SummariesFiles/"+newFileName).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                         @Override
                                                                         public void onSuccess(Void aVoid) {
                                                                             //Success - changed the file reference of the summary in the realtime database to its actual new reference
-                                                                            Toast.makeText(EditSummaryActivity.this,"השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
 
-                                                                            Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
-                                                                            intent.putExtra("SubjectSelected", subject);
-                                                                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                                                                            finishAffinity();
+                                                                            if(progressDialog.getProgress() == 100){
+                                                                                progressDialog.dismiss();
+                                                                                Toast.makeText(EditSummaryActivity.this,"השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
+                                                                                Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
+                                                                                intent.putExtra("SubjectSelected", subject);
+                                                                                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+                                                                                finishAffinity();
 
+                                                                            }
+                                                                            //aSyncSubjectIf();
                                                                         }
                                                                     });
                                                                 }
@@ -399,9 +388,122 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
                                         Toast.makeText(EditSummaryActivity.this,"אאוץ'! נתקלנו בשגיאה - נסו שוב מאוחר יותר", Toast.LENGTH_SHORT).show();
-                                        finish();
+                                        //finish();
                                     }
                                 });
+
+                            }
+
+
+                            if(!subject.equals(spinnerSubjectCurrent)){
+                                //Enters if the subject was changed
+
+                                FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        final Summary tempCopy = new Summary();
+                                        tempCopy.setAmountOfLikes(Long.valueOf(snapshot.child("amountOfLikes").getValue().toString()));
+                                        tempCopy.setAuthor(snapshot.child("author").getValue().toString());
+                                        tempCopy.setCreatorIndex(Integer.valueOf(snapshot.child("creatorIndex").getValue().toString()));
+                                        tempCopy.setDescription(snapshot.child("description").getValue().toString());
+                                        tempCopy.setFileRef(snapshot.child("fileRef").getValue().toString());
+                                        if(snapshot.child("hasNotified").getValue().equals(true)){
+                                            tempCopy.setHasNotified(true);
+                                        }
+                                        else{
+                                            tempCopy.setHasNotified(false);
+                                        }
+
+                                        if(!snapshot.child("usersThatLiked").equals(null)){
+                                            //If thee summary has likes it'll copy the value of it and set it onto the new summary class
+
+                                            FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    final ArrayList<String> usersThatLikedAL = new ArrayList<>(); //ArrayList for indexes of users who liked the summary that's about to be changed onto the new subject
+
+                                                    for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
+                                                        usersThatLikedAL.add(child.getValue().toString());
+                                                    }
+                                                    tempCopy.setUsersThatLiked(usersThatLikedAL);
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+
+
+                                        }
+                                        tempCopy.setTitle(snapshot.child("title").getValue().toString());
+                                        FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                //Successfully deleted the summary details from the realtime database on the former subject and will now push it to the new subject
+
+                                                 //Reserves a new ID for the summary in the new subject and sets it to it in the next line
+                                                tempCopy.setId(FirebaseDatabase.getInstance().getReference(spinnerSubjectCurrent).push().getKey());
+                                                FirebaseDatabase.getInstance().getReference(spinnerSubjectCurrent).child(tempCopy.getId()).setValue(tempCopy).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        //Enters when the new summary has been successfully pushed onto the database under the new subject
+
+
+                                                        FirebaseDatabase.getInstance().getReference(spinnerSubjectCurrent).child(tempCopy.getId()).child("usersThatLiked").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                                                    //Checks if the summary even has likes and if it does it changes the subject in it for each user onto the new subject
+                                                                if(!snapshot.equals(null)) {
+                                                                    final ArrayList<String> usersThatLikedCertainSummary = new ArrayList<>(); //ArrayList for indexes of users who liked the summary that's about to be changed onto the new subject
+                                                                    for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
+                                                                        //usersThatLikedCertainSummary.add(child.getValue().toString());
+                                                                        if(child.getKey().equals(currentUserIndex)){
+                                                                            FirebaseDatabase.getInstance().getReference(spinnerSubjectCurrent).child(tempCopy.getId()).child("usersThatLiked").child(child.getValue().toString()).setValue(Integer.valueOf(child.getValue().toString()));
+                                                                            FirebaseDatabase.getInstance().getReference("UsersPlace/"+ child.getValue().toString()).child("favoriteSummaries").child(summaryKey).removeValue(); //Removes the old favorite summaries for the old key and summary for the former summary
+                                                                            FirebaseDatabase.getInstance().getReference("UsersPlace/"+ child.getValue().toString()).child("favoriteSummaries").child(tempCopy.getId()).setValue(spinnerSubjectCurrent); //Sets the new summary and summary id as favorite for each liker of the summary
+                                                                        }
+                                                                        else{
+                                                                            //FirebaseDatabase.getInstance().getReference(spinnerSubjectCurrent).child(tempCopy.getId()).child("usersThatLiked").child(child.getValue().toString()).setValue(Integer.valueOf(child.getValue().toString()));
+                                                                            FirebaseDatabase.getInstance().getReference("UsersPlace/"+ child.getValue().toString()).child("favoriteSummaries").child(summaryKey).removeValue(); //Removes the old favorite summaries for the old key and summary for the former summary
+                                                                            FirebaseDatabase.getInstance().getReference("UsersPlace/"+ child.getValue().toString()).child("favoriteSummaries").child(tempCopy.getId()).setValue(spinnerSubjectCurrent); //Sets the new summary and summary id as favorite for each liker of the summary
+                                                                        }
+
+                                                                    }
+
+                                                                }
+                                                                progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
+
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                                            }
+                                                        });
+                                                        //Does this when it finishes changing the liked references in everyone's accounts
+
+
+                                                    }
+                                                });
+                                            }
+                                        });
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        //Cancellation of the selection of a new subject
+                                    }
+                                });
+                                progressDialog.dismiss();
+                                Toast.makeText(EditSummaryActivity.this,"השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
+                                Intent Sintent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
+                                Sintent.putExtra("SubjectSelected", subject);
+                                startActivity(Sintent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+                                finishAffinity();
+
 
                             }
 
@@ -409,8 +511,8 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
                         else {
                             progressDialog.dismiss();
-                            Toast.makeText(getApplicationContext(),"לא נעשו שינויים בסיכום.",Toast.LENGTH_SHORT).show();
-
+                            Toast.makeText(EditSummaryActivity.this,"לא נעשו שינויים בסיכום.",Toast.LENGTH_SHORT).show();
+                            //EditSummaryActivity.super.onBackPressed();
                         }
 
 
@@ -532,7 +634,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                                 deletionProgress += 100 / (usersThatLikedCertainSummary.size() + 2); //The last piece to get 100% on the progressbar after the entire summary is removed from the realtime database
                                                 progressDialog.setProgress(deletionProgress);
                                                 progressDialog.dismiss();
-                                                Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+                                                Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
                                                 intent.putExtra("SubjectSelected", subject);
                                                 Toast.makeText(EditSummaryActivity.this, "הסיכום שלך נמחק בהצלחה!", Toast.LENGTH_SHORT).show();
                                                 startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
@@ -563,6 +665,100 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                     .setTitle("אזהרה");
             AlertDialog alert = builder.create();
             alert.show();
+        }
+    }
+
+    public void aSyncSubjectIf(){
+        if(!subject.equals(spinnerSubjectCurrent)){
+            //Enters if the subject was changed
+
+            FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    final Summary tempCopy = new Summary();
+                    tempCopy.setAmountOfLikes(Long.valueOf(snapshot.child("amountOfLikes").getValue().toString()));
+                    tempCopy.setAuthor(snapshot.child("author").getValue().toString());
+                    tempCopy.setCreatorIndex(Integer.valueOf(snapshot.child("creatorIndex").getValue().toString()));
+                    tempCopy.setDescription(snapshot.child("description").getValue().toString());
+                    tempCopy.setFileRef(snapshot.child("fileRef").getValue().toString());
+                    if(snapshot.child("hasNotified").getValue().equals(true)){
+                        tempCopy.setHasNotified(true);
+                    }
+                    else{
+                        tempCopy.setHasNotified(false);
+                    }
+
+                    if(!snapshot.child("usersThatLiked").equals(null)){
+                        //If thee summary has likes it'll copy the value of it and set it onto the new summary class
+                        ArrayList<String> usersThatLikedAL = new ArrayList<>();
+                        for(int i=0; i< snapshot.child("usersThatLiked").getChildrenCount();i++){
+                            usersThatLikedAL.add(snapshot.child("usersThatLiked"+"/"+i).getValue().toString());
+                        }
+                        tempCopy.setUsersThatLiked(usersThatLikedAL);
+                    }
+                    tempCopy.setTitle(snapshot.child("title").getValue().toString());
+                    FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            //Successfully deleted the summary details from the realtime database on the former subject and will now push it to the new subject
+
+                            //Reserves a new ID for the summary in the new subject and sets it to it in the next line
+                            tempCopy.setId(FirebaseDatabase.getInstance().getReference(spinnerSubjectCurrent).push().getKey());
+                            FirebaseDatabase.getInstance().getReference(spinnerSubjectCurrent).child(tempCopy.getId()).setValue(tempCopy).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    //Enters when the new summary has been successfully pushed onto the database under the new subject
+
+
+                                    FirebaseDatabase.getInstance().getReference(spinnerSubjectCurrent).child(tempCopy.getId()).child("usersThatLiked").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                            //Checks if the summary even has likes and if it does it changes the subject in it for each user onto the new subject
+                                            if(!snapshot.equals(null)) {
+
+                                                final ArrayList<String> usersThatLikedCertainSummary = new ArrayList<>(); //ArrayList for indexes of users who liked the summary that's about to be changed onto the new subject
+                                                for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
+                                                    usersThatLikedCertainSummary.add(child.getValue() + "");
+                                                }
+                                                for (int i = 0; i < usersThatLikedCertainSummary.size(); i++) {
+                                                    FirebaseDatabase.getInstance().getReference(spinnerSubjectCurrent).child(tempCopy.getId()).child("usersThatLiked").child(String.valueOf(i)).setValue(i);
+                                                    final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/" + usersThatLikedCertainSummary.get(i));
+                                                    FirebaseDatabase.getInstance().getReference("UsersPlace/"+ usersThatLikedCertainSummary.get(i)).child("favoriteSummaries").child(summaryKey).removeValue(); //Removes the old favorite summaries for the old key and summary for the former summary
+                                                    FirebaseDatabase.getInstance().getReference("UsersPlace/"+ usersThatLikedCertainSummary.get(i)).child("favoriteSummaries").child(tempCopy.getId()).setValue(spinnerSubjectCurrent); //Sets the new summary and summary id as favorite for each liker of the summary
+                                                }
+                                            }
+                                            progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+                                    //Does this when it finishes changing the liked references in everyone's accounts
+                                    if(progressDialog.getProgress() == 100){
+                                        progressDialog.dismiss();
+                                        Toast.makeText(EditSummaryActivity.this,"השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
+                                        intent.putExtra("SubjectSelected", subject);
+                                        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+                                        finishAffinity();
+                                    }
+
+                                }
+                            });
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    //Cancellation of the selection of a new subject
+                }
+            });
+
         }
     }
 
