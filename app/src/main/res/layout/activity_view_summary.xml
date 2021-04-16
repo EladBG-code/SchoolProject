@@ -58,7 +58,7 @@
         tools:openDrawer="start"
         >
 
-        <ScrollView
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             >
@@ -78,67 +78,79 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="?actionBarSize"
-                        >
+                        android:layout_height="match_parent"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginEnd="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/viewSummaryTitle"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:gravity="center|top"
                             android:text="Title"
                             android:textSize="25sp"
                             android:textStyle="bold"
-                            app:layout_anchor="@id/toolbarViewSummary"
-                            />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="?actionBarSize"
-                        android:gravity="center|bottom"
-                        >
+                            app:layout_anchor="@id/toolbarViewSummary" />
 
                         <TextView
                             android:id="@+id/viewSummaryAuthor"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Author"
                             android:gravity="top|center"
-                            android:textSize="15sp"
-                            />
+                            android:text="Author"
+                            android:textSize="15sp" />
+
+                        <View
+                            android:id="@+id/spline"
+                            android:layout_width="match_parent"
+                            android:layout_height="2sp"
+                            android:layout_marginTop="10sp"
+                            android:background="@android:color/holo_blue_dark" />
+
+                        <ScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20sp"
+                            android:scrollbarStyle="insideOverlay">
+
+                            <TextView
+                                android:id="@+id/viewSummaryDescription"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="7sp"
+                                android:layout_marginRight="7sp"
+                                android:text="Description"
+                                android:textSize="17sp" />
+
+                        </ScrollView>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <com.github.barteksc.pdfviewer.PDFView
+                                android:id="@+id/pdfView"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginStart="0dp"
+                                android:layout_marginTop="0dp"
+                                android:layout_marginEnd="0dp"
+                                android:layout_marginBottom="0dp" />
+                        </RelativeLayout>
 
                     </LinearLayout>
 
-
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2sp"
-                        android:background="@android:color/holo_blue_dark"
-                        android:id="@+id/spline"
-                        android:layout_marginTop="60sp"
-                        />
-
-                    <ScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:scrollbarStyle="insideOverlay"
-                        android:layout_marginTop="65sp"
-                        >
-
-                        <TextView
-                            android:id="@+id/viewSummaryDescription"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Description"
-                            android:textSize="17sp"
-                            android:layout_marginLeft="7sp"
-                            android:layout_marginRight="7sp"
-                            />
-
-                    </ScrollView>
 
                 </RelativeLayout>
 
@@ -148,7 +160,7 @@
 
 
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
-        </ScrollView>
+        </RelativeLayout>
 
 
         <com.google.android.material.navigation.NavigationView

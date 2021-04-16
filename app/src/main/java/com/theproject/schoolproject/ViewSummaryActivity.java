@@ -1,11 +1,5 @@
 package com.theproject.schoolproject;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,10 +7,23 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.github.barteksc.pdfviewer.PDFView;
+import com.github.barteksc.pdfviewer.listener.OnPageErrorListener;
+import com.github.barteksc.pdfviewer.listener.OnRenderListener;
+import com.github.barteksc.pdfviewer.listener.OnTapListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
@@ -25,6 +32,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class ViewSummaryActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
@@ -39,6 +48,7 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
     ShapeableImageView sivEditSummary;
     String summarySubject,summaryKey;
     int summaryCreatorIndex;
+    PDFView pdfView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +60,13 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
         tvSummaryAuthor = findViewById(R.id.viewSummaryAuthor);
         tvSummaryTitle = findViewById(R.id.viewSummaryTitle);
         tvSummaryDescription = findViewById(R.id.viewSummaryDescription);
+        pdfView=findViewById(R.id.pdfView);
 
         summaryKey = getIntent().getStringExtra("summaryKey");
         summarySubject = getIntent().getStringExtra("subject");
+
+
+
 
         database = FirebaseDatabase.getInstance().getReference().child(summarySubject);
         getIndexKeyAndSubject();
@@ -69,12 +83,46 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
                 String summaryTitle = snapshot.child("title").getValue().toString();
                 String summaryAuthor = snapshot.child("author").getValue().toString();
                 String summaryDescription = snapshot.child("description").getValue().toString();
+
+                //pdf getDownloadUrl try
+                String pdf = snapshot.child("fileRef").getValue().toString();
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference storageReference = storage.getReference(); //Sets the root path
+                final long threeMegaBytes= 1024*1024*3;
+                storageReference.child(pdf).getBytes(threeMegaBytes).addOnSuccessListener(new OnSuccessListener<byte[]>(){
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        // Got the download URL for 'users/me/profile.png' in uri
+                        System.out.println(bytes.toString());
+                        pdfView.fromBytes(bytes).password(null).enableSwipe(true).swipeHorizontal(false).enableDoubletap(true).defaultPage(0).onPageError(new OnPageErrorListener() {
+                            @Override
+                            public void onPageError(int page, Throwable t) {
+                                Toast.makeText(ViewSummaryActivity.this,"שגיאה בקריאת הקובץ",Toast.LENGTH_LONG);
+                            }
+                        }).onTap(new OnTapListener() {
+                            @Override
+                            public boolean onTap(MotionEvent e) {
+                                return true;
+                            }
+                        }).onRender(new OnRenderListener() {
+                            @Override
+                            public void onInitiallyRendered(int nbPages) {
+                                pdfView.fitToWidth(0);
+                            }
+                        }).enableAnnotationRendering(true).load();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+
                 summaryCreatorIndex = Integer.valueOf(snapshot.child("creatorIndex").getValue().toString());
                 if(summaryCreatorIndex == GlobalAcross.currentUserIndex){
                     //Enables the edit shapableimage in the toolbar if the currentuserindex is equal to the summary creator's index
                     sivEditSummary.setVisibility(View.VISIBLE);
                 }
-
                 tvSummaryTitle.setText(summaryTitle);
                 tvSummaryAuthor.setText("סופר\\ת: " + summaryAuthor);
                 tvSummaryDescription.setText(summaryDescription);
