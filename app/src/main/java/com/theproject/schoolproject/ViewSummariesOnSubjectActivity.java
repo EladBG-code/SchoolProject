@@ -1,5 +1,6 @@
 package com.theproject.schoolproject;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -135,9 +136,10 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
                     if(!child.hasChildren()){
                         usersThatLiked=null;
                     }
-                    else if(child.getChildrenCount() != 1){
+                    //else if(child.getChildrenCount() != 1){
+                    else
                         usersThatLiked = (ArrayList<String>) child.getValue();
-                    }
+                    //}
                 }
             }
             Summary summary = new Summary(author, title, description,subject1,amountOfLikes,usersThatLiked);
@@ -197,6 +199,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
             }
             else{
                 holder.btnHeart.setChecked(false);
+                holder.mtvLikesNum.setTextColor(Color.BLACK);
             }
         }
         // this function is adding one like to the summary
@@ -206,19 +209,19 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
                 String selectedKeySummary = getRef(position).getKey();
                 long newLikes=model.getAmountOfLikes();
                 if(holder.btnHeart.isChecked()){
-                   newLikes= newLikes+1;
+                   newLikes += 1;
                    updateLikesDB(selectedKeySummary, newLikes);
                    updateListOfLikes(selectedKeySummary, true);
                    Toast.makeText(ViewSummariesOnSubjectActivity.this, "הסיכום נשמר בסיכומים שלי", Toast.LENGTH_SHORT).show();
                    holder.btnHeart.setChecked(true);
                 }
                 if(!holder.btnHeart.isChecked()){
-                    newLikes= newLikes-1;
+                    newLikes -= 1;
                     updateLikesDB(selectedKeySummary, newLikes);
                     updateListOfLikes(selectedKeySummary, false);
                     Toast.makeText(ViewSummariesOnSubjectActivity.this, "הסיכום הוסר מהסיכומים שלי", Toast.LENGTH_SHORT).show();
                     holder.btnHeart.setChecked(false);
-                    //holder.mtvLikesNum.setTextColor(Color.BLACK);
+                    holder.mtvLikesNum.setTextColor(Color.BLACK);
 
                 }
 
@@ -360,7 +363,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
             //Upload floating action button selected
             Intent intent = new Intent(this,AddSummaryActivity.class);
             intent.putExtra("Subject",subject.getSubjectName());
-            startActivity(intent);
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }
 
     }

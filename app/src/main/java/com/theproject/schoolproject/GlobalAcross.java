@@ -57,11 +57,11 @@ public class GlobalAcross {
             Toast.makeText(context, "אנא וודא\\י שיש לפחות 5 תווים בכותרת הסיכום", Toast.LENGTH_LONG).show();
             return false;
         }
-        if(title.getText().toString().length()>20) {
-            Toast.makeText(context, "אנא וודא\\י שיש עד 15 תווים בכותרת הסיכום", Toast.LENGTH_LONG).show();
+        if(title.getText().toString().length()>10) {
+            Toast.makeText(context, "אנא וודא\\י שיש עד 10 תווים בכותרת הסיכום", Toast.LENGTH_LONG).show();
             return false;
         }
-        if(description.getText().toString().length()>46){
+        if(description.getText().toString().length()>20){
             Toast.makeText(context, "אנא וודא\\י שיש עד 46 תווים בתיאור", Toast.LENGTH_LONG).show();
             return false;
         }

@@ -5,10 +5,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +26,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
+import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 import com.github.barteksc.pdfviewer.listener.OnPageErrorListener;
 import com.github.barteksc.pdfviewer.listener.OnRenderListener;
 import com.github.barteksc.pdfviewer.listener.OnTapListener;
@@ -39,6 +45,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import org.w3c.dom.Text;
+
 public class ViewSummaryActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private TextView tvSummaryTitle;
@@ -52,6 +60,9 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
     ShapeableImageView sivEditSummary;
     String summarySubject,summaryKey;
     ProgressBar pbLoadingPDF;
+
+    TextView tvPagesUpdate;
+
     int summaryCreatorIndex;
     PDFView pdfView;
 
@@ -64,6 +75,8 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
 
         pbLoadingPDF = findViewById(R.id.pbLoadingPDF);
 
+        tvPagesUpdate = findViewById(R.id.tvPagesUpdate);
+
         tvSummaryAuthor = findViewById(R.id.viewSummaryAuthor);
         tvSummaryTitle = findViewById(R.id.viewSummaryTitle);
         tvSummaryDescription = findViewById(R.id.viewSummaryDescription);
@@ -72,6 +85,7 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
         summaryKey = getIntent().getStringExtra("summaryKey");
         summarySubject = getIntent().getStringExtra("subject");
 
+        //tvPagesUpdate.setX(Resources.getSystem().getDisplayMetrics().widthPixels / 2);
 
 
 
@@ -95,12 +109,13 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
                 String pdf = snapshot.child("fileRef").getValue().toString();
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageReference = storage.getReference(); //Sets the root path
-                final long threeMegaBytes= 1024*1024*3;
-                storageReference.child(pdf).getBytes(threeMegaBytes).addOnSuccessListener(new OnSuccessListener<byte[]>(){
+                final long sixMegaBytes = 1024*1024*6;
+                storageReference.child(pdf).getBytes(sixMegaBytes).addOnSuccessListener(new OnSuccessListener<byte[]>(){
                     @Override
                     public void onSuccess(byte[] bytes) {
                         // Got the download URL for 'users/me/profile.png' in uri
                         System.out.println(bytes.toString());
+                        //pdfView.getpag
                         pdfView.fromBytes(bytes).password(null).enableSwipe(true).swipeHorizontal(false).enableDoubletap(true).defaultPage(0).onPageError(new OnPageErrorListener() {
                             @Override
                             public void onPageError(int page, Throwable t) {
@@ -123,7 +138,14 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
                                 pbLoadingPDF.setProgress(0);
                                 pdfView.fitToWidth(0);
                             }
-                        }).enableAnnotationRendering(true).load();
+                        }).onPageChange(new OnPageChangeListener() {
+                            @Override
+                            public void onPageChanged(int page, int pageCount) {
+                                tvPagesUpdate.setText(pdfView.getCurrentPage()+1+"/"+pdfView.getPageCount());
+                            }
+                        }).
+
+                                enableAnnotationRendering(true).load();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override

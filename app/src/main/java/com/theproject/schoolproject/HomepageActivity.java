@@ -153,7 +153,7 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
                             editor.commit();
 
                             startActivity(intent);
-                            finish();
+                            finishAfterTransition();
                         }
                     })
                     .setNegativeButton("לא",null);

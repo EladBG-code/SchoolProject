@@ -1,12 +1,15 @@
 package com.theproject.schoolproject;
 
 import android.Manifest;
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Bundle;
 import android.transition.TransitionManager;
@@ -42,8 +45,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
+import org.w3c.dom.Document;
+
+import java.io.File;
+import java.io.OutputStream;
 import java.util.UUID;
 
 public class AddSummaryActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
@@ -118,7 +126,9 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         if(v == floatingReturnButton){
             // RETURN TO THE PAGE BEFORE THE CURRENT
-            finish();
+            //finish();
+            //startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+            finishAfterTransition();
         }
         if(v == btnUpload){
             // UPLOAD SUMMARY BUTTON
@@ -178,7 +188,9 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
 
         final String fileName = UUID.randomUUID().toString();
         StorageReference storageReference = storage.getReference(); //Sets the root path
-        storageReference.child("SummariesFiles").child(fileName).putFile(pdfUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        final StorageTask uploadTask = storageReference.child("SummariesFiles").child(fileName).putFile(pdfUri);
+
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
@@ -222,8 +234,14 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
                 //Tracks the progress of our upload task (progressbar)
-                int currentProgress = (int) (100*snapshot.getBytesTransferred()/snapshot.getTotalByteCount()); //Formula to get the progress percentage of bytes transferred over total bytes times 100 casted into int
-                progressDialog.setProgress(currentProgress);
+                if (snapshot.getTotalByteCount() > 6291456) { //This if checks if the file which is being uploaded is over 6MB and cancels this immediately if it is
+                    uploadTask.cancel();
+                    Toast.makeText(AddSummaryActivity.this,"הקובץ כבד מדי! אנו מרשים רק עד 6 MB.",Toast.LENGTH_LONG).show();
+                    progressDialog.dismiss();
+                } else {
+                    int currentProgress = (int) (100 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount()); //Formula to get the progress percentage of bytes transferred over total bytes times 100 casted into int
+                    progressDialog.setProgress(currentProgress);
+                }
             }
         });
 
@@ -243,9 +261,10 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
 
     public void selectPDF() {
         // Method for offering the user to select a PDF file using file manager with an intent
-        Intent intent = new Intent();
-        intent.setType("application/pdf");
-        intent.setAction(Intent.ACTION_GET_CONTENT); // in order to fetch the files - type of action
+        Intent intent = new Intent()
+        .setType("application/pdf")
+        .setAction(Intent.ACTION_GET_CONTENT) // in order to fetch the files - type of action
+                ;
         startActivityForResult(intent, 86);
     }
 
@@ -254,11 +273,20 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         //This checks if the user has selected a file or not
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 86 && resultCode == RESULT_OK && data != null) {
-            pdfUri = data.getData(); // This will return the Uri of the selected file
-            notification.setText("הקובץ: " + data.getData().getLastPathSegment() + " נבחר.");
-        } else {
+                pdfUri = data.getData(); // This will return the Uri of the selected file
+                notification.setText("הקובץ: " + data.getData().getLastPathSegment() + " נבחר.");
+        }
+        else {
             Toast.makeText(AddSummaryActivity.this, "אנא בחרו קובץ", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private boolean isFileLessThanX_MB(File file,int x) {
+        int maxFileSize = x * 1024 * 1024;
+        Long l = file.length();
+        String fileSize = l.toString();
+        int finalFileSize = Integer.parseInt(fileSize);
+        return finalFileSize >= maxFileSize;
     }
 
 //    public void addSummaryToDB(Summary summary) {
