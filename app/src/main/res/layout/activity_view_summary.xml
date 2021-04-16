@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".ViewSummary">
+    tools:context=".ViewSummaryActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -18,11 +18,33 @@
             android:id="@+id/toolbarViewSummary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_blue_dark"
+            android:background="@color/colorPrimaryDark"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
             app:menu="@menu/main_menu"
-            app:navigationIcon="@drawable/navigation_icon" />
+            app:navigationIcon="@drawable/navigation_icon"
+            app:popupTheme="@menu/main_menu"
+            >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    >
+
+                   <com.google.android.material.imageview.ShapeableImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="?actionBarSize"
+                        android:src="@drawable/edit_pencil_icon"
+                        android:tint="@color/black"
+                        android:id="@+id/sivEditSummary"
+                        android:clickable="true"
+                        android:layout_marginLeft="10sp"
+                       android:visibility="gone"
+                       app:shapeAppearance="@style/roundedImageViewRounded"
+                       />
+                </LinearLayout>
+            </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
 
@@ -33,9 +55,8 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         tools:context=".ViewSummary"
-        tools:openDrawer="start">
-
-
+        tools:openDrawer="start"
+        >
 
         <ScrollView
             android:layout_width="wrap_content"
@@ -44,80 +65,86 @@
             <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:minHeight="?attr/actionBarSize"
-                app:layout_anchor="@+id/summaryDescription"
+                android:layout_marginTop="?actionBarSize"
                 >
 
                 <!-- Put stuff here -->
 
-                <TextView
-                    android:id="@+id/viewSummaryTitle"
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="Title"
-                    android:textSize="25sp"
-                    android:textStyle="bold"
-                    app:layout_anchorGravity="top|center" />
+                    >
 
-                <TextView
-                    android:id="@+id/viewSummaryAuthor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="28sp"
-                    android:text="Author"
-                    android:textSize="16sp"
-                    app:layout_anchor="@+id/viewSummaryTitle"
-                    app:layout_anchorGravity="center"
-                    />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        >
 
+                        <TextView
+                            android:id="@+id/viewSummaryTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center|top"
+                            android:text="Title"
+                            android:textSize="25sp"
+                            android:textStyle="bold"
+                            app:layout_anchor="@id/toolbarViewSummary"
+                            />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2sp"
-                    android:layout_marginTop="52sp"
-                    android:background="@android:color/holo_blue_dark"
-                    android:id="@+id/spline"
-                    />
+                    </LinearLayout>
 
-                <ScrollView
-                    android:id="@+id/scrollView2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="620sp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:gravity="center|bottom"
+                        >
 
+                        <TextView
+                            android:id="@+id/viewSummaryAuthor"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Author"
+                            android:gravity="top|center"
+                            android:textSize="15sp"
+                            />
 
-                </ScrollView>
-
-
-                <ScrollView
-                    android:id="@+id/scrollView3"
-                    android:layout_width="match_parent"
-                    android:layout_height="508dp"
-                    app:layout_anchor="@+id/scrollView2"
-                    app:layout_anchorGravity="center">
+                    </LinearLayout>
 
 
-                </ScrollView>
 
-                <ScrollView
-                    android:id="@+id/ScrollView01"
-                    android:layout_width="fill_parent"
-                    android:layout_height="79dp"
-                    android:layout_marginTop="54sp"
-                    android:scrollbarStyle="insideOverlay"
-                    app:layout_anchor="@+id/spline"
-                    app:layout_anchorGravity="center">
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2sp"
+                        android:background="@android:color/holo_blue_dark"
+                        android:id="@+id/spline"
+                        android:layout_marginTop="60sp"
+                        />
 
-                    <TextView
-                        android:id="@+id/viewSummaryDescription"
-                        android:layout_width="wrap_content"
+                    <ScrollView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Description"
-                        android:textSize="20sp" />
+                        android:scrollbarStyle="insideOverlay"
+                        android:layout_marginTop="65sp"
+                        >
 
-                </ScrollView>
+                        <TextView
+                            android:id="@+id/viewSummaryDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Description"
+                            android:textSize="17sp"
+                            android:layout_marginLeft="7sp"
+                            android:layout_marginRight="7sp"
+                            />
+
+                    </ScrollView>
+
+                </RelativeLayout>
+
+
+
+
 
 
             </androidx.coordinatorlayout.widget.CoordinatorLayout>

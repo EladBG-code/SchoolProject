@@ -12,10 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
+
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_marginTop="300sp"
+            android:layout_marginTop="275sp"
             android:textSize="15sp"
             android:text="0%"
             android:gravity="center|top"
@@ -24,13 +25,15 @@
             />
         <ProgressBar
             android:layout_width="match_parent"
-            android:layout_height="20sp"
+            android:layout_height="100sp"
             android:id="@+id/pbLoading"
             android:layout_gravity="center|bottom"
             android:layout_marginLeft="10sp"
             android:layout_marginRight="10sp"
-            android:layout_marginTop="320sp"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal" />
+            android:layout_marginTop="300sp"
+            android:outlineAmbientShadowColor="@color/cardview_dark_background"
+            android:outlineProvider="paddedBounds"
+            style="@style/Widget.AppCompat.ProgressBar" />
         <!--
             android:layout_marginLeft="10sp"
             android:layout_marginRight="10sp"

@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 
 import static com.theproject.schoolproject.GlobalAcross.allUsers;
 import static com.theproject.schoolproject.GlobalAcross.currentUser;
+import static com.theproject.schoolproject.GlobalAcross.currentUserIndex;
 
 public class LoadingActivity extends AppCompatActivity {
 
@@ -46,28 +49,38 @@ public class LoadingActivity extends AppCompatActivity {
         // Read from the database
         sharedPreferences = getSharedPreferences("index", Context.MODE_PRIVATE);
 
-         new Thread(new Runnable() { //This makes a thread that runs in the background regardless of the UI loading in here that does both actions
-                @Override
-                public void run() {
-                    while (pbStatus < 100) {
-                        pbStatus++;
-                        loadingP.setText(pbStatus+"%");
-                        android.os.SystemClock.sleep(15);
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                progressBar.setProgress(pbStatus);
-                            }
-                        });
-                    }
+        /*for(int i=0 ; i < 99 ; i++){
+            pbStatus++;
+            loadingP.setText(pbStatus + "%");
+            progressBar.setProgress(pbStatus);
+            SystemClock.sleep(15);
+        }
+
+        loadingFunc();*/
+
+        Thread thread = new Thread(new Runnable() { //This makes a thread that runs in the background regardless of the UI loading in here that does both actions
+            @Override
+            public void run() {
+                while (pbStatus < 100) {
+                    pbStatus++;
+                    loadingP.setText(pbStatus + "%");
+                    //SystemClock.sleep(15);
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            loadingFunc();
+                            progressBar.setProgress(pbStatus);
                         }
                     });
                 }
-            }).start();
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadingFunc();
+                    }
+                });
+            }
+        });
+        thread.start();
 
 
 
@@ -76,7 +89,40 @@ public class LoadingActivity extends AppCompatActivity {
 
         //loadingFunc();
     public void loadingFunc() {
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                GenericTypeIndicator<ArrayList<User>> t = new GenericTypeIndicator<ArrayList<User>>() {};
+                if (sharedPreferences.getBoolean("logged", false)) {
+                    //Checks if the user was logged in the device and places the correct path reference for his saved index and pulls out the class out of the arraylist in the firebase database
+                    currentUser = snapshot.getValue(t).get(sharedPreferences.getInt("index", 0));
+                    Toast.makeText(LoadingActivity.this, "ברוכים השבים " + currentUser.getfName() + '.', Toast.LENGTH_SHORT).show();
+                    currentUserIndex = sharedPreferences.getInt("index",0);
+                    progressBar.setProgress(100);
+                    loadingP.setText(100 + "%");
+                    Intent intent = new Intent(LoadingActivity.this, HomepageActivity.class);
+                    startActivity(intent);
+                }
+                else {
+                    //Was not logged in the current device
+                    allUsers = new ArrayList<>();
+                    if (snapshot.getValue(t) != null) {
+                        allUsers.addAll(snapshot.getValue(t));
+                    }
+                    Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        /* myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
@@ -86,7 +132,7 @@ public class LoadingActivity extends AppCompatActivity {
                     //Checks if the user was logged in the device and places the correct path reference for his saved index and pulls out the class out of the arraylist in the firebase database
                     currentUser = dataSnapshot.getValue(t).get(sharedPreferences.getInt("index", 0));
                     Toast.makeText(LoadingActivity.this, "ברוכים השבים " + currentUser.getfName() + '.', Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(LoadingActivity.this, Homepage.class);
+                    Intent intent = new Intent(LoadingActivity.this, HomepageActivity.class);
                     startActivity(intent);
                 }
                 else {
@@ -98,14 +144,13 @@ public class LoadingActivity extends AppCompatActivity {
                     Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
                     startActivity(intent);
                 }
-                finish();
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
             }
-        });
+        }); */
     }
 
 }

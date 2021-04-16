@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.transition.TransitionManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -26,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.transition.Scene;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -112,35 +114,17 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         super.onBackPressed();
     }
 
-    public boolean checkValid(EditText title,EditText description){
-        if(title.getText().toString().length()<5){
-            Toast.makeText(this, "אנא וודא\\י שיש לפחות 5 תווים בכותרת הסיכום", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        if(title.getText().toString().length()>20) {
-            Toast.makeText(this, "אנא וודא\\י שיש עד 15 תווים בכותרת הסיכום", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        if(description.getText().toString().length()>46){
-            Toast.makeText(this, "אנא וודא\\י שיש עד 46 תווים בתיאור", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        return true;
-        //temp
-    }
-
     @Override
     public void onClick(View v) {
         if(v == floatingReturnButton){
             // RETURN TO THE PAGE BEFORE THE CURRENT
-
             finish();
         }
         if(v == btnUpload){
             // UPLOAD SUMMARY BUTTON
 
             if (pdfUri != null) {
-                if (checkValid(summaryTitle, summaryDescription)) {
+                if (GlobalAcross.checkValid(summaryTitle, summaryDescription,AddSummaryActivity.this)) {
                     summary = new Summary(GlobalAcross.currentUser.getfName() + " " + GlobalAcross.currentUser.getlName(), summaryTitle.getText().toString(), summaryDescription.getText().toString(), getSharedPreferences("index", Context.MODE_PRIVATE));
                     summary.setId(database.getReference(subject).push().getKey());
                     summaryID=summary.getId();
@@ -192,17 +176,16 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         progressDialog.setProgress(0);
         progressDialog.show();
 
-        final String name = UUID.randomUUID().toString();
+        final String fileName = UUID.randomUUID().toString();
         StorageReference storageReference = storage.getReference(); //Sets the root path
-        storageReference.child("SummariesFiles").child(name).putFile(pdfUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        storageReference.child("SummariesFiles").child(fileName).putFile(pdfUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
 //                        String url = taskSnapshot.getStorage().getDownloadUrl().toString(); //Returns the URL of the file that is being uploaded.
                         //Storing the URL in the realtime database.
                         //progressDialog.show();
-                        String namePdfUri = "/SummariesFiles/"+name;
-                        summary.setFileRef(namePdfUri);
+                        summary.setFileRef("/SummariesFiles/"+fileName);
 //                        summariesRef.setValue(summary);
 
 //                        DatabaseReference reference = database.getReference().child(subject).child(summaryID); //Returns the path to the root
@@ -321,7 +304,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
             return false;
         }
         if(item.getTitle().equals("הגדרות")){
-            Intent intent = new Intent(AddSummaryActivity.this, SettingsUser.class);
+            Intent intent = new Intent(AddSummaryActivity.this, SettingsUserActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
@@ -333,15 +316,14 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
             return false;
         }
         if(item.getTitle().equals("מסך הבית")){
-            Intent intent = new Intent(this,Homepage.class);
+            Intent intent = new Intent(this,HomepageActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
         }
         if(item.getTitle().equals("אודות")){
             androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(AddSummaryActivity.this);
-            String info = "שלום "+GlobalAcross.currentUser.getfName()+", שמי אלעד ואני פיתחתי את אפליקציה זו. אשמח שתשלח\\י לי פידבק לאימייל: "+"eladbargal2@gmail.com";
-            builder.setMessage(info)
+            builder.setMessage(GlobalAcross.infoMessage)
                     .setNegativeButton("הבנתי",null);
 
             AlertDialog alert = builder.create();

@@ -11,10 +11,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -27,10 +29,13 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
     MaterialToolbar toolbar;
     Button btnMath,btnHistory,btnHebrew,btnCitizenship,btnBible,btnLiterature,btnEnglish,btnBiology,btnComputerScience,btnChemistry,btnPhysics,btnArts,btnCommunication,btnSocialStudies;
     SharedPreferences sharedPreferences;
+    TextView tvSelectSubj;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summaries_subjects);
+        tvSelectSubj = findViewById(R.id.tvSelectSubj);
+        tvSelectSubj.setPaintFlags(tvSelectSubj.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG); //Makes the subject selection textview: bold
 
         drawerFunction();
 
@@ -85,7 +90,7 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
     }
 
     public void nextPageOfButton(Button subject){
-        Intent intent = new Intent(this,ViewSummariesOnSubject.class);
+        Intent intent = new Intent(this,ViewSummariesOnSubjectActivity.class);
         intent.putExtra("SubjectSelected",subject.getText());
         startActivity(intent);
     }
@@ -171,9 +176,10 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             GlobalAcross.currentUser = null;
-                            Intent intent = new Intent(SummariesSubjects.this,MainActivity.class);
+                            Intent intent = new Intent(SummariesSubjects.this,LoadingActivity.class);
                             Toast.makeText(SummariesSubjects.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT).show();
                             sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+                            GlobalAcross.currentUser = null;
 
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.remove(MainActivity.Index); //Shared preferences - login keeper (key and value)
@@ -193,7 +199,7 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
             return false;
         }
         if(item.getTitle().equals("הגדרות")){
-            Intent intent = new Intent(SummariesSubjects.this, SettingsUser.class);
+            Intent intent = new Intent(SummariesSubjects.this, SettingsUserActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
@@ -205,15 +211,14 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
             return false;
         }
         if(item.getTitle().equals("מסך הבית")){
-            Intent intent = new Intent(this,Homepage.class);
+            Intent intent = new Intent(this,HomepageActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
         }
         if(item.getTitle().equals("אודות")){
             androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(SummariesSubjects.this);
-            String info = "שלום "+GlobalAcross.currentUser.getfName()+", שמי אלעד ואני פיתחתי את אפליקציה זו. אשמח שתשלח\\י לי פידבק לאימייל: "+"eladbargal2@gmail.com";
-            builder.setMessage(info)
+            builder.setMessage(GlobalAcross.infoMessage)
                     .setNegativeButton("הבנתי",null);
 
             AlertDialog alert = builder.create();
