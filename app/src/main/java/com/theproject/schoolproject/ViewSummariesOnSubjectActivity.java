@@ -135,7 +135,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
                     if(!child.hasChildren()){
                         usersThatLiked=null;
                     }
-                    else {
+                    else if(child.getChildrenCount() != 1){
                         usersThatLiked = (ArrayList<String>) child.getValue();
                     }
                 }

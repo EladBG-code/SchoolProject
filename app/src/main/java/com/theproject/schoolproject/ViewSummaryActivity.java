@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,11 +20,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.github.barteksc.pdfviewer.PDFView;
+import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
 import com.github.barteksc.pdfviewer.listener.OnPageErrorListener;
 import com.github.barteksc.pdfviewer.listener.OnRenderListener;
 import com.github.barteksc.pdfviewer.listener.OnTapListener;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
@@ -47,6 +51,7 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
     SharedPreferences sharedPreferences;
     ShapeableImageView sivEditSummary;
     String summarySubject,summaryKey;
+    ProgressBar pbLoadingPDF;
     int summaryCreatorIndex;
     PDFView pdfView;
 
@@ -57,10 +62,12 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
 
         setToolbarAndDrawer();
 
+        pbLoadingPDF = findViewById(R.id.pbLoadingPDF);
+
         tvSummaryAuthor = findViewById(R.id.viewSummaryAuthor);
         tvSummaryTitle = findViewById(R.id.viewSummaryTitle);
         tvSummaryDescription = findViewById(R.id.viewSummaryDescription);
-        pdfView=findViewById(R.id.pdfView);
+        pdfView = findViewById(R.id.pdfView);
 
         summaryKey = getIntent().getStringExtra("summaryKey");
         summarySubject = getIntent().getStringExtra("subject");
@@ -107,6 +114,13 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
                         }).onRender(new OnRenderListener() {
                             @Override
                             public void onInitiallyRendered(int nbPages) {
+                                //pbLoadingPDF.setProgress(100);
+                                //pbLoadingPDF.setVisibility(View.GONE);
+                                //pbLoadingPDF.setVisibility(View.GONE);
+
+                                //pdfView.setVisibility(View.VISIBLE);
+                                pbLoadingPDF.setVisibility(View.VISIBLE);
+                                pbLoadingPDF.setProgress(0);
                                 pdfView.fitToWidth(0);
                             }
                         }).enableAnnotationRendering(true).load();
@@ -114,7 +128,14 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
+                        Toast.makeText(ViewSummaryActivity.this,"שגיאה בקריאת הקובץ",Toast.LENGTH_LONG);
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<byte[]>() {
+                    @Override
+                    public void onComplete(@NonNull Task<byte[]> task) {
+                        pbLoadingPDF.setProgress(100);
+                        pbLoadingPDF.setVisibility(View.GONE);
+                        pdfView.setVisibility(View.VISIBLE);
                     }
                 });
 
