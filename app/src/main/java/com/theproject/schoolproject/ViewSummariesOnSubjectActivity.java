@@ -59,7 +59,6 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     FloatingActionButton floatingUploadButton;
     Subject subject;
     RecyclerView dataList;
-    List<String> titles;
     FirebaseDatabase database;
     DatabaseReference summariesRef;
     FirebaseRecyclerOptions<Summary> options;
@@ -75,7 +74,6 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         subject = new Subject(getIntent().getStringExtra("SubjectSelected"));
         tvSubjectName.setText(getIntent().getStringExtra("SubjectSelected")); /*This line sets the name of the subject which was selected as the title of the subject's summary page*/
         tvSubjectName.setPaintFlags(tvSubjectName.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG); //Makes the subject name textview bold
-        titles = new ArrayList<>();
         database = FirebaseDatabase.getInstance();
         summariesRef = database.getReference(subject.getSubjectName());
         loadSummariesListFromDB();
@@ -99,11 +97,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         //if add=0 - remove the summary from the list of summaries that the user liked
         else{
             usersRef.child("favoriteSummaries").child(selectedKeySummary).removeValue();
-            myRef.child("usersThatLiked").child(String.valueOf(currentUserIndex)).removeValue();
-
-            DatabaseReference arrayListRef = myRef.child("usersThatLiked");
-
-
+            myRef.child("usersThatLiked").child(String.valueOf(currentUserIndex)).setValue("none");
 
         }
 
@@ -192,7 +186,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
             holder.btnHeart.setChecked(false);
         }
        else {
-            ArrayList <String> usersThatLikedTemp= model.getUsersThatLiked();
+            ArrayList<String> usersThatLikedTemp= model.getUsersThatLiked();
             if(usersThatLikedTemp.contains(Long.valueOf(currentUserIndex))) {
                 holder.btnHeart.setChecked(true);
                 holder.mtvLikesNum.setTextColor(Color.RED);

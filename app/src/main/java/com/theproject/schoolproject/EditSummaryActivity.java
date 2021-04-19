@@ -80,7 +80,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
         subject = getIntent().getStringExtra("subject");
         summaryKey = getIntent().getStringExtra("key");
-        database = FirebaseDatabase.getInstance().getReference().child(subject);
+
         pdfUri = null;
         setToolbarAndDrawer();
         setEveryAttribute();
@@ -100,7 +100,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
     public void setEveryAttribute(){
         spinnerEditSubject.setSelection(finderSpinnerDefaultSubjectPosition(spinnerArray)); //sets the default value on the spinner as the current subject
-
+        database = FirebaseDatabase.getInstance().getReference(subject);
         database.child(summaryKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -238,13 +238,13 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                 progressDialog.show();
                 //Editor's note - add an app check for the new values lengths entered to the edittexts while changing
 
-                database.child(summaryKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         GlobalAcross.editingTemp = 0;
-                        if (!subject.equals(spinnerSubjectCurrent)) {
-                            GlobalAcross.editingTemp++;
-                        }
+//                        if (!subject.equals(spinnerSubjectCurrent)) {
+//                            GlobalAcross.editingTemp++;
+//                        }
                         if (!snapshot.child("title").getValue().toString().equals(etEditSummaryName.getText().toString())) {
                             GlobalAcross.editingTemp++;
                         }
@@ -258,7 +258,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                         //FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("amountOfItemsToEdit").setValue(GlobalAcross.editingTemp); /*experiment*/
                         //Toast.makeText(EditSummaryActivity.this,temp,Toast.LENGTH_SHORT).show(); /*experiment*/
 
-
+                        database = FirebaseDatabase.getInstance().getReference().child(subject);
                         if(GlobalAcross.editingTemp != 0) {
                             //Checks if any changes have even been made
                             progressDialog.show();
@@ -299,17 +299,18 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                             }
 
                             aSyncPDFchange();
-                            if (!subject.equals(spinnerSubjectCurrent)) {
-                                aSyncSubjectIf();
-                                if (progressDialog.getProgress() == 100) {
-                                    progressDialog.dismiss();
-                                    Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                                    Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
-                                    intent.putExtra("SubjectSelected", subject);
-                                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                                    finishAffinity();
-                                }
-                            }
+
+//                            if (!subject.equals(spinnerSubjectCurrent)) {
+//                                aSyncSubjectIf();
+//                                if (progressDialog.getProgress() == 100) {
+//                                    progressDialog.dismiss();
+//                                    Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
+//                                    Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
+//                                    intent.putExtra("SubjectSelected", subject);
+//                                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+//                                    finishAffinity();
+//                                }
+//                            }
 
                         }
 
@@ -509,7 +510,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                                 startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
                                                 finishAffinity();
                                             }
-                                            aSyncSubjectIf();
+                                            //aSyncSubjectIf();
                                         }
                                     });
                                 }
@@ -557,7 +558,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                                         finishAffinity();
 
                                                     }
-                                                    aSyncSubjectIf();
+                                                    //aSyncSubjectIf();
                                                 }
                                             });
                                         }
@@ -580,7 +581,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
     }
 
     public void aSyncSubjectIf(){
-        if(!subject.equals(spinnerSubjectCurrent)){
+        //if(!subject.equals(spinnerSubjectCurrent)){
             //Enters if the subject was changed
 
             FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -644,7 +645,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
                                                 final ArrayList<String> usersThatLikedCertainSummary = new ArrayList<>(); //ArrayList for indexes of users who liked the summary that's about to be changed onto the new subject
                                                 for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
-                                                    usersThatLikedCertainSummary.add(child.getValue() + "");
+                                                    usersThatLikedCertainSummary.add(child.getValue().toString());
                                                 }
                                                 for (int i = 0; i < usersThatLikedCertainSummary.size(); i++) {
                                                     //FirebaseDatabase.getInstance().getReference(spinnerSubjectCurrent).child(tempCopy.getId()).child("usersThatLiked").child(String.valueOf(i)).setValue(i);
@@ -655,14 +656,19 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                                 }
                                             }
                                             progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
-                                            if(progressDialog.getProgress() == 100){
+                                            if (progressDialog.getProgress() == 100){
                                                 progressDialog.dismiss();
-                                                Toast.makeText(EditSummaryActivity.this,"השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                                                Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
-                                                intent.putExtra("SubjectSelected", subject);
-                                                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                                                finishAffinity();
+                                                subject = spinnerSubjectCurrent;
+                                                Toast.makeText(EditSummaryActivity.this,"שיניתם נושא בהצלחה.", Toast.LENGTH_LONG).show();
                                             }
+//                                            if(progressDialog.getProgress() == 100){
+//                                                progressDialog.dismiss();
+//                                                Toast.makeText(EditSummaryActivity.this,"שיניתם נושא בהצלחה.", Toast.LENGTH_LONG).show();
+//                                                Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
+//                                                intent.putExtra("SubjectSelected", subject);
+//                                                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+//                                                finishAffinity();
+//                                            }
                                         }
 
                                         @Override
@@ -671,6 +677,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                         }
                                     });
                                     //Does this when it finishes changing the liked references in everyone's accounts
+
 
 
                                 }
@@ -686,7 +693,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                 }
             });
 
-        }
+        //}
     }
 
     public void selectPDF() {
@@ -724,7 +731,14 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
+                            progressDialog = new ProgressDialog(EditSummaryActivity.this);
+                            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                            progressDialog.setTitle("משנים את נושא הסיכום...");
+                            progressDialog.setProgress(0);
+                            progressDialog.show();
+                            GlobalAcross.editingTemp = 1;
+                            aSyncSubjectIf();
+                            //GlobalAcross.editingTemp = 0;
                         }
                     })
                     .setNegativeButton("לא", new DialogInterface.OnClickListener() {

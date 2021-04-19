@@ -99,6 +99,7 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
         ibEditSummary = findViewById(R.id.ibEditSummary);
         ibEditSummary.setOnClickListener(this);
 
+        database = FirebaseDatabase.getInstance().getReference().child(summarySubject);
         database.child(summaryKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
