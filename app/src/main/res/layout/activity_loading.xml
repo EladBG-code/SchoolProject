@@ -98,7 +98,6 @@
         android:layout_gravity="center|bottom"
         android:background="@drawable/applogo_no_background"
         >
-
     </LinearLayout>
 
 

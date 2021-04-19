@@ -59,8 +59,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         /*btnAutoFill.setOnClickListener(this); */ //Remove this line once you're done with testing
 
-
-
         sharedPreferences = getSharedPreferences(Index,Context.MODE_PRIVATE);
 
 
@@ -181,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.getValue(new GenericTypeIndicator<User>() {}) != null) {
                             GlobalAcross.currentUser = snapshot.getValue(new GenericTypeIndicator<User>() {});
-                            Toast.makeText(MainActivity.this, "sucess!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Success!", Toast.LENGTH_SHORT).show();
                         }
                     }
 
