@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,7 +58,7 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
     NavigationView navigationView;
     MaterialToolbar toolbar;
     SharedPreferences sharedPreferences;
-    ShapeableImageView sivEditSummary;
+    ImageButton ibEditSummary;
     String summarySubject,summaryKey;
     ProgressBar pbLoadingPDF;
 
@@ -95,8 +96,8 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
     }
 
     public void getIndexKeyAndSubject(){
-        sivEditSummary = findViewById(R.id.sivEditSummary);
-        sivEditSummary.setOnClickListener(this);
+        ibEditSummary = findViewById(R.id.ibEditSummary);
+        ibEditSummary.setOnClickListener(this);
 
         database.child(summaryKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -164,7 +165,7 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
                 summaryCreatorIndex = Integer.valueOf(snapshot.child("creatorIndex").getValue().toString());
                 if(summaryCreatorIndex == GlobalAcross.currentUserIndex){
                     //Enables the edit shapableimage in the toolbar if the currentuserindex is equal to the summary creator's index
-                    sivEditSummary.setVisibility(View.VISIBLE);
+                    ibEditSummary.setVisibility(View.VISIBLE);
                 }
                 tvSummaryTitle.setText(summaryTitle);
                 tvSummaryAuthor.setText("סופר\\ת: " + summaryAuthor);
@@ -272,7 +273,7 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
 
     @Override
     public void onClick(View v) {
-        if(v == sivEditSummary){
+        if(v == ibEditSummary){
             //If the editing pencil in the view summary is clicked
             Intent intent = new Intent(ViewSummaryActivity.this,EditSummaryActivity.class);
             intent.putExtra("key",summaryKey);
