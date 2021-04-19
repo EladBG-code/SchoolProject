@@ -5,40 +5,113 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LoadingActivity"
-    android:orientation="horizontal"
-    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:gravity="center_vertical"
+    android:background="@color/colorPrimaryDark"
     >
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+
+
+<!--    <androidx.cardview.widget.CardView-->
+<!--        android:id="@+id/cvToSummaries"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginLeft="100sp"-->
+<!--        android:layout_marginTop="100sp"-->
+<!--        android:layout_marginRight="100sp"-->
+<!--        android:layout_marginBottom="100sp"-->
+<!--        android:background="@color/cardview_dark_background"-->
+<!--        android:elevation="10sp"-->
+<!--        app:cardCornerRadius="15sp">    </androidx.cardview.widget.CardView>-->
+
+
+
+<!--    <com.google.android.material.imageview.ShapeableImageView-->
+<!--            android:id="@+id/ivProfilePictureIconHomepage"-->
+<!--            android:layout_width="325sp"-->
+<!--            android:layout_height="325sp"-->
+<!--            android:layout_gravity="center"-->
+<!--            app:shapeAppearance="@style/roundedImageViewRounded"-->
+<!--            app:strokeColor="@color/colorPrimaryDark"-->
+<!--            app:strokeWidth="3.5sp">-->
+
+<!--        </com.google.android.material.imageview.ShapeableImageView>-->
+
+    <LinearLayout
+        android:layout_width="375sp"
+        android:layout_height="375sp"
+        android:background="@drawable/circle_assset"
+        android:backgroundTint="@color/white"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:elevation="15sp"
         >
 
-        <TextView
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_marginTop="275sp"
-            android:textSize="15sp"
-            android:text="0%"
-            android:gravity="center|top"
-            android:id="@+id/tvLoadingPercentage"
-            android:textStyle="bold"
-            />
-        <ProgressBar
-            android:layout_width="match_parent"
-            android:layout_height="100sp"
-            android:id="@+id/pbLoading"
-            android:layout_gravity="center|bottom"
-            android:layout_marginLeft="10sp"
-            android:layout_marginRight="10sp"
-            android:layout_marginTop="300sp"
-            android:outlineAmbientShadowColor="@color/cardview_dark_background"
-            android:outlineProvider="paddedBounds"
-            style="@style/Widget.AppCompat.ProgressBar" />
-        <!--
-            android:layout_marginLeft="10sp"
-            android:layout_marginRight="10sp"
-            android:layout_marginTop="320sp"-->
-    </RelativeLayout>
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+
+            >
+            <TextView
+                android:id="@+id/tvLoadingPercentage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0%"
+                android:gravity="center"
+                android:layout_marginBottom="25sp"
+                android:textSize="35sp"
+                android:textStyle="bold"
+                />
+
+            <ProgressBar
+                android:id="@+id/pbLoading"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="200sp"
+                android:layout_height="200sp"
+                android:layout_gravity="bottom|center"
+                android:outlineAmbientShadowColor="@color/cardview_dark_background"
+                android:outlineProvider="paddedBounds"
+                />
+        </LinearLayout>
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:gravity="bottom|center"-->
+<!--            android:layout_gravity="bottom|center"-->
+<!--            >-->
+
+<!--           -->
+<!--        </LinearLayout>-->
+
+
+    </LinearLayout>
+
+
+
+
+    <LinearLayout
+        android:layout_width="125sp"
+        android:layout_height="125sp"
+        android:layout_gravity="center|bottom"
+        android:background="@drawable/applogo_no_background"
+        >
+
+    </LinearLayout>
+
+
+
+
+
+
+    <!--
+        android:layout_marginLeft="10sp"
+        android:layout_marginRight="10sp"
+        android:layout_marginTop="320sp"-->
+
+
 
 
 
