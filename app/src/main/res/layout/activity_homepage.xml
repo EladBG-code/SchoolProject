@@ -13,8 +13,6 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_anchorGravity="top"
-        android:id="@+id/appBarLayout1"
         >
 
         <com.google.android.material.appbar.MaterialToolbar
@@ -40,106 +38,97 @@
         >
 
         <ScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
 
             <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="?actionBarSize"
                 >
 
-                <FrameLayout
-                    android:id="@+id/frameLayout3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="top|right"
-                    android:gravity="top|right"
                     android:orientation="vertical"
                     android:layout_marginTop="15sp"
                     android:layout_marginRight="15sp"
-                    app:layout_anchorGravity="top|right">
+                    >
 
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/ivProfilePictureIconHomepage"
-                        android:layout_width="50sp"
-                        android:layout_height="50sp"
-                        android:layout_gravity="right|top"
+                        android:layout_width="55sp"
+                        android:layout_height="55sp"
                         android:background="@color/profile_icon_image_final_background"
                         android:foreground="@drawable/profile_icon_image_final_foreground"
-                        android:foregroundTint="#FFFFFF"
                         android:src="@drawable/profile_icon_image_final_foreground"
-                        app:layout_anchorGravity="top|right"
                         app:shapeAppearance="@style/roundedImageViewRounded"
                         app:strokeColor="@color/colorPrimaryDark"
-                        app:strokeWidth="1sp" />
+                        app:strokeWidth="1sp"
+                        android:layout_marginTop="?actionBarSize"/>
 
-                </FrameLayout>
+                </LinearLayout>
+
+
 
                 <RelativeLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="?actionBarSize"
-                    android:layout_gravity="center">
+                    android:layout_gravity="center"
+                    >
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="85sp"
+                        >
 
                         <TextView
                             android:id="@+id/tvHomeWelcome"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="top"
                             android:gravity="center"
                             android:text="ברוכים השבים"
                             android:textSize="30sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
-                    <LinearLayout
+                    <RelativeLayout
+                        android:id="@+id/llFirstSuggestionLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="100sp"
-                        android:layout_marginBottom="100sp"
-                        android:layout_marginLeft="15sp"
-                        android:layout_marginRight="15sp"
-                        android:visibility="gone"
-                        android:id="@+id/llFirstSuggestionLayout"
-                        >
+                        android:visibility="invisible">
 
                         <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:cardCornerRadius="10sp"
+                            android:layout_height="match_parent"
                             android:background="@color/cardview_dark_background"
-                            android:outlineSpotShadowColor="@color/cardview_dark_background"
                             android:outlineAmbientShadowColor="@color/cardview_dark_background"
-                            app:cardElevation="10sp">
+                            android:outlineSpotShadowColor="@color/cardview_dark_background"
+                            app:cardBackgroundColor="@color/colorPrimary"
+                            app:cardCornerRadius="10sp"
+
+                            app:cardElevation="25sp">
 
                             <TextView
-                                android:gravity="center"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="אני ממליץ להשתמש באפליקציית המרה לסוג קובץ PDF בשם Adobe Scan עבור קבצי התמונות שלכם."
-                                android:textSize="17sp"
-                                android:layout_marginBottom="7sp"
-                                />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="109dp"
                                 android:gravity="center"
-                                >
+                                android:layout_marginEnd="15sp"
+                                android:layout_marginStart="15sp"
+                                android:text="אני ממליץ להשתמש באפליקציית המרה לסוג קובץ PDF בשם Adobe Scan עבור קבצי התמונות שלכם."
+                                android:textSize="17sp" />
+
+
 
                                 <androidx.cardview.widget.CardView
                                     android:id="@+id/cvDownloadPDFapp"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="match_parent"
                                     android:layout_marginLeft="100sp"
-                                    android:layout_marginTop="40sp"
                                     android:layout_marginRight="100sp"
-                                    android:layout_marginBottom="10sp"
                                     android:background="@color/cardview_dark_background"
                                     android:clickable="true"
                                     android:foreground="?android:attr/selectableItemBackground"
@@ -151,64 +140,57 @@
 
                                     <TextView
                                         android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="match_parent"
                                         android:layout_gravity="center"
                                         android:text="להורדה"
                                         android:textColor="@color/white"
-                                        android:textStyle="bold"
-                                        android:textSize="20sp" />
+                                        android:textSize="20sp"
+                                        android:textStyle="bold" />
                                 </androidx.cardview.widget.CardView>
-                            </LinearLayout>
+
 
 
                         </androidx.cardview.widget.CardView>
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="120sp"
-                        android:layout_marginRight="120sp"
-                        android:layout_marginTop="40sp">
+                        android:layout_height="match_parent"
+                        android:layout_gravity="bottom"
+                        android:layout_marginTop="600sp">
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/cvToSummaries"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="100sp"
+                            android:layout_marginRight="100sp"
                             android:background="@color/cardview_dark_background"
                             android:clickable="true"
+                            android:elevation="10sp"
                             android:foreground="?android:attr/selectableItemBackground"
                             android:outlineAmbientShadowColor="@color/black"
                             android:outlineSpotShadowColor="@color/black"
                             app:cardBackgroundColor="@color/colorPrimaryDark"
-                            app:cardCornerRadius="15sp"
-                     >
+                            app:cardCornerRadius="15sp">
 
                             <TextView
-                                android:id="@+id/tvToSummaries"
+
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="8sp"
-                                android:gravity="center|right"
+                                android:layout_height="match_parent"
+                                android:layout_marginEnd="7sp"
+                                android:drawableEnd="@drawable/local_library_icon"
+                                android:drawableTint="@color/white"
+                                android:gravity="center|bottom"
                                 android:text="סיכומים"
-                                android:textColor="@color/cardview_light_background"
+                                android:textColor="@color/white"
                                 android:textSize="28sp"
                                 android:textStyle="bold" />
 
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_gravity="center|left"
-                                android:layout_marginLeft="8sp"
-                                android:src="@drawable/local_library_icon"
-                                app:tint="@color/cardview_light_background" />
-
                         </androidx.cardview.widget.CardView>
 
-
                     </LinearLayout>
-
 
                 </RelativeLayout>
 

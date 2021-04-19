@@ -48,7 +48,6 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
     ShapeableImageView ivProfilePictureHomepage;
     CardView cvToSummaries,cvDownloadPDFapp;
     SharedPreferences sharedPreferences;
-    LinearLayout llFirstSuggestionLayout;
 
     //public static final String fileName = "login";
     //public static final String Username = "username";
@@ -64,7 +63,6 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         tvWelcomeMessage = findViewById(R.id.tvHomeWelcome);
         cvToSummaries = findViewById(R.id.cvToSummaries);
         cvDownloadPDFapp = findViewById(R.id.cvDownloadPDFapp);
-        llFirstSuggestionLayout = findViewById(R.id.llFirstSuggestionLayout);
         ivProfilePictureHomepage = findViewById(R.id.ivProfilePictureIconHomepage);
         tvWelcomeMessage.setText("ברוכים השבים "+GlobalAcross.currentUser.getfName()); /*Tells the user a welcome message with their own name! */
 
@@ -125,7 +123,6 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         if(GlobalAcross.firstLoginSuggestion){
             GlobalAcross.firstLoginSuggestion = false;
             //First login --> show the user the ad to use the pdf scanner here
-            llFirstSuggestionLayout.setVisibility(View.VISIBLE);
             tvWelcomeMessage.setText("ברוכים הבאים "+GlobalAcross.currentUser.getfName()+"!");
         }
 
