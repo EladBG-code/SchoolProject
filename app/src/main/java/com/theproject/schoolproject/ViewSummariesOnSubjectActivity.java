@@ -99,6 +99,8 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
             usersRef.child("favoriteSummaries").child(selectedKeySummary).removeValue();
             myRef.child("usersThatLiked").child(String.valueOf(currentUserIndex)).setValue("none");
 
+
+
         }
 
     }
@@ -186,7 +188,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
             holder.btnHeart.setChecked(false);
         }
        else {
-            ArrayList<String> usersThatLikedTemp= model.getUsersThatLiked();
+            ArrayList<String> usersThatLikedTemp = model.getUsersThatLiked();
             if(usersThatLikedTemp.contains(Long.valueOf(currentUserIndex))) {
                 holder.btnHeart.setChecked(true);
                 holder.mtvLikesNum.setTextColor(Color.RED);

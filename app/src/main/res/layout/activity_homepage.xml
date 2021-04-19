@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="horizontal"
-    tools:context=".HomepageActivity">
+    tools:context=".HomepageActivity"
+    >
 
 
     <com.google.android.material.appbar.AppBarLayout
@@ -35,7 +36,8 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         tools:context=".Homepage"
-        tools:openDrawer="start">
+        tools:openDrawer="start"
+        >
 
         <ScrollView
             android:layout_width="wrap_content"
@@ -44,15 +46,18 @@
             <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="?actionBarSize"
                 >
 
                 <FrameLayout
                     android:id="@+id/frameLayout3"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top|right"
                     android:gravity="top|right"
                     android:orientation="vertical"
+                    android:layout_marginTop="15sp"
+                    android:layout_marginRight="15sp"
                     app:layout_anchorGravity="top|right">
 
                     <com.google.android.material.imageview.ShapeableImageView
@@ -60,8 +65,6 @@
                         android:layout_width="50sp"
                         android:layout_height="50sp"
                         android:layout_gravity="right|top"
-                        android:layout_marginTop="75sp"
-                        android:layout_marginRight="15sp"
                         android:background="@color/profile_icon_image_final_background"
                         android:foreground="@drawable/profile_icon_image_final_foreground"
                         android:foregroundTint="#FFFFFF"
@@ -73,38 +76,10 @@
 
                 </FrameLayout>
 
-                <!-- <LinearLayout
-                    android:id="@+id/linearLayout2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="200sp"
-                    app:layout_anchorGravity="center|top"
-                    android:layout_marginBottom="100sp"
-                    >
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10sp"
-                        android:layout_marginRight="10sp"
-                        android:layout_marginBottom="10sp"
-                        app:cardCornerRadius="10sp"
-                        app:cardElevation="10sp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="היי! אני ממליץ להשתמש באפליקציית המרה לסוג קובץ PDF בשם Adobe Scan."
-                            android:textSize="15sp" />
-
-                    </androidx.cardview.widget.CardView>
-                </LinearLayout> -->
-
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="150sp"
+                    android:layout_marginTop="?actionBarSize"
                     android:layout_gravity="center">
 
                     <LinearLayout
@@ -193,8 +168,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="100sp"
-                        android:layout_marginRight="100sp"
+                        android:layout_marginLeft="120sp"
+                        android:layout_marginRight="120sp"
                         android:layout_marginTop="40sp">
 
                         <androidx.cardview.widget.CardView
@@ -207,7 +182,7 @@
                             android:outlineAmbientShadowColor="@color/black"
                             android:outlineSpotShadowColor="@color/black"
                             app:cardBackgroundColor="@color/colorPrimaryDark"
-                            app:cardCornerRadius="25sp"
+                            app:cardCornerRadius="15sp"
                      >
 
                             <TextView
@@ -256,7 +231,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             app:headerLayout="@layout/header"
-            app:menu="@menu/main_menu">
+            app:menu="@menu/main_menu"
+            >
 
 
         </com.google.android.material.navigation.NavigationView>

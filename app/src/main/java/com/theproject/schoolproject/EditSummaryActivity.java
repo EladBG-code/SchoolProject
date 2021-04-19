@@ -298,19 +298,42 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                 });
                             }
 
-                            aSyncPDFchange();
+                            if (pdfUri != null){
+                                //This function deletes the usersThatLiked the summary because the creator decided to change the PDF file & resets likes
+                                DatabaseReference deleteUsersRef = FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked");
+                                deleteUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if(!snapshot.equals(null)){
 
-//                            if (!subject.equals(spinnerSubjectCurrent)) {
-//                                aSyncSubjectIf();
-//                                if (progressDialog.getProgress() == 100) {
-//                                    progressDialog.dismiss();
-//                                    Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-//                                    Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
-//                                    intent.putExtra("SubjectSelected", subject);
-//                                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-//                                    finishAffinity();
-//                                }
-//                            }
+                                            final ArrayList<String> usersThatLikedCertainSummary = new ArrayList<>(); //ArrayList for indexes of users who liked the summary that's about to me deleted
+                                            for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
+                                                usersThatLikedCertainSummary.add(child.getValue().toString());
+                                            }
+                                            FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("amountOfLikes").setValue(0); //Resets amount of likes
+                                            for (int i = 0; i < usersThatLikedCertainSummary.size(); i++) {
+                                                //This onSuccess listener deletes the summary reference from the favoriteSummaries of every user who liked that certain summary
+                                                FirebaseDatabase.getInstance().getReference("UsersPlace/" + usersThatLikedCertainSummary.get(i)).child("favoriteSummaries").child(summaryKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        deletionProgress += (100 / (usersThatLikedCertainSummary.size() + 2));
+                                                        //System.out.println(deletionProgress);
+                                                        progressDialog.setProgress(deletionProgress);
+                                                    }
+                                                });
+                                            }
+                                            FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked").removeValue();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+
+                            }
+                            aSyncPDFchange();
 
                         }
 
@@ -364,13 +387,29 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
         if (v == cvReplaceFile) {
             //Activates if the replace PDF cardview is selected
+            Drawable temp = getResources().getDrawable(R.drawable.info_icon);
+            temp.setTint(Color.RED);
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(EditSummaryActivity.this);
+            builder.setMessage("אתם בטוחים שאתם רוצים לשנות את קובץ הPDF? שינוי קובץ הסיכום יגרום למחיקת כל הלייקים שנצברו עבור סיכום זה עד כה.")
+                    .setPositiveButton("כן", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (ContextCompat.checkSelfPermission(EditSummaryActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) { //Checks if has the permission to read external storage
+                                selectPDF();
+                            } else {
+                                ActivityCompat.requestPermissions(EditSummaryActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9); //Asks the user to give it the permission to do so if it doesn't have it and sets the request code to 9
+                                //onRequestPermissionResult will be the next line to this - all parameters are passed
+                            }
+                        }
+                    })
+                    .setNegativeButton("לא",null)
+                    .setIcon(temp)
+                    .setTitle("אזהרה")
+            ;
+            AlertDialog alert = builder.create();
+            alert.show();
 
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) { //Checks if has the permission to read external storage
-                selectPDF();
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9); //Asks the user to give it the permission to do so if it doesn't have it and sets the request code to 9
-                //onRequestPermissionResult will be the next line to this - all parameters are passed
-            }
+
         }
 
         if (v == cvDeleteSummary) {
@@ -384,7 +423,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
-                            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject).child(summaryKey);
+                            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked");
                             //    myRef.child("usersThatLiked").child(String.valueOf(currentUserIndex)).removeValue();
                             progressDialog = new ProgressDialog(EditSummaryActivity.this);
                             progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -392,7 +431,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                             progressDialog.setProgress(0);
                             progressDialog.show();
 
-                            myRef.child("usersThatLiked").addListenerForSingleValueEvent(new ValueEventListener() {
+                            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (snapshot != null) {
@@ -400,7 +439,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
                                         final ArrayList<String> usersThatLikedCertainSummary = new ArrayList<>(); //ArrayList for indexes of users who liked the summary that's about to me deleted
                                         for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
-                                            usersThatLikedCertainSummary.add(child.getValue() + "");
+                                            usersThatLikedCertainSummary.add(child.getValue().toString());
                                         }
                                         for (int i = 0; i < usersThatLikedCertainSummary.size(); i++) {
                                             final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/" + usersThatLikedCertainSummary.get(i));
@@ -482,6 +521,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
     public void aSyncPDFchange(){
         if(pdfUri != null){
+
             FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("fileRef").addListenerForSingleValueEvent(new ValueEventListener() { //This section deletes the old PDF if a new one is selected
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -608,7 +648,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                                 for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
-                                    FirebaseDatabase.getInstance().getReference("UsersPlace").child(child.getValue().toString()).child("favoriteSummaries").child(summaryKey).setValue(null); //Removes all of the users who liked that certain summary on the database
+                                    FirebaseDatabase.getInstance().getReference("UsersPlace").child(child.getValue().toString()).child("favoriteSummaries").child(summaryKey).removeValue(); //Removes all of the users who liked that certain summary on the database
                                 }
                             }
 
@@ -649,7 +689,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                                 }
                                                 for (int i = 0; i < usersThatLikedCertainSummary.size(); i++) {
                                                     //FirebaseDatabase.getInstance().getReference(spinnerSubjectCurrent).child(tempCopy.getId()).child("usersThatLiked").child(String.valueOf(i)).setValue(i);
-                                                    final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/" + usersThatLikedCertainSummary.get(i));
+                                                    //final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/" + usersThatLikedCertainSummary.get(i));
                                                     FirebaseDatabase.getInstance().getReference("UsersPlace/"+ usersThatLikedCertainSummary.get(i)).child("favoriteSummaries").child(summaryKey).removeValue(); //Removes the old favorite summaries for the old key and summary for the former summary
                                                     //Temporarily disabled
                                                     //FirebaseDatabase.getInstance().getReference("UsersPlace/"+ usersThatLikedCertainSummary.get(i)).child("favoriteSummaries").child(tempCopy.getId()).setValue(spinnerSubjectCurrent); //Sets the new summary and summary id as favorite for each liker of the summary
@@ -692,6 +732,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                     //Cancellation of the selection of a new subject
                 }
             });
+
 
         //}
     }

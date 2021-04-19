@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    >
 
     <group android:checkableBehavior="single">
         <!--This "group" is a tag that makes sure that only one item in the menu is clicked-->
-
         <item
             android:id="@+id/nav_homepage"
             android:icon="@drawable/homepage_icon"
@@ -36,6 +36,4 @@
             android:title="התנתקות" />
 
     </group>
-
-
 </menu>
