@@ -1,7 +1,6 @@
 package com.theproject.schoolproject;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,14 +16,10 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,8 +34,6 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Calendar;
 
 public class HomepageActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -58,7 +51,6 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
     //public static final String fileName = "login";
     //public static final String Username = "username";
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +63,7 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         cvToSummaries = findViewById(R.id.cvToSummaries);
         cvDownloadPDFapp = findViewById(R.id.cvDownloadPDFapp);
         ivProfilePictureHomepage = findViewById(R.id.ivProfilePictureIconHomepage);
+        //tvWelcomeMessage.setText("ברוכים השבים "+GlobalAcross.currentUser.getfName()); /*Tells the user a welcome message with their own name! */
 
         setEnterMessage();
 
@@ -89,25 +82,9 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
 
         globalAcrossActions();
 
-
-        startService(new Intent(HomepageActivity.this,notificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
+        startForegroundService(new Intent(HomepageActivity.this,notificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
     }
 
-    public void setEnterMessage(){
-        int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        if (currentHour >= 0 && currentHour <= 8){
-            tvWelcomeMessage.setText("בוקר טוב "+GlobalAcross.currentUser.getfName());
-        }
-        else if (currentHour >= 8 && currentHour <= 16){
-            tvWelcomeMessage.setText("צהריים טובים "+GlobalAcross.currentUser.getfName());
-        }
-        else if (currentHour >= 18 && currentHour <= 21){
-            tvWelcomeMessage.setText("ערב טוב "+GlobalAcross.currentUser.getfName());
-        }
-        else{
-            tvWelcomeMessage.setText("לילה טוב "+GlobalAcross.currentUser.getfName());
-        }
-    }
     public void tryCatchPFP(){
         //This function checks if the user has a pfp path in the database and creates a temporary file and downloads it to it if they have a pfp
         if(!GlobalAcross.currentUser.getPfpPath().equals("none")){
@@ -140,7 +117,21 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
             }
         }
     }
-
+    public void setEnterMessage(){
+        int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if (currentHour >= 0 && currentHour <= 8){
+            tvWelcomeMessage.setText("בוקר טוב "+GlobalAcross.currentUser.getfName());
+        }
+        else if (currentHour >= 8 && currentHour <= 16){
+            tvWelcomeMessage.setText("צהריים טובים "+GlobalAcross.currentUser.getfName());
+        }
+        else if (currentHour >= 18 && currentHour <= 21){
+            tvWelcomeMessage.setText("ערב טוב "+GlobalAcross.currentUser.getfName());
+        }
+        else{
+            tvWelcomeMessage.setText("לילה טוב "+GlobalAcross.currentUser.getfName());
+        }
+    }
     public void globalAcrossActions(){
 
         if(GlobalAcross.firstLoginSuggestion){
