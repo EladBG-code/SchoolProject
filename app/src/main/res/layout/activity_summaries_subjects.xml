@@ -49,7 +49,7 @@
         <ScrollView
             android:id="@+id/svSubjects"
             android:layout_width="wrap_content"
-            android:layout_height="633dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
@@ -60,6 +60,398 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:id="@+id/cvCitizenship"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50sp"-->
+<!--                    android:background="@color/cardview_dark_background"-->
+<!--                    android:clickable="true"-->
+<!--                    android:elevation="10sp"-->
+<!--                    android:layout_marginEnd="5sp"-->
+<!--                    android:layout_marginStart="5sp"-->
+<!--                    android:foreground="?android:attr/selectableItemBackground"-->
+<!--                    android:outlineAmbientShadowColor="@color/black"-->
+<!--                    android:outlineSpotShadowColor="@color/black"-->
+<!--                    app:cardBackgroundColor="@color/colorPrimaryDark"-->
+<!--                    app:cardCornerRadius="15sp">-->
+
+<!--                    <ImageView-->
+<!--                        android:layout_width="32sp"-->
+<!--                        android:layout_height="32sp"-->
+<!--                        android:src="@drawable/israeli_flag_citizenship_vector_icon"-->
+<!--                        android:tint="@color/white"-->
+<!--                        android:layout_gravity="end|center"-->
+<!--                        android:layout_marginEnd="10sp"-->
+<!--                        />-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="אזרחות"-->
+<!--                        android:textColor="@color/white"-->
+<!--                        android:textSize="28sp"-->
+<!--                        android:textStyle="bold" />-->
+<!--                </androidx.cardview.widget.CardView>-->
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:id="@+id/cvEnglish"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50sp"-->
+<!--                    android:background="@color/cardview_dark_background"-->
+<!--                    android:clickable="true"-->
+<!--                    android:elevation="10sp"-->
+<!--                    android:layout_marginVertical="5sp"-->
+<!--                    android:layout_marginEnd="5sp"-->
+<!--                    android:layout_marginStart="5sp"-->
+<!--                    android:foreground="?android:attr/selectableItemBackground"-->
+<!--                    android:outlineAmbientShadowColor="@color/black"-->
+<!--                    android:outlineSpotShadowColor="@color/black"-->
+<!--                    app:cardBackgroundColor="@color/colorPrimaryDark"-->
+<!--                    app:cardCornerRadius="15sp">-->
+
+<!--                    <ImageView-->
+<!--                        android:layout_width="32sp"-->
+<!--                        android:layout_height="32sp"-->
+<!--                        android:src="@drawable/abc_blocks_english_vector_icon"-->
+<!--                        android:tint="@color/white"-->
+<!--                        android:layout_gravity="end|center"-->
+<!--                        android:layout_marginEnd="10sp"-->
+<!--                        />-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="אנגלית"-->
+<!--                        android:textColor="@color/white"-->
+<!--                        android:textSize="28sp"-->
+<!--                        android:textStyle="bold" />-->
+<!--                </androidx.cardview.widget.CardView>-->
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:id="@+id/cvBiology"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50sp"-->
+<!--                    android:background="@color/cardview_dark_background"-->
+<!--                    android:clickable="true"-->
+<!--                    android:elevation="10sp"-->
+<!--                    android:layout_marginEnd="5sp"-->
+<!--                    android:layout_marginStart="5sp"-->
+<!--                    android:foreground="?android:attr/selectableItemBackground"-->
+<!--                    android:outlineAmbientShadowColor="@color/black"-->
+<!--                    android:outlineSpotShadowColor="@color/black"-->
+<!--                    app:cardBackgroundColor="@color/colorPrimaryDark"-->
+<!--                    app:cardCornerRadius="15sp">-->
+
+<!--                    <ImageView-->
+<!--                        android:layout_width="32sp"-->
+<!--                        android:layout_height="32sp"-->
+<!--                        android:src="@drawable/dna_biology_vector_icon"-->
+<!--                        android:tint="@color/white"-->
+<!--                        android:layout_gravity="end|center"-->
+<!--                        android:layout_marginEnd="10sp"-->
+<!--                        />-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="ביולוגיה"-->
+<!--                        android:textColor="@color/white"-->
+<!--                        android:textSize="28sp"-->
+<!--                        android:textStyle="bold" />-->
+<!--                </androidx.cardview.widget.CardView>-->
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:id="@+id/cvHistory"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50sp"-->
+<!--                    android:background="@color/cardview_dark_background"-->
+<!--                    android:clickable="true"-->
+<!--                    android:elevation="10sp"-->
+<!--                    android:layout_marginEnd="5sp"-->
+<!--                    android:layout_marginStart="5sp"-->
+<!--                    android:foreground="?android:attr/selectableItemBackground"-->
+<!--                    android:outlineAmbientShadowColor="@color/black"-->
+<!--                    android:outlineSpotShadowColor="@color/black"-->
+<!--                    app:cardBackgroundColor="@color/colorPrimaryDark"-->
+<!--                    android:layout_marginTop="5sp"-->
+<!--                    app:cardCornerRadius="15sp">-->
+
+<!--                    <ImageView-->
+<!--                        android:layout_width="32sp"-->
+<!--                        android:layout_height="32sp"-->
+<!--                        android:src="@drawable/pillar_history_vector_icon"-->
+<!--                        android:tint="@color/white"-->
+<!--                        android:layout_gravity="end|center"-->
+<!--                        android:layout_marginEnd="10sp"-->
+<!--                        />-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="היסטוריה"-->
+<!--                        android:textColor="@color/white"-->
+<!--                        android:textSize="28sp"-->
+<!--                        android:textStyle="bold" />-->
+<!--                </androidx.cardview.widget.CardView>-->
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:id="@+id/cvChemistry"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50sp"-->
+<!--                    android:background="@color/cardview_dark_background"-->
+<!--                    android:clickable="true"-->
+<!--                    android:elevation="10sp"-->
+<!--                    android:layout_marginEnd="5sp"-->
+<!--                    android:layout_marginStart="5sp"-->
+<!--                    android:foreground="?android:attr/selectableItemBackground"-->
+<!--                    android:outlineAmbientShadowColor="@color/black"-->
+<!--                    android:outlineSpotShadowColor="@color/black"-->
+<!--                    app:cardBackgroundColor="@color/colorPrimaryDark"-->
+<!--                    android:layout_marginTop="5sp"-->
+<!--                    app:cardCornerRadius="15sp">-->
+
+<!--                    <ImageView-->
+<!--                        android:layout_width="32sp"-->
+<!--                        android:layout_height="32sp"-->
+<!--                        android:src="@drawable/chemical_jar_chemistry_vector_icon"-->
+<!--                        android:tint="@color/white"-->
+<!--                        android:layout_gravity="end|center"-->
+<!--                        android:layout_marginEnd="10sp"-->
+<!--                        />-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="כימיה"-->
+<!--                        android:textColor="@color/white"-->
+<!--                        android:textSize="28sp"-->
+<!--                        android:textStyle="bold" />-->
+<!--                </androidx.cardview.widget.CardView>-->
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:id="@+id/cvHebrew"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50sp"-->
+<!--                    android:background="@color/cardview_dark_background"-->
+<!--                    android:clickable="true"-->
+<!--                    android:elevation="10sp"-->
+<!--                    android:layout_marginEnd="5sp"-->
+<!--                    android:layout_marginStart="5sp"-->
+<!--                    android:foreground="?android:attr/selectableItemBackground"-->
+<!--                    android:outlineAmbientShadowColor="@color/black"-->
+<!--                    android:outlineSpotShadowColor="@color/black"-->
+<!--                    app:cardBackgroundColor="@color/colorPrimaryDark"-->
+<!--                    android:layout_marginTop="5sp"-->
+<!--                    app:cardCornerRadius="15sp">-->
+
+<!--                    <ImageView-->
+<!--                        android:layout_width="40sp"-->
+<!--                        android:layout_height="40sp"-->
+<!--                        android:foregroundTint="@color/white"-->
+<!--                        android:foreground="@mipmap/alef_lashon_vector_icon_background"-->
+<!--                        android:tint="@color/white"-->
+<!--                        android:layout_gravity="end|center"-->
+<!--                        android:layout_marginEnd="10sp"-->
+<!--                        />-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="לשון"-->
+<!--                        android:textColor="@color/white"-->
+<!--                        android:textSize="28sp"-->
+<!--                        android:textStyle="bold" />-->
+<!--                </androidx.cardview.widget.CardView>-->
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:id="@+id/cvSociology"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50sp"-->
+<!--                    android:background="@color/cardview_dark_background"-->
+<!--                    android:clickable="true"-->
+<!--                    android:elevation="10sp"-->
+<!--                    android:layout_marginEnd="5sp"-->
+<!--                    android:layout_marginStart="5sp"-->
+<!--                    android:foreground="?android:attr/selectableItemBackground"-->
+<!--                    android:outlineAmbientShadowColor="@color/black"-->
+<!--                    android:outlineSpotShadowColor="@color/black"-->
+<!--                    app:cardBackgroundColor="@color/colorPrimaryDark"-->
+<!--                    android:layout_marginTop="5sp"-->
+<!--                    app:cardCornerRadius="15sp">-->
+
+<!--                    <ImageView-->
+<!--                        android:layout_width="32sp"-->
+<!--                        android:layout_height="32sp"-->
+<!--                        android:src="@drawable/social_network_sociology_vector_icon"-->
+<!--                        android:tint="@color/white"-->
+<!--                        android:layout_gravity="end|center"-->
+<!--                        android:layout_marginEnd="10sp"-->
+<!--                        />-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="מדעי החברה"-->
+<!--                        android:textColor="@color/white"-->
+<!--                        android:textSize="28sp"-->
+<!--                        android:textStyle="bold" />-->
+<!--                </androidx.cardview.widget.CardView>-->
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:id="@+id/cvComputerScience"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50sp"-->
+<!--                    android:background="@color/cardview_dark_background"-->
+<!--                    android:clickable="true"-->
+<!--                    android:elevation="10sp"-->
+<!--                    android:layout_marginEnd="5sp"-->
+<!--                    android:layout_marginStart="5sp"-->
+<!--                    android:foreground="?android:attr/selectableItemBackground"-->
+<!--                    android:outlineAmbientShadowColor="@color/black"-->
+<!--                    android:outlineSpotShadowColor="@color/black"-->
+<!--                    app:cardBackgroundColor="@color/colorPrimaryDark"-->
+<!--                    android:layout_marginTop="5sp"-->
+<!--                    app:cardCornerRadius="15sp">-->
+
+<!--                    <ImageView-->
+<!--                        android:layout_width="32sp"-->
+<!--                        android:layout_height="40sp"-->
+<!--                        android:src="@drawable/web_programming_computer_science_vector_icon"-->
+<!--                        android:tint="@color/white"-->
+<!--                        android:layout_gravity="end|center"-->
+<!--                        android:layout_marginEnd="10sp"-->
+<!--                        />-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="מדעי המחשב"-->
+<!--                        android:textColor="@color/white"-->
+<!--                        android:textSize="28sp"-->
+<!--                        android:textStyle="bold" />-->
+<!--                </androidx.cardview.widget.CardView>-->
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:id="@+id/cvMathematics"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50sp"-->
+<!--                    android:background="@color/cardview_dark_background"-->
+<!--                    android:clickable="true"-->
+<!--                    android:elevation="10sp"-->
+<!--                    android:layout_marginEnd="5sp"-->
+<!--                    android:layout_marginStart="5sp"-->
+<!--                    android:foreground="?android:attr/selectableItemBackground"-->
+<!--                    android:outlineAmbientShadowColor="@color/black"-->
+<!--                    android:outlineSpotShadowColor="@color/black"-->
+<!--                    app:cardBackgroundColor="@color/colorPrimaryDark"-->
+<!--                    android:layout_marginTop="5sp"-->
+<!--                    app:cardCornerRadius="15sp">-->
+
+<!--                    <ImageView-->
+<!--                        android:layout_width="32sp"-->
+<!--                        android:layout_height="32sp"-->
+<!--                        android:src="@drawable/trignometry_mathematics_vector_icon"-->
+<!--                        android:tint="@color/white"-->
+<!--                        android:layout_gravity="end|center"-->
+<!--                        android:layout_marginEnd="10sp"-->
+<!--                        />-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="מתמטיקה"-->
+<!--                        android:textColor="@color/white"-->
+<!--                        android:textSize="28sp"-->
+<!--                        android:textStyle="bold" />-->
+<!--                </androidx.cardview.widget.CardView>-->
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:id="@+id/cvLiterature"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50sp"-->
+<!--                    android:background="@color/cardview_dark_background"-->
+<!--                    android:clickable="true"-->
+<!--                    android:elevation="10sp"-->
+<!--                    android:layout_marginEnd="5sp"-->
+<!--                    android:layout_marginStart="5sp"-->
+<!--                    android:foreground="?android:attr/selectableItemBackground"-->
+<!--                    android:outlineAmbientShadowColor="@color/black"-->
+<!--                    android:outlineSpotShadowColor="@color/black"-->
+<!--                    app:cardBackgroundColor="@color/colorPrimaryDark"-->
+<!--                    android:layout_marginTop="5sp"-->
+<!--                    app:cardCornerRadius="15sp">-->
+
+<!--                    <ImageView-->
+<!--                        android:layout_width="32sp"-->
+<!--                        android:layout_height="32sp"-->
+<!--                        android:src="@drawable/book_literature_vector_icon"-->
+<!--                        android:tint="@color/white"-->
+<!--                        android:layout_gravity="end|center"-->
+<!--                        android:layout_marginEnd="10sp"-->
+<!--                        />-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="ספרות"-->
+<!--                        android:textColor="@color/white"-->
+<!--                        android:textSize="28sp"-->
+<!--                        android:textStyle="bold" />-->
+<!--                </androidx.cardview.widget.CardView>-->
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:id="@+id/cvPhysics"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50sp"-->
+<!--                    android:background="@color/cardview_dark_background"-->
+<!--                    android:clickable="true"-->
+<!--                    android:elevation="10sp"-->
+<!--                    android:layout_marginEnd="5sp"-->
+<!--                    android:layout_marginStart="5sp"-->
+<!--                    android:foreground="?android:attr/selectableItemBackground"-->
+<!--                    android:outlineAmbientShadowColor="@color/black"-->
+<!--                    android:outlineSpotShadowColor="@color/black"-->
+<!--                    app:cardBackgroundColor="@color/colorPrimaryDark"-->
+<!--                    android:layout_marginTop="5sp"-->
+<!--                    app:cardCornerRadius="15sp">-->
+
+<!--                    <ImageView-->
+<!--                        android:layout_width="32sp"-->
+<!--                        android:layout_height="32sp"-->
+<!--                        android:src="@drawable/formula_physics_vector_icon"-->
+<!--                        android:tint="@color/white"-->
+<!--                        android:layout_gravity="end|center"-->
+<!--                        android:layout_marginEnd="10sp"-->
+<!--                        />-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="פיזיקה"-->
+<!--                        android:textColor="@color/white"-->
+<!--                        android:textSize="28sp"-->
+<!--                        android:textStyle="bold" />-->
+<!--                </androidx.cardview.widget.CardView>-->
+
+
+<!--                                 WORK IN PROGRESS                            -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 <Button
                     android:id="@+id/btnCitizenship"
