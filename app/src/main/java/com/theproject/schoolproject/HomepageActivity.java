@@ -68,8 +68,6 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         ivProfilePictureHomepage = findViewById(R.id.ivProfilePictureIconHomepage);
         //tvWelcomeMessage.setText("ברוכים השבים "+GlobalAcross.currentUser.getfName()); /*Tells the user a welcome message with their own name! */
 
-        setEnterMessage();
-
         setSupportActionBar(toolbar);
         navigationView.bringToFront();
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close);
@@ -128,7 +126,10 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         else if (currentHour >= 8 && currentHour <= 16){
             tvWelcomeMessage.setText("צהריים טובים "+GlobalAcross.currentUser.getfName());
         }
-        else if (currentHour >= 18 && currentHour <= 21){
+        else if(currentHour >= 16 && currentHour <= 20){
+            tvWelcomeMessage.setText("אחר הצהריים טובים "+GlobalAcross.currentUser.getfName());
+        }
+        else if (currentHour >= 20 && currentHour <= 22){
             tvWelcomeMessage.setText("ערב טוב "+GlobalAcross.currentUser.getfName());
         }
         else{
@@ -136,14 +137,15 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         }
     }
     public void globalAcrossActions(){
-
+        setEnterMessage();
         if(GlobalAcross.firstLoginSuggestion){
             GlobalAcross.firstLoginSuggestion = false;
             //First login --> show the user the ad to use the pdf scanner here
             tvWelcomeMessage.setText("ברוכים הבאים "+GlobalAcross.currentUser.getfName()+"!");
         }
-
         GlobalAcross.infoMessage ="שלום "+GlobalAcross.currentUser.getfName()+" שמי אלעד ואני פיתחתי את אפליקציה זו. אשמח לקבל פידבק ל E-mail שלי: "+"eladbgbusiness@gmail.com";
+
+        //GlobalAcross.activateGradientBackground(drawerLayout);
     }
 
     @Override

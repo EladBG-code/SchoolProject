@@ -1,9 +1,13 @@
 package com.theproject.schoolproject;
 
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
+import android.text.Layout;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import java.util.ArrayList;
 
@@ -27,8 +31,14 @@ public class GlobalAcross {
         return "י"+'"'+"ב";
     }
 
-    public static void addCreatedSummaryRef(){
-        //TEMP NOT CREATED
+
+
+    public static void activateGradientBackground(DrawerLayout layout){
+        //Global function for animating the gradient background of the app which some activities use
+        AnimationDrawable animationDrawable = (AnimationDrawable)layout.getBackground();
+        animationDrawable.setEnterFadeDuration(2000);
+        animationDrawable.setExitFadeDuration(3000);
+        animationDrawable.start();
     }
 
     public static String[] getAllSubjectsArr(){

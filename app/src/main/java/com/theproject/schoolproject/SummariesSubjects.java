@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -12,10 +13,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Paint;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,20 +32,19 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     MaterialToolbar toolbar;
-    Button btnMath,btnHistory,btnHebrew,btnCitizenship,btnBible,btnLiterature,btnEnglish,btnBiology,btnComputerScience,btnChemistry,btnPhysics,btnArts,btnCommunication,btnSocialStudies;
+    CardView cvMathematics,cvHistory,cvHebrew,cvCitizenship,cvBible,cvLiterature,cvEnglish,cvBiology,cvComputerScience,cvChemistry,cvPhysics,cvHistoryOfArt,cvCommunication,cvSociology;
     SharedPreferences sharedPreferences;
-    TextView tvSelectSubj;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summaries_subjects);
-        tvSelectSubj = findViewById(R.id.tvSelectSubj);
-        tvSelectSubj.setPaintFlags(tvSelectSubj.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG); //Makes the subject selection textview: bold
 
         drawerFunction();
 
         //The function below this line attaches all buttons to their ID's in the XML and sets their onclicklistener function
-        attachAndClickListenSubjectButtons();
+        attachAndClickListenSubjectCardViews();
+
+        GlobalAcross.activateGradientBackground(drawerLayout);
     }
 
     public void drawerFunction(){
@@ -57,101 +61,101 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    public void attachAndClickListenSubjectButtons(){
-        btnMath = findViewById(R.id.btnMath);
-        btnHistory = findViewById(R.id.btnHistory);
-        btnHebrew = findViewById(R.id.btnHebrew);
-        btnCitizenship = findViewById(R.id.btnCitizenship);
-        btnBible = findViewById(R.id.btnBible);
-        btnLiterature = findViewById(R.id.btnLiterature);
-        btnEnglish = findViewById(R.id.btnEnglish);
-        btnBiology = findViewById(R.id.btnBiology);
-        btnComputerScience = findViewById(R.id.btnComputerScience);
-        btnChemistry = findViewById(R.id.btnChemistry);
-        btnPhysics = findViewById(R.id.btnPhysics);
-        btnArts = findViewById(R.id.btnArts);
-        btnCommunication = findViewById(R.id.btnCommunication);
-        btnSocialStudies = findViewById(R.id.btnSocialStudies);
+    public void attachAndClickListenSubjectCardViews(){
+        cvMathematics = findViewById(R.id.cvMathematics);
+        cvHistory = findViewById(R.id.cvHistory);
+        cvHebrew = findViewById(R.id.cvHebrew);
+        cvCitizenship = findViewById(R.id.cvCitizenship);
+        cvBible = findViewById(R.id.cvBible);
+        cvLiterature = findViewById(R.id.cvLiterature);
+        cvEnglish = findViewById(R.id.cvEnglish);
+        cvBiology = findViewById(R.id.cvBiology);
+        cvComputerScience = findViewById(R.id.cvComputerScience);
+        cvChemistry = findViewById(R.id.cvChemistry);
+        cvPhysics = findViewById(R.id.cvPhysics);
+        cvHistoryOfArt = findViewById(R.id.cvHistoryOfArt);
+        cvCommunication = findViewById(R.id.cvCommunication);
+        cvSociology = findViewById(R.id.cvSociology);
 
-        btnMath.setOnClickListener(this);
-        btnHebrew.setOnClickListener(this);
-        btnHistory.setOnClickListener(this);
-        btnCitizenship.setOnClickListener(this);
-        btnBible.setOnClickListener(this);
-        btnLiterature.setOnClickListener(this);
-        btnEnglish.setOnClickListener(this);
-        btnBiology.setOnClickListener(this);
-        btnComputerScience.setOnClickListener(this);
-        btnChemistry.setOnClickListener(this);
-        btnPhysics.setOnClickListener(this);
-        btnArts.setOnClickListener(this);
-        btnCommunication.setOnClickListener(this);
-        btnSocialStudies.setOnClickListener(this);
+        cvMathematics.setOnClickListener(this);
+        cvHebrew.setOnClickListener(this);
+        cvHistory.setOnClickListener(this);
+        cvCitizenship.setOnClickListener(this);
+        cvBible.setOnClickListener(this);
+        cvLiterature.setOnClickListener(this);
+        cvEnglish.setOnClickListener(this);
+        cvBiology.setOnClickListener(this);
+        cvComputerScience.setOnClickListener(this);
+        cvChemistry.setOnClickListener(this);
+        cvPhysics.setOnClickListener(this);
+        cvHistoryOfArt.setOnClickListener(this);
+        cvCommunication.setOnClickListener(this);
+        cvSociology.setOnClickListener(this);
     }
 
-    public void nextPageOfButton(Button subject){
+    public void nextPageOfCardView(String subjectSelected){
         Intent intent = new Intent(this,ViewSummariesOnSubjectActivity.class);
-        intent.putExtra("SubjectSelected",subject.getText());
+        intent.putExtra("SubjectSelected",subjectSelected);
         startActivity(intent);
     }
 
     @Override
     public void onClick(View v) {
-        if(v == btnMath){
+        if(v == cvMathematics){
             //Math subject
-            nextPageOfButton(btnMath);
+            nextPageOfCardView("מתמטיקה");
         }
-        if(v == btnHebrew){
+        if(v == cvHebrew){
             //Hebrew subject
-            nextPageOfButton(btnHebrew);
+            nextPageOfCardView("לשון");
         }
-        if(v == btnHistory){
+        if(v == cvHistory){
             //History subject
-            nextPageOfButton(btnHistory);
+            nextPageOfCardView("היסטוריה");
         }
-        if(v == btnCitizenship){
+        if(v == cvCitizenship){
             //Citizenship subject
-            nextPageOfButton(btnCitizenship);
+            nextPageOfCardView("אזרחות");
         }
-        if(v == btnBible){
+        if(v == cvBible){
             //Bible subject
-            nextPageOfButton(btnBible);
+            nextPageOfCardView("תנ"+'"'+"ך");
         }
-        if(v == btnLiterature){
+        if(v == cvLiterature){
             //Literature subject
-            nextPageOfButton(btnLiterature);
+            nextPageOfCardView("ספרות");
         }
-        if(v == btnEnglish){
+        if(v == cvEnglish){
             //English subject
-            nextPageOfButton(btnEnglish);
+            nextPageOfCardView("אנגלית");
         }
-        if(v == btnBiology){
+        if(v == cvBiology){
             //Biology subject
-            nextPageOfButton(btnBiology);
+            nextPageOfCardView("ביולוגיה");
         }
-        if(v == btnComputerScience){
+        if(v == cvComputerScience){
             //Computer Science subject
-            nextPageOfButton(btnComputerScience);
+            nextPageOfCardView("מדעי המחשב");
         }
-        if(v == btnChemistry){
+        if(v == cvChemistry){
             //Chemistry subject
-            nextPageOfButton(btnChemistry);
+            nextPageOfCardView("כימיה");
         }
-        if(v == btnPhysics){
+        if(v == cvPhysics){
             //Physics subject
-            nextPageOfButton(btnPhysics);
+            nextPageOfCardView("פיזיקה");
         }
-        if(v == btnArts){
+        if(v == cvHistoryOfArt){
             //Arts subject
-            nextPageOfButton(btnArts);
+            nextPageOfCardView("תולדות האומנות");
         }
-        if(v == btnCommunication){
+        if(v == cvCommunication){
             //Communication subject
-            nextPageOfButton(btnCommunication);
+            nextPageOfCardView("תקשורת");
         }
-        if(v == btnSocialStudies){
+        if(v == cvSociology){
             //Social Studies subject
-            nextPageOfButton(btnSocialStudies);
+            nextPageOfCardView("מדעי החברה");
         }
     }
 
