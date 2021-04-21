@@ -20,7 +20,9 @@
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
             app:menu="@menu/main_menu"
-            app:navigationIcon="@drawable/navigation_icon" />
+            app:navigationIcon="@drawable/navigation_icon"
+            app:navigationIconTint="@color/white"
+            />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.drawerlayout.widget.DrawerLayout
@@ -46,7 +48,6 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="116dp"
-                android:layout_marginEnd="0dp"
                 android:layout_marginBottom="0dp" />
 
             <TextView
@@ -81,12 +82,14 @@
 
         </com.google.android.material.navigation.NavigationView>
     </androidx.drawerlayout.widget.DrawerLayout>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingUploadButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
-        android:layout_margin="16dp"
-        app:srcCompat="@drawable/cloud_upload_icon"/>
+        android:layout_margin="13sp"
+        android:src="@drawable/add_vector_icon"
+        />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

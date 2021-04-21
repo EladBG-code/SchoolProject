@@ -24,65 +24,53 @@
             app:menu="@menu/main_menu"
             app:navigationIcon="@drawable/navigation_icon"
             app:popupTheme="@menu/main_menu"
+            android:layoutDirection="rtl"
             >
 
 
 
-
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="left"
-                >
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginLeft="140sp"
+                android:layout_gravity="end"
+                android:layoutDirection="rtl"
                 >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="?actionBarSize"
-                    android:gravity="center|center_horizontal"
-                    android:maxLines="1"
-                    android:maxLength="10"
-                    android:id="@+id/tvPagesUpdate"
-                    />
-            </LinearLayout>
 
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="?actionBarSize"
                     android:src="@drawable/edit_pencil_icon"
-                    android:tint="@color/black"
+                    android:tint="@color/white"
                     android:background="@drawable/roundcorner"
                     android:id="@+id/ibEditSummary"
                     android:clickable="true"
-                    android:layout_marginLeft="10sp"
-                    android:layout_gravity="left"
+                    android:layout_marginEnd="10sp"
                     android:padding="1dp"
-                    android:visibility="invisible"
+                    android:layout_gravity="end"
+                    android:visibility="visible"
                     android:foreground="?android:attr/selectableItemBackground"
                     />
-                <!--
-                <com.google.android.material.imageview.ShapeableImageView
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layoutDirection="rtl"
+                android:gravity="center"
+                android:layout_marginEnd="34sp"
+                >
+
+                <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="?actionBarSize"
-                    android:src="@drawable/edit_pencil_icon"
-                    android:tint="@color/black"
-                    android:id="@+id/sivEditSummary"
-                    android:clickable="true"
-                    android:layout_marginLeft="10sp"
-                    android:visibility="gone"
-                    android:layout_gravity="left"
-                    app:shapeAppearance="@style/roundedImageViewRounded"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:maxLength="10"
+                    android:textColor="@color/white"
+                    android:id="@+id/tvPagesUpdate"
                     />
-                    -->
 
             </LinearLayout>
 

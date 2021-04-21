@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.text.Editable;
@@ -92,6 +93,7 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
 
         database = FirebaseDatabase.getInstance().getReference().child(summarySubject);
         getIndexKeyAndSubject();
+
 
     }
 
@@ -185,13 +187,11 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
         navigationView = findViewById(R.id.nav_view_view_summary);
         toolbar = findViewById(R.id.toolbarViewSummary);
 
-
         setSupportActionBar(toolbar);
         navigationView.bringToFront();
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-
 
         navigationView.setNavigationItemSelectedListener(this);
     }

@@ -46,6 +46,7 @@
             android:layout_marginTop="5sp"
             app:cardCornerRadius="25sp"
             app:cardElevation="10sp"
+            android:layoutDirection="rtl"
             >
             <LinearLayout
                 android:layout_width="match_parent"
@@ -68,6 +69,7 @@
                     android:maxLines="1"
                     android:inputType="text"
                     android:id="@+id/etFName"
+                    android:maxLength="10"
                     android:hint="שם פרטי" />
 
                 <EditText
@@ -77,6 +79,7 @@
                     android:maxLines="1"
                     android:inputType="text"
                     android:id="@+id/etLName"
+                    android:maxLength="15"
                     android:hint="שם משפחה"/>
 
             </LinearLayout>
@@ -88,6 +91,7 @@
                     android:drawableEnd="@drawable/icon_username_login"
                     android:maxLines="1"
                     android:inputType="text"
+                    android:maxLength="15"
                     android:id="@+id/etUsername"
                     android:hint="שם משתמש"
                     />
@@ -113,6 +117,7 @@
                     android:layout_height="match_parent"
                     android:id="@+id/etEmailReg"
                     android:hint="אימייל"
+                    android:maxLength="40"
                     android:inputType="textEmailAddress"
                     android:drawableEnd="@drawable/email_icon"
                     />
@@ -141,6 +146,7 @@
                     android:gravity="right"
                     android:drawableEnd="@drawable/icon_lock_password"
                     android:hint="סיסמה"
+                    android:maxLength="30"
                     android:layout_marginBottom="12sp"
                     />
                 <LinearLayout
@@ -218,6 +224,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="17sp"
+        android:layoutDirection="rtl"
         >
 
         <TextView

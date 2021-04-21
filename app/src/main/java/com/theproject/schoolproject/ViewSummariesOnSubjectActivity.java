@@ -77,6 +77,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         database = FirebaseDatabase.getInstance();
         summariesRef = database.getReference(subject.getSubjectName());
         loadSummariesListFromDB();
+
     }
 
     //this function updates the number of liked in DB

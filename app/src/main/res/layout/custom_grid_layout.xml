@@ -95,7 +95,7 @@ Ne eum solet altera. Cibo eligendi et est, electram theophrastus te vel eu." />
                     android:text="צפייה בסיכום" />
 
                 <RelativeLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
@@ -118,7 +118,6 @@ Ne eum solet altera. Cibo eligendi et est, electram theophrastus te vel eu." />
                         android:layout_height="wrap_content"
                         android:text="99"
                         android:textSize="9sp"
-                        android:layout_marginRight="6sp"
                         android:gravity="center_horizontal|center_vertical"
                         />
                 </RelativeLayout>
