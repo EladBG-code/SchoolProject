@@ -7,6 +7,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.imageview.ShapeableImageView;
@@ -22,6 +23,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
     CheckBox btnHeart;
     View v; //this is the specific view model that the user pressed on
     MaterialTextView mtvLikesNum;
+    CardView cvEntireSummary;
 
     public MyViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -32,6 +34,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
         btnViewSummary = itemView.findViewById(R.id.openSummaryBtn);
         btnHeart = itemView.findViewById(R.id.rateBtn);
         mtvLikesNum = itemView.findViewById(R.id.mtvLikesNum);
+        cvEntireSummary = itemView.findViewById(R.id.cvEntireSummary);
         v = itemView;
 
     }

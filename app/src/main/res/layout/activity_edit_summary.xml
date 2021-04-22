@@ -13,6 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/aplEditSummary"
+        android:textDirection="rtl"
+        android:layoutDirection="rtl"
         >
 
         <com.google.android.material.appbar.MaterialToolbar
@@ -24,40 +26,12 @@
             android:theme="?attr/actionBarTheme"
             app:menu="@menu/main_menu"
             app:navigationIcon="@drawable/navigation_icon"
-            app:popupTheme="@menu/main_menu">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="עריכת סיכום"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_marginLeft="110sp"
-                    />
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="?actionBarSize"
-                    android:src="@drawable/save_icon"
-                    android:tint="@color/black"
-                    android:id="@+id/sivSaveEditedSummary"
-                    android:clickable="true"
-                    android:layout_marginLeft="10sp"
-                    app:shapeAppearance="@style/roundedImageViewRounded"
-                    />
-
-            </LinearLayout>
-
-
-
-
-
+            app:popupTheme="@menu/main_menu"
+            app:title="עריכת סיכום"
+            app:titleTextColor="@color/white"
+            >
         </com.google.android.material.appbar.MaterialToolbar>
+
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -69,6 +43,7 @@
         android:fitsSystemWindows="true"
         tools:context=".EditSummaryActivity"
         tools:openDrawer="start"
+        android:layoutDirection="rtl"
         >
 
         <LinearLayout
@@ -423,6 +398,15 @@
             app:menu="@menu/main_menu">
 
         </com.google.android.material.navigation.NavigationView>
+
     </androidx.drawerlayout.widget.DrawerLayout>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingSaveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        android:tint="@color/white"
+        app:srcCompat="@drawable/save_icon"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

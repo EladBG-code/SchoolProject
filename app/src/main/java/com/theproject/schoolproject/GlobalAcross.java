@@ -33,11 +33,11 @@ public class GlobalAcross {
 
 
 
-    public static void activateGradientBackground(DrawerLayout layout){
+    public static void activateGradientBackground(DrawerLayout layout,int millisecondsEnterFadeDuration, int millisecondsExitFadeDuration){
         //Global function for animating the gradient background of the app which some activities use
         AnimationDrawable animationDrawable = (AnimationDrawable)layout.getBackground();
-        animationDrawable.setEnterFadeDuration(2000);
-        animationDrawable.setExitFadeDuration(3000);
+        animationDrawable.setEnterFadeDuration(millisecondsEnterFadeDuration);
+        animationDrawable.setExitFadeDuration(millisecondsExitFadeDuration);
         animationDrawable.start();
     }
 
@@ -63,16 +63,16 @@ public class GlobalAcross {
 
     public static boolean checkValid(EditText title, EditText description, Context context){
         //This function checks if the entered parameters in the description and title of the summary withhold and are valid
-        if(title.getText().toString().length()<5){
+        if(title.getText().toString().length() < 5){
             Toast.makeText(context, "אנא וודא\\י שיש לפחות 5 תווים בכותרת הסיכום", Toast.LENGTH_LONG).show();
             return false;
         }
-        if(title.getText().toString().length()>10) {
-            Toast.makeText(context, "אנא וודא\\י שיש עד 10 תווים בכותרת הסיכום", Toast.LENGTH_LONG).show();
+        if(title.getText().toString().length() > 15) {
+            Toast.makeText(context, "אנא וודא\\י שיש עד 15 תווים בכותרת הסיכום", Toast.LENGTH_LONG).show();
             return false;
         }
-        if(description.getText().toString().length()>20){
-            Toast.makeText(context, "אנא וודא\\י שיש עד 46 תווים בתיאור", Toast.LENGTH_LONG).show();
+        if(description.getText().toString().length() > 150){
+            Toast.makeText(context, "אנא וודא\\י שיש עד 150 תווים בתיאור", Toast.LENGTH_LONG).show();
             return false;
         }
         return true;

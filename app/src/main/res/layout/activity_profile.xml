@@ -32,70 +32,80 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         tools:context=".ProfileActivity"
+        android:background="@drawable/gradient_list"
         tools:openDrawer="start">
 
         <ScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center">
+                android:layout_gravity="center|top"
+                >
 
 
-                <FrameLayout
-                    android:id="@+id/frameLayout"
+                <LinearLayout
+                    android:layout_marginTop="?actionBarSize"
                     android:layout_width="match_parent"
-                    android:layout_height="580sp"
-                    android:layout_gravity="center_horizontal|top"
-                    android:gravity="center_horizontal|center"
-                    android:orientation="horizontal"
-                    app:layout_anchorGravity="bottom">
+                    android:layout_height="match_parent"
+                    android:layout_gravity="top|center"
+                    android:gravity="center|top"
+                    android:textDirection="rtl"
+                    android:orientation="vertical"
+                    >
 
                     <!-- Write your XML code in the activity itself here -->
 
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/ivProfilePictureIcon"
-                        android:layout_width="190sp"
-                        android:layout_height="190sp"
+                        android:layout_width="200sp"
+                        android:layout_height="200sp"
                         android:layout_gravity="center|top"
                         android:background="@color/profile_icon_image_final_background"
                         android:foreground="@drawable/profile_icon_image_final_foreground"
                         android:foregroundTint="#FFFFFF"
                         android:src="@drawable/profile_icon_image_final_foreground"
-                        app:layout_anchor="@+id/frameLayout"
-                        app:layout_anchorGravity="top|center"
                         app:shapeAppearance="@style/roundedImageViewRounded"
-                        android:layout_marginTop="25sp"
-                        android:layout_marginBottom="30sp"
-                        app:strokeWidth="1sp"
-                        app:strokeColor="@color/colorPrimary"
+                        app:strokeWidth="2sp"
+                        android:layout_marginTop="20sp"
+                        app:strokeColor="@color/black"
                         />
 
-                </FrameLayout>
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tvProfileEntireName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="480dp"
-                    android:layout_gravity="center|bottom"
-                    android:gravity="center"
-                    android:text="their full name"
-                    android:textSize="24sp"
-                    app:layout_anchor="@+id/frameLayout"
-                    app:layout_anchorGravity="top|center" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="?actionBarSize"
+                    >
 
-                <TextView
-                    android:id="@+id/tvProfileClass"
-                    android:layout_width="wrap_content"
-                    android:layout_height="540sp"
-                    android:layout_gravity="center|bottom"
-                    android:gravity="center"
-                    android:text="their class"
-                    android:textSize="24sp"
-                    app:layout_anchor="@+id/frameLayout"
-                    app:layout_anchorGravity="top|center" />
+                    <TextView
+                        android:id="@+id/tvProfileEntireName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|bottom"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:layout_marginTop="230sp"
+                        android:text="their full name"
+                        android:textStyle="bold"
+                        android:textSize="24sp"
+                        />
+
+                    <TextView
+                        android:id="@+id/tvProfileClass"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|bottom"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:text="their class"
+                        android:textColor="@color/white"
+                        android:textSize="24sp"/>
+                </LinearLayout>
 
 
             </androidx.coordinatorlayout.widget.CoordinatorLayout>

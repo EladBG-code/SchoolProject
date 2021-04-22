@@ -71,9 +71,10 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         tvProfileName = findViewById(R.id.tvProfileEntireName);
         tvProfileClass = findViewById(R.id.tvProfileClass);
 
-        tvProfileName.setText(GlobalAcross.currentUser.getfName()+" "+GlobalAcross.currentUser.getlName());
+        tvProfileName.setText("שם: "+GlobalAcross.currentUser.getfName()+" "+GlobalAcross.currentUser.getlName());
         tvProfileClass.setText("כיתה: "+GlobalAcross.getCurrentUserGradeString());
         ivProfileIcon.setOnClickListener(this);
+
 
         if(!GlobalAcross.currentUser.getPfpPath().equals("none")){
             //The if only goes through if the user does have a profile picture
@@ -112,6 +113,8 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         drawerLayout = findViewById(R.id.drawer_layout_profile);
         navigationView = findViewById(R.id.nav_view_profile);
         toolbar = findViewById(R.id.toolbarProfile);
+
+        GlobalAcross.activateGradientBackground(drawerLayout,4000,4000);
 
         setSupportActionBar(toolbar);
         navigationView.bringToFront();

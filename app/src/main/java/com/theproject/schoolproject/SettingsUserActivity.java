@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -50,6 +51,8 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
         navigationView = findViewById(R.id.nav_view_settings);
         toolbar = findViewById(R.id.toolbarSettings);
         cvDeletePFP = findViewById(R.id.cvDeletePFP);
+
+        GlobalAcross.activateGradientBackground(drawerLayout,4000,4000);
 
         setSupportActionBar(toolbar);
         navigationView.bringToFront();

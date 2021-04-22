@@ -29,6 +29,7 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         tools:context=".SettingsUser"
+        android:background="@drawable/gradient_list"
         tools:openDrawer="start">
 
 
@@ -60,6 +61,7 @@
                         android:textStyle="bold"
                         android:layout_gravity="right"
                         android:gravity="right"
+                        android:textColor="@color/white"
                         android:text="למחוק את התמונת פרופיל הקיימת?   "
                         />
 

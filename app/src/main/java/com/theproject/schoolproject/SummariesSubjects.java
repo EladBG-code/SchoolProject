@@ -44,13 +44,14 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
         //The function below this line attaches all buttons to their ID's in the XML and sets their onclicklistener function
         attachAndClickListenSubjectCardViews();
 
-        GlobalAcross.activateGradientBackground(drawerLayout);
     }
 
     public void drawerFunction(){
         drawerLayout = findViewById(R.id.drawer_layout_subjects);
         navigationView = findViewById(R.id.nav_view_subjects);
         toolbar = findViewById(R.id.toolbarSelectSubject);
+
+        GlobalAcross.activateGradientBackground(drawerLayout,4000,4000);
 
         setSupportActionBar(toolbar);
         navigationView.bringToFront();

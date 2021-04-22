@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
+    android:layoutDirection="rtl"
     tools:context=".ViewSummaryActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -24,7 +25,6 @@
             app:menu="@menu/main_menu"
             app:navigationIcon="@drawable/navigation_icon"
             app:popupTheme="@menu/main_menu"
-            android:layoutDirection="rtl"
             >
 
 

@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,13 +65,14 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     FirebaseRecyclerOptions<Summary> options;
     FirebaseRecyclerAdapter<Summary, MyViewHolder> adapter;
     SharedPreferences sharedPreferences;
+    LinearLayout llNoSummaries;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_summaries_on_subject);
         initComponents();
         initDrawer();
-        floatingUploadButton.setOnClickListener(this);
+
         subject = new Subject(getIntent().getStringExtra("SubjectSelected"));
         tvSubjectName.setText(getIntent().getStringExtra("SubjectSelected")); /*This line sets the name of the subject which was selected as the title of the subject's summary page*/
         tvSubjectName.setPaintFlags(tvSubjectName.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG); //Makes the subject name textview bold
@@ -147,6 +149,13 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
 
         @Override
         public void onDataChanged() {
+            if (adapter.getItemCount() == 0){
+                llNoSummaries.setVisibility(View.VISIBLE);
+            }
+            else{
+                llNoSummaries.setVisibility(View.GONE);
+            }
+
             super.onDataChanged();
             notifyDataSetChanged();
         }
@@ -180,7 +189,12 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         @Override
         protected void onBindViewHolder(@NonNull final MyViewHolder holder, final int position, @NonNull final Summary model) {
         holder.tvTitle.setText(model.getTitle());
-        holder.tvDescription.setText(model.getDescription());
+        if(model.getDescription().length() > 15){
+            holder.tvDescription.setText(model.getDescription().substring(0,15)+"...");
+        }
+        else{
+            holder.tvDescription.setText(model.getDescription());
+        }
         holder.tvAuthor.setText(model.getAuthor());
 
         holder.mtvLikesNum.setText(amountOfLikesFunc(model.getAmountOfLikes()));
@@ -245,6 +259,15 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
                 startActivity(intent);
             }
         });
+        holder.cvEntireSummary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewSummariesOnSubjectActivity.this,ViewSummaryActivity.class);
+                intent.putExtra("summaryKey",getRef(position).getKey());
+                intent.putExtra("subject",subject.getSubjectName());
+                startActivity(intent);
+            }
+        });
         }
 
         @NonNull
@@ -269,6 +292,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         toolbar = findViewById(R.id.toolbarSubjectSelected);
         floatingUploadButton = findViewById(R.id.floatingUploadButton);
         tvSubjectName = findViewById(R.id.tvSubjectName);
+        llNoSummaries = findViewById(R.id.llNoSummaries);
     }
 
     public void initDrawer(){
@@ -277,6 +301,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+        floatingUploadButton.setOnClickListener(this);
         navigationView.setNavigationItemSelectedListener(this);
     }
 

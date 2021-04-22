@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DataSnapshot;
@@ -67,10 +68,10 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
     EditText etEditSummaryName,etEditSummaryDescription;
     ArrayList<String> spinnerArray;
     DatabaseReference database;
-    ShapeableImageView sivSaveEditedSummary;
     CardView cvDeleteSummary,cvReplaceFile;
     ProgressDialog progressDialog;
     Uri pdfUri;
+    FloatingActionButton floatingSaveButton;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     int deletionProgress = 0;
     @Override
@@ -134,7 +135,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         navigationView = findViewById(R.id.nav_view_edit_summary);
         toolbar = findViewById(R.id.toolbarEditSummary);
         etEditSummaryName = findViewById(R.id.etEditSummaryName);
-        sivSaveEditedSummary = findViewById(R.id.sivSaveEditedSummary);
+        floatingSaveButton = findViewById(R.id.floatingSaveButton);
         etEditSummaryDescription = findViewById(R.id.etEditSummaryDescription);
         cvDeleteSummary = findViewById(R.id.cvDeleteSummary);
         cvReplaceFile = findViewById(R.id.cvReplaceFile);
@@ -147,7 +148,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
         cvDeleteSummary.setOnClickListener(this);
         cvReplaceFile.setOnClickListener(this);
-        sivSaveEditedSummary.setOnClickListener(this);
+        floatingSaveButton.setOnClickListener(this);
         navigationView.setNavigationItemSelectedListener(this);
         setSpinnerEditSubject();
 
@@ -225,7 +226,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
     @Override
     public void onClick(View v) {
-        if (v == sivSaveEditedSummary) {
+        if (v == floatingSaveButton) {
             //Save shapable image view in clicker in the toolbar
             //First of all we check if the user even changed anything
             if (GlobalAcross.checkValid(etEditSummaryName, etEditSummaryDescription,EditSummaryActivity.this)) {
@@ -484,12 +485,12 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                             public void onSuccess(Void aVoid) {
                                                 deletionProgress += 100 / (usersThatLikedCertainSummary.size() + 2); //The last piece to get 100% on the progressbar after the entire summary is removed from the realtime database
                                                 progressDialog.setProgress(deletionProgress);
-                                                progressDialog.dismiss();
-                                                Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
+                                                Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
                                                 intent.putExtra("SubjectSelected", subject);
                                                 Toast.makeText(EditSummaryActivity.this, "הסיכום שלך נמחק בהצלחה!", Toast.LENGTH_SHORT).show();
+                                                progressDialog.dismiss();
                                                 startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                                                finishAffinity();
+                                                finish();
                                             }
                                         });
 
