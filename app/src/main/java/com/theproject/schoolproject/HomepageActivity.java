@@ -48,7 +48,7 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
     MaterialToolbar toolbar;
     TextView tvWelcomeMessage;
     ShapeableImageView ivProfilePictureHomepage;
-    CardView cvToSummaries,cvDownloadPDFapp;
+    CardView cvToSummaries;
     SharedPreferences sharedPreferences;
 
     //public static final String fileName = "login";
@@ -65,7 +65,6 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         toolbar = findViewById(R.id.toolbarHome);
         tvWelcomeMessage = findViewById(R.id.tvHomeWelcome);
         cvToSummaries = findViewById(R.id.cvToSummaries);
-        cvDownloadPDFapp = findViewById(R.id.cvDownloadPDFapp);
         ivProfilePictureHomepage = findViewById(R.id.ivProfilePictureIconHomepage);
         //tvWelcomeMessage.setText("ברוכים השבים "+GlobalAcross.currentUser.getfName()); /*Tells the user a welcome message with their own name! */
 
@@ -79,7 +78,6 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         navigationView.setNavigationItemSelectedListener(this);
         ivProfilePictureHomepage.setOnClickListener(this);
         cvToSummaries.setOnClickListener(this);
-        cvDownloadPDFapp.setOnClickListener(this);
 
         tryCatchPFP();
 
@@ -232,15 +230,15 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     public void onClick(View v) {
-        if(v == cvDownloadPDFapp){
-            //Open link to the app
-            try {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.adobe.scan.android")));
-            }
-            catch (ActivityNotFoundException e){
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.adobe.scan.android")));
-            }
-        }
+//        if(v == cvDownloadPDFapp){
+//            //Open link to the app
+//            try {
+//                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.adobe.scan.android")));
+//            }
+//            catch (ActivityNotFoundException e){
+//                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.adobe.scan.android")));
+//            }
+//        }
         if(v == cvToSummaries){
             Intent intent = new Intent(this,SummariesSubjects.class);
             startActivity(intent);

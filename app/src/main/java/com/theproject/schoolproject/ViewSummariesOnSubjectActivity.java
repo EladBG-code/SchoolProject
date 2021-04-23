@@ -5,8 +5,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import android.view.KeyEvent;
@@ -15,6 +19,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +29,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -66,6 +72,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     FirebaseRecyclerAdapter<Summary, MyViewHolder> adapter;
     SharedPreferences sharedPreferences;
     LinearLayout llNoSummaries;
+    ImageView ivSubjectVector;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +82,15 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
 
         subject = new Subject(getIntent().getStringExtra("SubjectSelected"));
         tvSubjectName.setText(getIntent().getStringExtra("SubjectSelected")); /*This line sets the name of the subject which was selected as the title of the subject's summary page*/
+
+
+
         tvSubjectName.setPaintFlags(tvSubjectName.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG); //Makes the subject name textview bold
+
+        Drawable drawableVectorIcon = ContextCompat.getDrawable(getApplicationContext(),GlobalAcross.selectedSubjectVectorID);
+
+        ivSubjectVector.setImageDrawable(drawableVectorIcon);
+
         database = FirebaseDatabase.getInstance();
         summariesRef = database.getReference(subject.getSubjectName());
         loadSummariesListFromDB();
@@ -293,6 +308,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         floatingUploadButton = findViewById(R.id.floatingUploadButton);
         tvSubjectName = findViewById(R.id.tvSubjectName);
         llNoSummaries = findViewById(R.id.llNoSummaries);
+        ivSubjectVector = findViewById(R.id.ivSubjectVector);
     }
 
     public void initDrawer(){
@@ -383,6 +399,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     public void onClick(View v) {
         if(v == floatingUploadButton){
             //Upload floating action button selected
+            floatingUploadButton.animate().rotation(360).setDuration(750).start();
             Intent intent = new Intent(this,AddSummaryActivity.class);
             intent.putExtra("Subject",subject.getSubjectName());
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());

@@ -73,6 +73,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
     Uri pdfUri;
     FloatingActionButton floatingSaveButton;
     FirebaseStorage storage = FirebaseStorage.getInstance();
+    Boolean subjectChanged;
     int deletionProgress = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +83,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         subject = getIntent().getStringExtra("subject");
         summaryKey = getIntent().getStringExtra("key");
 
+        subjectChanged = false;
         pdfUri = null;
         setToolbarAndDrawer();
         setEveryAttribute();
@@ -236,6 +238,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 progressDialog.setTitle("שומרים את השינויים שלך...");
                 progressDialog.setProgress(0);
+                progressDialog.setCancelable(false);
                 progressDialog.show();
                 //Editor's note - add an app check for the new values lengths entered to the edittexts while changing
 
@@ -271,7 +274,8 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                         progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
                                         if (progressDialog.getProgress() == 100) {
                                             progressDialog.dismiss();
-                                            Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
+                                            Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
+                                            Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
                                             intent.putExtra("SubjectSelected", subject);
                                             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
                                             finishAffinity();
@@ -290,7 +294,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                         if (progressDialog.getProgress() == 100) {
                                             progressDialog.dismiss();
                                             Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                                            Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
+                                            Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
                                             intent.putExtra("SubjectSelected", subject);
                                             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
                                             finishAffinity();
@@ -337,7 +341,13 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                             aSyncPDFchange();
 
                         }
-
+                        else if(subjectChanged){
+                            Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+                            intent.putExtra("SubjectSelected", subject);
+                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+                            finishAffinity();
+                        }
                         else {
                             progressDialog.dismiss();
                             Toast.makeText(EditSummaryActivity.this,"לא נעשו שינויים בסיכום.",Toast.LENGTH_SHORT).show();
@@ -352,7 +362,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                         Toast.makeText(EditSummaryActivity.this,"אאוץ'! נתקלנו בשגיאה - נסו שוב מאוחר יותר", Toast.LENGTH_SHORT).show();
                     }
                 });
-                if (progressDialog.getProgress() == 100) {
+                if (progressDialog.getProgress() == 100 || subjectChanged) {
                     progressDialog.dismiss();
                     Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
@@ -490,7 +500,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                                 Toast.makeText(EditSummaryActivity.this, "הסיכום שלך נמחק בהצלחה!", Toast.LENGTH_SHORT).show();
                                                 progressDialog.dismiss();
                                                 startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                                                finish();
+                                                finishAffinity();
                                             }
                                         });
 
@@ -498,9 +508,8 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 //                        for(int i=0;i<usersThatLikedCertainSummary.size();i++) {
 //                            System.out.println(usersThatLikedCertainSummary.get(i));
 //                        }
-
                                     }
-                                    finish();
+                                    //finishAffinity();
                                 }
 
                                 @Override
@@ -546,7 +555,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                             if (progressDialog.getProgress() == 100) {
                                                 progressDialog.dismiss();
                                                 Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                                                Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
+                                                Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
                                                 intent.putExtra("SubjectSelected", subject);
                                                 startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
                                                 finishAffinity();
@@ -568,7 +577,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
                                     Toast.makeText(EditSummaryActivity.this,"אאוץ'! נתקלנו בשגיאה - לא הצלחנו למחוק את הקובץ PDF הישן.", Toast.LENGTH_SHORT).show();
                                     progressDialog.dismiss();
-                                    Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
+                                    Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
                                     intent.putExtra("SubjectSelected", subject);
                                     startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
                                     finishAffinity();
@@ -593,7 +602,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                                     if(progressDialog.getProgress() == 100){
                                                         progressDialog.dismiss();
                                                         Toast.makeText(EditSummaryActivity.this,"השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                                                        Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
+                                                        Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
                                                         intent.putExtra("SubjectSelected", subject);
                                                         startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
                                                         finishAffinity();
@@ -613,7 +622,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     Toast.makeText(EditSummaryActivity.this,"אאוץ'! נתקלנו בשגיאה - נסו שוב מאוחר יותר", Toast.LENGTH_SHORT).show();
-                    //finish();
+                    finishAffinity();
                 }
             });
 
@@ -696,6 +705,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                                     //FirebaseDatabase.getInstance().getReference("UsersPlace/"+ usersThatLikedCertainSummary.get(i)).child("favoriteSummaries").child(tempCopy.getId()).setValue(spinnerSubjectCurrent); //Sets the new summary and summary id as favorite for each liker of the summary
                                                 }
                                             }
+                                            subjectChanged = true;
                                             progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
                                             if (progressDialog.getProgress() == 100){
                                                 progressDialog.dismiss();

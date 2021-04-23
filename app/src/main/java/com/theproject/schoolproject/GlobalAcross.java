@@ -18,6 +18,7 @@ public class GlobalAcross {
     public static boolean firstLoginSuggestion = false;
     public static String infoMessage;
     public static int editingTemp;
+    public static int selectedSubjectVectorID;
 
     //Useful global functions across the application : for the current user
     public static String getCurrentUserGradeString(){

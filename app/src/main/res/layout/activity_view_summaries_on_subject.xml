@@ -40,15 +40,30 @@
             android:layout_marginTop="?actionBarSize"
             >
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/tvSubjectName"
                 android:layout_marginTop="?actionBarSize"
-                android:textSize="34sp"
-                android:text="Subject name"
                 android:gravity="center|top"
-                />
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvSubjectName"
+                    android:textSize="34sp"
+                    android:text="Subject name"
+                    />
+                <ImageView
+                    android:layout_width="40sp"
+                    android:layout_height="40sp"
+                    android:layout_gravity="center|top"
+                    android:id="@+id/ivSubjectVector"
+                    android:src="@drawable/book_literature_vector_icon"
+                    />
+
+            </LinearLayout>
 
 
             <LinearLayout
@@ -95,7 +110,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layoutDirection="rtl"
-                    android:layout_marginTop="50sp"
+                    android:layout_marginTop="90sp"
                     />
             </LinearLayout>
 
@@ -126,7 +141,7 @@
         android:id="@+id/floatingUploadButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|left"
         android:layout_margin="13sp"
         android:src="@drawable/add_vector_icon"
         />

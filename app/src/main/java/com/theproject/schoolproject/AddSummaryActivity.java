@@ -135,7 +135,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
 
             if (pdfUri != null) {
                 if (GlobalAcross.checkValid(summaryTitle, summaryDescription,AddSummaryActivity.this)) {
-                    summary = new Summary(GlobalAcross.currentUser.getfName() + " " + GlobalAcross.currentUser.getlName(), summaryTitle.getText().toString(), summaryDescription.getText().toString(), getSharedPreferences("index", Context.MODE_PRIVATE));
+                    summary = new Summary(GlobalAcross.currentUser.getfName()+" "+GlobalAcross.currentUser.getlName(), summaryTitle.getText().toString(), summaryDescription.getText().toString(), getSharedPreferences("index", Context.MODE_PRIVATE));
                     summary.setId(database.getReference(subject).push().getKey());
                     summaryID=summary.getId();
 //                    addSummaryToDB(summary);
@@ -184,6 +184,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setTitle("מעלים את הקובץ...");
         progressDialog.setProgress(0);
+        progressDialog.setCancelable(false);
         progressDialog.show();
 
         final String fileName = UUID.randomUUID().toString();
@@ -206,7 +207,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
                                     Toast.makeText(AddSummaryActivity.this,"הסיכום הועלה בהצלחה.",Toast.LENGTH_SHORT).show();
-                                    onBackPressed();
+                                    finish();
                                 }
                                 else{
                                     Toast.makeText(AddSummaryActivity.this,"נתקלנו בבעיה... בדקו את החיבור לאינטרנט - הקובץ לא הועלה.",Toast.LENGTH_LONG).show();

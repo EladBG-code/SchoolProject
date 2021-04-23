@@ -687,7 +687,6 @@
                             <ImageView
                                 android:layout_width="55sp"
                                 android:layout_height="55sp"
-                                android:rotation="180"
                                 android:src="@drawable/hebrew_bible_bible_vector_icon"
                                 android:layout_gravity="center"
                                 />

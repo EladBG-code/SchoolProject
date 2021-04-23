@@ -7,11 +7,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.Application;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -25,10 +32,19 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Set;
+import java.util.UUID;
 
 public class SettingsUserActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
@@ -37,6 +53,8 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
     MaterialToolbar toolbar;
     SharedPreferences sharedPreferences;
     CardView cvDeletePFP;
+    Bitmap bitmapTemp;
+    String tempPath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,31 +161,95 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
 
                                 FirebaseStorage storage = FirebaseStorage.getInstance();
                                 StorageReference firePfpRef = storage.getInstance().getReference().child(GlobalAcross.currentUser.getPfpPath());
-                                firePfpRef.delete();
-                                DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("UsersPlace/"+GlobalAcross.currentUserIndex+"/pfpPath");
-                                myRef.setValue("none").addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        GlobalAcross.currentUser.setPfpPath("none");
-                                    }
-                                }).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                                try {
+                                    final File localFile = File.createTempFile("profilePicture","png");
+                                    firePfpRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                            bitmapTemp = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                                        }
+                                    });
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                firePfpRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        Toast.makeText(SettingsUserActivity.this, "התמונה נמחקה בהצלחה!", Toast.LENGTH_SHORT).show();
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(SettingsUserActivity.this, "אאוץ'! נתקלנו בשגיאה. נסו שוב.", Toast.LENGTH_SHORT).show();
+                                        tempPath = GlobalAcross.currentUser.getPfpPath();
+                                        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("UsersPlace/"+GlobalAcross.currentUserIndex+"/pfpPath");
+                                        myRef.setValue("none").addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                tempPath = GlobalAcross.currentUser.getPfpPath();
+                                                GlobalAcross.currentUser.setPfpPath("none");
+                                            }
+                                        }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()){
+                                                    final Snackbar snackbar = null;
+                                                    snackbar.make(findViewById(R.id.linearLayoutSettings),"התמונה נמחקה בהצלחה.",Snackbar.LENGTH_LONG)
+                                                            .setAction("ביטול", new View.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(View v) {
+                                                                    final ProgressDialog progressDialog = new ProgressDialog(SettingsUserActivity.this);
+                                                                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                                                    progressDialog.setCancelable(false);
+                                                                    progressDialog.setTitle("מחזירים את התמונה...");
+                                                                    progressDialog.setProgress(0);
+
+                                                                    final StorageReference tempRef = FirebaseStorage.getInstance().getReference("profilePictures/" + UUID.randomUUID() + ".png");
+                                                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                                                    bitmapTemp.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                                                                    InputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
+                                                                    UploadTask uploadTask = tempRef.putStream(inputStream);
+                                                                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                                        @Override
+                                                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                                                            GlobalAcross.currentUser.setPfpPath(tempRef.getPath());
+                                                                            FirebaseDatabase.getInstance().getReference("UsersPlace").child(GlobalAcross.currentUserIndex+"").child("pfpPath").setValue(tempRef.getPath()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                @Override
+                                                                                public void onSuccess(Void aVoid) {
+                                                                                    progressDialog.dismiss();
+                                                                                    snackbar.make(findViewById(R.id.linearLayoutSettings),"התמונה שוחזרה בהצלחה.",Snackbar.LENGTH_SHORT).show();
+                                                                                }
+                                                                            });
+                                                                        }
+                                                                    }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                                                        @Override
+                                                                        public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                                                                            progressDialog.show();
+                                                                            int currentProgress = (int) (100 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount()); //Formula to get the progress percentage of bytes transferred over total bytes times 100 casted into int
+                                                                            progressDialog.setProgress(currentProgress);
+                                                                        }
+                                                                    });
+                                                                }
+                                                            }).show();
+                                                }
+                                            }})
+
+
+                                                .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(SettingsUserActivity.this, "אאוץ'! נתקלנו בשגיאה. נסו שוב.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+
+
                                     }
                                 });
+
 
                             }
                             else{
                                 //Doesn't have a profile picture
-                                Toast.makeText(SettingsUserActivity.this, "אין לכם תמונת פרופיל.", Toast.LENGTH_SHORT).show();
+                                Snackbar.make(findViewById(R.id.linearLayoutSettings),"אין לכם תמונת פרופיל.",Snackbar.LENGTH_LONG)
+                                        .setAction("הבנתי", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v){}}).show();
                             }
-
                         }
                     })
                     .setNegativeButton("לא",null);

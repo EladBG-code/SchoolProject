@@ -12,10 +12,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Layout;
+import android.util.Xml;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,6 +34,9 @@ import android.widget.Toast;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
+
+import java.io.ByteArrayOutputStream;
+import java.net.IDN;
 
 public class SummariesSubjects extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
@@ -94,69 +105,73 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
         cvSociology.setOnClickListener(this);
     }
 
-    public void nextPageOfCardView(String subjectSelected){
+    public void nextPageOfCardView(String subjectSelected,int vectorID){
         Intent intent = new Intent(this,ViewSummariesOnSubjectActivity.class);
         intent.putExtra("SubjectSelected",subjectSelected);
+        GlobalAcross.selectedSubjectVectorID = vectorID;
         startActivity(intent);
     }
 
+
+
     @Override
     public void onClick(View v) {
+
         if(v == cvMathematics){
             //Math subject
-            nextPageOfCardView("מתמטיקה");
+            nextPageOfCardView("מתמטיקה",R.drawable.calculating_mathematics_vector_icon);
         }
         if(v == cvHebrew){
             //Hebrew subject
-            nextPageOfCardView("לשון");
+            nextPageOfCardView("לשון",R.drawable.essay_lashon_hebrew_vector_icon);
         }
         if(v == cvHistory){
             //History subject
-            nextPageOfCardView("היסטוריה");
+            nextPageOfCardView("היסטוריה",R.drawable.pillar_history_vector_icon);
         }
         if(v == cvCitizenship){
             //Citizenship subject
-            nextPageOfCardView("אזרחות");
+            nextPageOfCardView("אזרחות",R.drawable.israeli_flag_citizenship_vector_icon);
         }
         if(v == cvBible){
             //Bible subject
-            nextPageOfCardView("תנ"+'"'+"ך");
+            nextPageOfCardView("תנ"+'"'+"ך",R.drawable.hebrew_bible_bible_vector_icon);
         }
         if(v == cvLiterature){
             //Literature subject
-            nextPageOfCardView("ספרות");
+            nextPageOfCardView("ספרות",R.drawable.book_literature_vector_icon);
         }
         if(v == cvEnglish){
             //English subject
-            nextPageOfCardView("אנגלית");
+            nextPageOfCardView("אנגלית",R.drawable.abc_blocks_english_vector_icon);
         }
         if(v == cvBiology){
             //Biology subject
-            nextPageOfCardView("ביולוגיה");
+            nextPageOfCardView("ביולוגיה",R.drawable.dna_biology_vector_icon);
         }
         if(v == cvComputerScience){
             //Computer Science subject
-            nextPageOfCardView("מדעי המחשב");
+            nextPageOfCardView("מדעי המחשב",R.drawable.web_programming_computer_science_vector_icon);
         }
         if(v == cvChemistry){
             //Chemistry subject
-            nextPageOfCardView("כימיה");
+            nextPageOfCardView("כימיה",R.drawable.chemical_jar_chemistry_vector_icon);
         }
         if(v == cvPhysics){
             //Physics subject
-            nextPageOfCardView("פיזיקה");
+            nextPageOfCardView("פיזיקה",R.drawable.formula_physics_vector_icon);
         }
         if(v == cvHistoryOfArt){
             //Arts subject
-            nextPageOfCardView("תולדות האומנות");
+            nextPageOfCardView("תולדות האומנות",R.drawable.hieroglyph_history_of_art_vector_icon);
         }
         if(v == cvCommunication){
             //Communication subject
-            nextPageOfCardView("תקשורת");
+            nextPageOfCardView("תקשורת",R.drawable.communication_communication_vector_icon);
         }
         if(v == cvSociology){
             //Social Studies subject
-            nextPageOfCardView("מדעי החברה");
+            nextPageOfCardView("מדעי החברה",R.drawable.social_network_sociology_vector_icon);
         }
     }
 

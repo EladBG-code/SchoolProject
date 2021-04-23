@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.ProgressDialog;
@@ -18,6 +19,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,7 +66,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         setContentView(R.layout.activity_profile);
 
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("UsersPlace/"+GlobalAcross.currentUserIndex+"/pfpPath");
+        myRef = database.getReference("UsersPlace").child(GlobalAcross.currentUserIndex+"").child("pfpPath");
 
         setToolbarAndDrawer();
         ivProfileIcon = findViewById(R.id.ivProfilePictureIcon);
@@ -78,13 +80,12 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
         if(!GlobalAcross.currentUser.getPfpPath().equals("none")){
             //The if only goes through if the user does have a profile picture
-            String pfpPath = GlobalAcross.currentUser.getPfpPath();
             firePfpRef = storage.getInstance().getReference().child(GlobalAcross.currentUser.getPfpPath());
+            ShapeableImageView ivPFP = findViewById(R.id.ivProfilePictureIcon);
 
             try {
                 final File localFile = File.createTempFile("profilePicture","png");
-                firePfpRef.getFile(localFile)
-                        .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                firePfpRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                                 ShapeableImageView ivPFP = findViewById(R.id.ivProfilePictureIcon);
@@ -93,12 +94,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                                 ivPFP.setForeground(null);
                                 ivPFP.setImageBitmap(bitmap);
                             }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
-                    }
-                });
+                        });
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -198,9 +194,8 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     public void onClick(View v) {
         if(v == ivProfileIcon){
             //Uploading profile picture here - needs to be done
-
             androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(ProfileActivity.this);
-            builder.setMessage("לצלם או למשוך מהגלריה?")
+            builder.setMessage("לצלם או למשוך מהזיכרון?")
                     .setPositiveButton("מצלמה", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -208,7 +203,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                             startActivityForResult(cameraIntent,0); // open camera
                         }
                     })
-                    .setNegativeButton("גלריה", new DialogInterface.OnClickListener() {
+                    .setNegativeButton("זיכרון", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -232,7 +227,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
             progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             progressDialog.setTitle("מעלים את התמונה...");
             progressDialog.setProgress(0);
-            progressDialog.show();
+
             final ShapeableImageView profilePictureReference = findViewById(R.id.ivProfilePictureIcon);
             try {
                 InputStream inputStream = getContentResolver().openInputStream(data.getData());
@@ -286,6 +281,8 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                 }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                        progressDialog.show();
+                        progressDialog.setCancelable(false);
                         int currentProgress = (int) (100*snapshot.getBytesTransferred()/snapshot.getTotalByteCount()); //Formula to get the progress percentage of bytes transferred over total bytes times 100 casted into int
                         progressDialog.setProgress(currentProgress);
                     }
@@ -303,7 +300,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 progressDialog.setTitle("מעלים את התמונה...");
                 progressDialog.setProgress(0);
-                progressDialog.show();
+
                 Bundle extras = data.getExtras();
                 final Bitmap bitmapPFP =  (Bitmap) extras.get("data");
 
@@ -334,6 +331,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
                                     Toast.makeText(ProfileActivity.this,"התמונה הועלתה בהצלחה.",Toast.LENGTH_SHORT).show();
+
                                 }
                                 else{
                                     Toast.makeText(ProfileActivity.this,"נתקלנו בבעיה... בדקו את החיבור לאינטרנט - התמונה לא הועלתה.",Toast.LENGTH_LONG).show();
@@ -351,12 +349,12 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                                 }
                             }
                         });
-
-                        Toast.makeText(ProfileActivity.this, "התמונת פרופיל שונתה בהצלחה!", Toast.LENGTH_LONG - 5000).show();
                     }
                 }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                        progressDialog.show();
+                        progressDialog.setCancelable(false);
                         int currentProgress = (int) (100*snapshot.getBytesTransferred()/snapshot.getTotalByteCount()); //Formula to get the progress percentage of bytes transferred over total bytes times 100 casted into int
                         progressDialog.setProgress(currentProgress);
                     }

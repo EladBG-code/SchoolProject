@@ -279,6 +279,7 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
             Intent intent = new Intent(ViewSummaryActivity.this,EditSummaryActivity.class);
             intent.putExtra("key",summaryKey);
             intent.putExtra("subject",summarySubject);
+            intent.putExtra("SubjectVectorID",getIntent().getIntExtra("SubjectVectorID",0));
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }
     }
