@@ -177,12 +177,12 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         tempPath = GlobalAcross.currentUser.getPfpPath();
+                                        GlobalAcross.currentUser.setPfpPath("none");
                                         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("UsersPlace/"+GlobalAcross.currentUserIndex+"/pfpPath");
                                         myRef.setValue("none").addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                tempPath = GlobalAcross.currentUser.getPfpPath();
-                                                GlobalAcross.currentUser.setPfpPath("none");
+
                                             }
                                         }).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override

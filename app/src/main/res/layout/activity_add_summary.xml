@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="horizontal"
+    android:textDirection="rtl"
     tools:context=".AddSummaryActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -59,7 +60,7 @@
             android:layout_marginTop="10sp"
             android:layout_width="wrap_content"
             android:layout_height="40sp"
-            android:text="האם יש לסיכום קובץ? (Word , PDF , Powerpoint)"
+            android:text="צרפו קובץ PDF (חובה)"
             android:id="@+id/rbIsAttachment"
             android:onClick="onClick"
             android:layout_marginBottom="10sp"
@@ -70,6 +71,7 @@
             android:layout_marginTop="13sp"
             android:layout_marginBottom="13sp"
             android:visibility="gone"
+            android:textDirection="rtl"
             android:id="@+id/llAttachments"
             android:gravity="center|top">
 
@@ -86,12 +88,6 @@
 
                 />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="top|center"
-                android:text="צרפו קובץ  "
-                android:textSize="20sp" />
 
 
         </LinearLayout>

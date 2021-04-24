@@ -209,7 +209,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                             intent.setType("image/*");
 
-                            startActivityForResult(Intent.createChooser(intent, "בחר\\י בתמונה עבור פרופילך"), 1);
+                            startActivityForResult(Intent.createChooser(intent, "בחר/י בתמונה עבור פרופילך"), 1);
                         }
                     });
 

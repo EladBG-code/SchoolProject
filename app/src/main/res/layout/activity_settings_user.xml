@@ -109,6 +109,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/linearLayoutSettings"
             android:gravity="bottom"
+            android:textDirection="rtl"
+            android:orientation="horizontal"
             >
 
         </LinearLayout>

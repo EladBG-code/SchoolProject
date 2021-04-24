@@ -61,8 +61,8 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     Button btnUpload;
     EditText summaryTitle,summaryDescription;
     String summaryID;
-    FirebaseDatabase database = FirebaseDatabase.getInstance(); // is used for storing URLs of uploaded files...
-    FirebaseStorage storage = FirebaseStorage.getInstance(); //is used for uploadinf files... Examples: PDF, Word etc
+    FirebaseDatabase database;
+    FirebaseStorage storage;
     DatabaseReference summariesRef;
     ShapeableImageView ivAddAttachment;
     RadioButton isAttachment;
@@ -80,6 +80,9 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_summary);
+
+        database = FirebaseDatabase.getInstance();// is used for storing URLs of uploaded files...
+        storage = FirebaseStorage.getInstance();//is used for uploadinf files... Examples: PDF, Word etc
 
         drawerFunction();
 

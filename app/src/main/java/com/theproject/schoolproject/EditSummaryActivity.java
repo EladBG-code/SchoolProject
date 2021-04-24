@@ -275,7 +275,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                         if (progressDialog.getProgress() == 100) {
                                             progressDialog.dismiss();
                                             Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                                            Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+                                            Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
                                             intent.putExtra("SubjectSelected", subject);
                                             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
                                             finishAffinity();
@@ -294,7 +294,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                         if (progressDialog.getProgress() == 100) {
                                             progressDialog.dismiss();
                                             Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                                            Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+                                            Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
                                             intent.putExtra("SubjectSelected", subject);
                                             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
                                             finishAffinity();
@@ -343,7 +343,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                         }
                         else if(subjectChanged){
                             Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+                            Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
                             intent.putExtra("SubjectSelected", subject);
                             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
                             finishAffinity();
@@ -495,7 +495,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                             public void onSuccess(Void aVoid) {
                                                 deletionProgress += 100 / (usersThatLikedCertainSummary.size() + 2); //The last piece to get 100% on the progressbar after the entire summary is removed from the realtime database
                                                 progressDialog.setProgress(deletionProgress);
-                                                Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+                                                Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
                                                 intent.putExtra("SubjectSelected", subject);
                                                 Toast.makeText(EditSummaryActivity.this, "הסיכום שלך נמחק בהצלחה!", Toast.LENGTH_SHORT).show();
                                                 progressDialog.dismiss();
@@ -555,7 +555,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                             if (progressDialog.getProgress() == 100) {
                                                 progressDialog.dismiss();
                                                 Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                                                Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+                                                Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
                                                 intent.putExtra("SubjectSelected", subject);
                                                 startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
                                                 finishAffinity();
@@ -577,7 +577,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
                                     Toast.makeText(EditSummaryActivity.this,"אאוץ'! נתקלנו בשגיאה - לא הצלחנו למחוק את הקובץ PDF הישן.", Toast.LENGTH_SHORT).show();
                                     progressDialog.dismiss();
-                                    Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+                                    Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
                                     intent.putExtra("SubjectSelected", subject);
                                     startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
                                     finishAffinity();
@@ -602,7 +602,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                                     if(progressDialog.getProgress() == 100){
                                                         progressDialog.dismiss();
                                                         Toast.makeText(EditSummaryActivity.this,"השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                                                        Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+                                                        Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
                                                         intent.putExtra("SubjectSelected", subject);
                                                         startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
                                                         finishAffinity();

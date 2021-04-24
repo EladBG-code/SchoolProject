@@ -359,7 +359,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
             AlertDialog alert = builder.create();
             alert.show();
             return false;
-            
+
         }
         if(item.getTitle().equals("סיכומים")){
             super.onBackPressed();
