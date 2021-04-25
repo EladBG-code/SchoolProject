@@ -27,6 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -58,7 +59,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
 
     String subject;
     FloatingActionButton floatingReturnButton;
-    Button btnUpload;
+    CardView cvPublish;
     EditText summaryTitle,summaryDescription;
     String summaryID;
     FirebaseDatabase database;
@@ -87,7 +88,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         drawerFunction();
 
         floatingReturnButton = findViewById(R.id.floatingReturnButton);
-        btnUpload = findViewById(R.id.btnUpload);
+        cvPublish = findViewById(R.id.cvPublish);
         summaryTitle = findViewById(R.id.etSummaryTitle);
         summaryDescription = findViewById(R.id.etSummaryDescription);
         ivAddAttachment = findViewById(R.id.ivAddAttachment);
@@ -97,7 +98,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         checkedRB = false;
 
         floatingReturnButton.setOnClickListener(this);
-        btnUpload.setOnClickListener(this);
+        cvPublish.setOnClickListener(this);
         ivAddAttachment.setOnClickListener(this);
 
         isAttachment.setOnClickListener(this);
@@ -133,7 +134,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
             //startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
             finishAfterTransition();
         }
-        if(v == btnUpload){
+        if(v == cvPublish){
             // UPLOAD SUMMARY BUTTON
 
             if (pdfUri != null) {

@@ -92,11 +92,34 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btnUpload"
-            android:layout_width="80sp"
-            android:layout_height="40sp"
-            android:text="פרסום" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvPublish"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100sp"
+            android:layout_marginRight="100sp"
+            android:background="@color/cardview_dark_background"
+            android:clickable="true"
+            android:elevation="10sp"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:outlineAmbientShadowColor="@color/black"
+            android:outlineSpotShadowColor="@color/black"
+            app:cardBackgroundColor="@color/colorPrimaryDark"
+            app:cardCornerRadius="15sp">
+
+            <TextView
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="7sp"
+                android:gravity="center|bottom"
+                android:text="פרסום"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 

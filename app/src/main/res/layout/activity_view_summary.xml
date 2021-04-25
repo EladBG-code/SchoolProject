@@ -47,7 +47,7 @@
                     android:layout_marginEnd="10sp"
                     android:padding="1dp"
                     android:layout_gravity="end"
-                    android:visibility="visible"
+                    android:visibility="invisible"
                     />
             </LinearLayout>
 

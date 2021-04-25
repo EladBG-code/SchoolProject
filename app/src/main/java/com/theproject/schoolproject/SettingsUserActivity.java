@@ -182,52 +182,54 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
                                         myRef.setValue("none").addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-
+                                                Snackbar.make(findViewById(R.id.linearLayoutSettings),"התמונה נמחקה בהצלחה.",Snackbar.LENGTH_SHORT).show();
                                             }
-                                        }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()){
-                                                    final Snackbar snackbar = null;
-                                                    snackbar.make(findViewById(R.id.linearLayoutSettings),"התמונה נמחקה בהצלחה.",Snackbar.LENGTH_LONG)
-                                                            .setAction("ביטול", new View.OnClickListener() {
-                                                                @Override
-                                                                public void onClick(View v) {
-                                                                    final ProgressDialog progressDialog = new ProgressDialog(SettingsUserActivity.this);
-                                                                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                                                                    progressDialog.setCancelable(false);
-                                                                    progressDialog.setTitle("מחזירים את התמונה...");
-                                                                    progressDialog.setProgress(0);
-
-                                                                    final StorageReference tempRef = FirebaseStorage.getInstance().getReference("profilePictures/" + UUID.randomUUID() + ".png");
-                                                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                                                    bitmapTemp.compress(Bitmap.CompressFormat.PNG, 100, baos);
-                                                                    InputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
-                                                                    UploadTask uploadTask = tempRef.putStream(inputStream);
-                                                                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                                                        @Override
-                                                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                                                            GlobalAcross.currentUser.setPfpPath(tempRef.getPath());
-                                                                            FirebaseDatabase.getInstance().getReference("UsersPlace").child(GlobalAcross.currentUserIndex+"").child("pfpPath").setValue(tempRef.getPath()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                @Override
-                                                                                public void onSuccess(Void aVoid) {
-                                                                                    progressDialog.dismiss();
-                                                                                    snackbar.make(findViewById(R.id.linearLayoutSettings),"התמונה שוחזרה בהצלחה.",Snackbar.LENGTH_SHORT).show();
-                                                                                }
-                                                                            });
-                                                                        }
-                                                                    }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                                                        @Override
-                                                                        public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                                                                            progressDialog.show();
-                                                                            int currentProgress = (int) (100 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount()); //Formula to get the progress percentage of bytes transferred over total bytes times 100 casted into int
-                                                                            progressDialog.setProgress(currentProgress);
-                                                                        }
-                                                                    });
-                                                                }
-                                                            }).show();
-                                                }
-                                            }})
+                                        })
+//                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                            @Override
+//                                            public void onComplete(@NonNull Task<Void> task) {
+//                                                if (task.isSuccessful()){
+//                                                    final Snackbar snackbar = null;
+//                                                    snackbar.make(findViewById(R.id.linearLayoutSettings),"התמונה נמחקה בהצלחה.",Snackbar.LENGTH_LONG)
+//                                                            .setAction("ביטול", new View.OnClickListener() {
+//                                                                @Override
+//                                                                public void onClick(View v) {
+//                                                                    final ProgressDialog progressDialog = new ProgressDialog(SettingsUserActivity.this);
+//                                                                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//                                                                    progressDialog.setCancelable(false);
+//                                                                    progressDialog.setTitle("מחזירים את התמונה...");
+//                                                                    progressDialog.setProgress(0);
+//
+//                                                                    final StorageReference tempRef = FirebaseStorage.getInstance().getReference("profilePictures/" + UUID.randomUUID() + ".png");
+//                                                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                                                                    bitmapTemp.compress(Bitmap.CompressFormat.PNG, 100, baos);
+//                                                                    InputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
+//                                                                    UploadTask uploadTask = tempRef.putStream(inputStream);
+//                                                                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                                                                        @Override
+//                                                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                                                                            GlobalAcross.currentUser.setPfpPath(tempRef.getPath());
+//                                                                            FirebaseDatabase.getInstance().getReference("UsersPlace").child(GlobalAcross.currentUserIndex+"").child("pfpPath").setValue(tempRef.getPath()).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                                                                @Override
+//                                                                                public void onSuccess(Void aVoid) {
+//                                                                                    progressDialog.dismiss();
+//                                                                                    snackbar.make(findViewById(R.id.linearLayoutSettings),"התמונה שוחזרה בהצלחה.",Snackbar.LENGTH_SHORT).show();
+//                                                                                }
+//                                                                            });
+//                                                                        }
+//                                                                    }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+//                                                                        @Override
+//                                                                        public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+//                                                                            progressDialog.show();
+//                                                                            int currentProgress = (int) (100 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount()); //Formula to get the progress percentage of bytes transferred over total bytes times 100 casted into int
+//                                                                            progressDialog.setProgress(currentProgress);
+//                                                                        }
+//                                                                    });
+//                                                                }
+//                                                            }).show();
+//
+//                                                }
+//                                            }})
 
 
                                                 .addOnFailureListener(new OnFailureListener() {
