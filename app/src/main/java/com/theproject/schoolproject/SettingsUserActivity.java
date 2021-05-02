@@ -16,11 +16,21 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.inputmethodservice.Keyboard;
+import android.inputmethodservice.KeyboardView;
 import android.media.Image;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -43,6 +53,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 
@@ -52,23 +64,63 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
     NavigationView navigationView;
     MaterialToolbar toolbar;
     SharedPreferences sharedPreferences;
-    CardView cvDeletePFP;
+    CardView cvDeletePFP,cvClassYodAlef,cvClassYodBeit,cvClassYod,cvSaveEmail;
     Bitmap bitmapTemp;
     String tempPath;
+    EditText etChangedEmail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_user);
 
         setToolbarAndDrawer();
-
+        setCurrentGradeSelected();
     }
 
+    /**The function highlights the current class to being selected according to the actual class of the user*/
+    private void setCurrentGradeSelected() {
+        switch (GlobalAcross.currentUser.getGrade()){
+            case 1:{
+                //Yod
+                cvClassYod.setCardBackgroundColor(Color.GRAY);
+
+                cvClassYodAlef.setCardBackgroundColor(Color.WHITE);
+                cvClassYodBeit.setCardBackgroundColor(Color.WHITE);
+            }
+            case 2:{
+                //YodAlef
+                cvClassYodAlef.setCardBackgroundColor(Color.GRAY);
+
+                cvClassYod.setCardBackgroundColor(Color.WHITE);
+                cvClassYodBeit.setCardBackgroundColor(Color.WHITE);
+            }
+            case 3:{
+                //Yodbeit
+                cvClassYodBeit.setCardBackgroundColor(Color.GRAY);
+
+                cvClassYodAlef.setCardBackgroundColor(Color.WHITE);
+                cvClassYod.setCardBackgroundColor(Color.WHITE);
+            }
+        }
+    }
+
+    /**This function sets the toolbar and drawer according to their ID's and activates the gradient background and adds the cardview listeners
+     * for each of the three classes.
+     * */
     public void setToolbarAndDrawer(){
         drawerLayout = findViewById(R.id.drawer_layout_settings);
         navigationView = findViewById(R.id.nav_view_settings);
         toolbar = findViewById(R.id.toolbarSettings);
         cvDeletePFP = findViewById(R.id.cvDeletePFP);
+
+        cvSaveEmail = findViewById(R.id.cvSaveEmail);
+        etChangedEmail = findViewById(R.id.etChangedEmail);
+
+        etChangedEmail.setText(GlobalAcross.currentUser.getEmail());
+
+        cvClassYod = findViewById(R.id.cvClassYod);
+        cvClassYodAlef = findViewById(R.id.cvClassYodAlef);
+        cvClassYodBeit = findViewById(R.id.cvClassYodBeit);
 
         GlobalAcross.activateGradientBackground(drawerLayout,4000,4000);
 
@@ -78,10 +130,17 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        cvClassYod.setOnClickListener(this);
+        cvClassYodAlef.setOnClickListener(this);
+        cvClassYodBeit.setOnClickListener(this);
+
+        cvSaveEmail.setOnClickListener(this);
+
         navigationView.setNavigationItemSelectedListener(this);
         cvDeletePFP.setOnClickListener(this);
     }
 
+    /**Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)*/
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         if (item.getTitle().equals("התנתקות")) {
@@ -146,11 +205,66 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
         return false;
     }
 
+    /**This function spins and highlights the new class when the action is completed and changed in the realtime database successfully*/
+    public void changeGradeByGrade(final int i, final CardView classCard){
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("UsersPlace").child(GlobalAcross.currentUserIndex+"").child("grade");
+        myRef.setValue(i).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                classCard.animate().rotationBy(360).setDuration(1200);
+                GlobalAcross.currentUser.setGrade(i);
+                setCurrentGradeSelected();
+                Snackbar.make(findViewById(R.id.linearLayoutSettings),"הכיתה שונתה בהצלחה.",Snackbar.LENGTH_LONG)
+                        .setAction("הבנתי", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v){
+                            }})
+                        .show();
+            }
+        });
+    }
+
+    /**This function activates each of the three class's cardviews and deletes the profile picture of the user if the option is selected
+     * as well as saves their new email if the option is selected.
+     * */
     @Override
     public void onClick(View v) {
 
+        if(v == cvClassYod){
+            //Selected the CardView to change to class Yod
+
+            if (GlobalAcross.currentUser.getGrade() != 1){
+                changeGradeByGrade(1,cvClassYod);
+            }
+            else{
+                Snackbar.make(findViewById(R.id.linearLayoutSettings),"הכיתה כבר מוגדרת ככיתתכם.",Snackbar.LENGTH_SHORT).show();
+            }
+
+        }
+        if(v == cvClassYodAlef){
+            //Selected the CardView to change to class YodAlef
+
+            if (GlobalAcross.currentUser.getGrade() != 2){
+                changeGradeByGrade(2,cvClassYodAlef);
+            }
+            else{
+                Snackbar.make(findViewById(R.id.linearLayoutSettings),"הכיתה כבר מוגדרת ככיתתכם.",Snackbar.LENGTH_SHORT).show();
+            }
+
+        }
+        if(v == cvClassYodBeit){
+            //Selected the CardView to change to class YodBeit
+
+            if (GlobalAcross.currentUser.getGrade() != 3){
+                changeGradeByGrade(3,cvClassYodBeit);
+            }
+            else{
+                Snackbar.make(findViewById(R.id.linearLayoutSettings),"הכיתה כבר מוגדרת ככיתתכם.",Snackbar.LENGTH_SHORT).show();
+            }
+        }
 
         if(v == cvDeletePFP){
+
             androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(SettingsUserActivity.this);
             builder.setMessage("אתם בטוחים שאתם רוצים למחוק את התמונת פרופיל?")
                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
@@ -184,55 +298,7 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
                                             public void onSuccess(Void aVoid) {
                                                 Snackbar.make(findViewById(R.id.linearLayoutSettings),"התמונה נמחקה בהצלחה.",Snackbar.LENGTH_SHORT).show();
                                             }
-                                        })
-//                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                            @Override
-//                                            public void onComplete(@NonNull Task<Void> task) {
-//                                                if (task.isSuccessful()){
-//                                                    final Snackbar snackbar = null;
-//                                                    snackbar.make(findViewById(R.id.linearLayoutSettings),"התמונה נמחקה בהצלחה.",Snackbar.LENGTH_LONG)
-//                                                            .setAction("ביטול", new View.OnClickListener() {
-//                                                                @Override
-//                                                                public void onClick(View v) {
-//                                                                    final ProgressDialog progressDialog = new ProgressDialog(SettingsUserActivity.this);
-//                                                                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-//                                                                    progressDialog.setCancelable(false);
-//                                                                    progressDialog.setTitle("מחזירים את התמונה...");
-//                                                                    progressDialog.setProgress(0);
-//
-//                                                                    final StorageReference tempRef = FirebaseStorage.getInstance().getReference("profilePictures/" + UUID.randomUUID() + ".png");
-//                                                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                                                                    bitmapTemp.compress(Bitmap.CompressFormat.PNG, 100, baos);
-//                                                                    InputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
-//                                                                    UploadTask uploadTask = tempRef.putStream(inputStream);
-//                                                                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                                                                        @Override
-//                                                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                                                                            GlobalAcross.currentUser.setPfpPath(tempRef.getPath());
-//                                                                            FirebaseDatabase.getInstance().getReference("UsersPlace").child(GlobalAcross.currentUserIndex+"").child("pfpPath").setValue(tempRef.getPath()).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                                                @Override
-//                                                                                public void onSuccess(Void aVoid) {
-//                                                                                    progressDialog.dismiss();
-//                                                                                    snackbar.make(findViewById(R.id.linearLayoutSettings),"התמונה שוחזרה בהצלחה.",Snackbar.LENGTH_SHORT).show();
-//                                                                                }
-//                                                                            });
-//                                                                        }
-//                                                                    }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-//                                                                        @Override
-//                                                                        public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-//                                                                            progressDialog.show();
-//                                                                            int currentProgress = (int) (100 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount()); //Formula to get the progress percentage of bytes transferred over total bytes times 100 casted into int
-//                                                                            progressDialog.setProgress(currentProgress);
-//                                                                        }
-//                                                                    });
-//                                                                }
-//                                                            }).show();
-//
-//                                                }
-//                                            }})
-
-
-                                                .addOnFailureListener(new OnFailureListener() {
+                                        }).addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
                                                 Toast.makeText(SettingsUserActivity.this, "אאוץ'! נתקלנו בשגיאה. נסו שוב.", Toast.LENGTH_SHORT).show();
@@ -259,7 +325,66 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
             alert.show();
         }
 
+        if(v == cvSaveEmail){
+
+
+            if(!etChangedEmail.getText().toString().equals(GlobalAcross.currentUser.getEmail())){
+                if(validateNewEmail(etChangedEmail)){
+                    //Change the email in the database and make a snackbar here //
+                    DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("UsersPlace").child(GlobalAcross.currentUserIndex+"").child("email");
+                    myRef.setValue(etChangedEmail.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            GlobalAcross.currentUser.setEmail(etChangedEmail.getText().toString());
+                            Snackbar.make(findViewById(R.id.linearLayoutSettings),"האימייל התעדכן בהצלחה.",Snackbar.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+            else{
+                Snackbar.make(findViewById(R.id.linearLayoutSettings),"לא שינינו את האימייל.",Snackbar.LENGTH_SHORT).show();
+            }
+        }
+
 
 
     }
+
+    /**The function returns the amount of illegal characters which are used in a certain string*/
+    public int illegalCharacterCount(String string){
+        char[] illegalArr = {'!','#','$','%','^','&','*','(',')','-','+','=','/','\\','?',' '};
+        char[] charArr = string.toCharArray();
+        int count = 0;
+        for(int i=0;i<charArr.length;i++){
+            for(int k=0;k<illegalArr.length;k++){
+                if(charArr[i] == illegalArr[k])
+                    count++;
+            }
+        }
+        return count;
+    }
+
+    /**Boolean function that return a true if the new Email is validated and false otherise*/
+    public boolean validateNewEmail(EditText newEmail){
+        String string = newEmail.getText().toString();
+        if(countCharInString(string,'@') == 1 && string.length() > 5 && illegalCharacterCount(string) == 0){
+            return true;
+        }
+        else{
+            Snackbar.make(findViewById(R.id.linearLayoutSettings),"אנא בדקו את תקינות האימייל.",Snackbar.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+
+    /**Function checks how many times a certain char appears inside a string and returns that number*/
+    public int countCharInString(String string,char ch){
+        char[] chArray = string.toCharArray();
+        int count = 0;
+        for(int i=0;i<chArray.length;i++){
+            if(chArray[i] == ch)
+                count++;
+        }
+        return count++;
+    }
+
 }

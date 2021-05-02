@@ -42,6 +42,8 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
     TextView tvLoginBack,tvCharCountUsername,tvCharCountPassword,tvCharCountEmail;
     CardView cvRegisterBtn;
     ColorFilter cfTemp;
+
+    /**Usual onCreate function*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +68,10 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
         // Read from the database
     }
+
+    /**This function sets the spinner's values to: 10th , 11th and 12th grade in Hebrew in order for the user to select the appropriate one when registering.
+     * It also listens to the amount of chars used in each needed to listen - EditText.
+     * */
     public void setSpinner() {
         //Sets the Spinner and its Items
 
@@ -89,6 +95,11 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
     }
 
+    /**This is the EditText change listening function I have created in order to shorten code:
+     * The function receives an EditText , and the TextView of the limitations of each of the used one's.
+     * It also receives a maxCount of chars which are limiting each EditText accordingly to the needs.
+     * The function is summoned 3 times for 3 different values each time.
+     * */
     public void etTextChangeListeners(final EditText et , final TextView tvCharCountET, final int maxCount){
         et.addTextChangedListener(new TextWatcher() {
             @Override
@@ -135,6 +146,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         });
     }
 
+    /**This function sets the selected item of the spinner to its string visible value (connects the numbers with the Strings)*/
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         //The integer classNum represents the class the user is in: for 10th grade it will be 1, for 11th- 2, for 12th- 3
@@ -149,12 +161,16 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         }
     }
 
+    /**Function doesn't do anything when no class in the spinner is selected*/
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
+
+    /**This function returns true if one of the chars inside the received String (str) contains any of the chars in
+     * the char array that was assigned (arr) - the function returns false if not.
+     */
     public boolean strContainArr(String str,char[] arr){
-        //This function returns true if one of the chars inside the received String (str) contains any of the chars in the char array that was assigned (arr) - the function returns false if not
         for(int i=0;i<str.length();i++){
             for(int j=0;j<arr.length;j++){
                 if(str.charAt(i) == arr[j]){
@@ -164,12 +180,12 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         }
         return false;
     }
+
+    /**Function that validates the entered values of the user when they register and acts appropriately*/
     public boolean validDetails(String fName,String lName,String username,String email,String password){
         //This function validates all of the entered details
 
         char[] illegalCharacters = {'`', '~', ';', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '/', '[', ']', '"', ':', '<', '>','\\','?'};
-
-
 
         //This section validates the first and last names of the user (fName & lName)
         {
@@ -227,6 +243,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         return true;
     }
 
+    /**If the validation does not come to be - the user's phone is greeted with a quick vibration*/
     public void vibratePhone(int milisecondsToVibrate){
         //This function makes the phone vibrate for [secondsToVibrate] seconds.
         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -238,6 +255,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         }
     }
 
+    /**This function registers the user into the realtime database if they pass the validation and if they choose to go back to login - they are moved appropriately.*/
     @Override
     public void onClick(View v) {
         if(v == cvRegisterBtn){
@@ -259,6 +277,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         }
     }
 
+    /**The onBackPressed function returns the user to the login activity if they press the android default back button*/
     @Override
     public void onBackPressed() {
         startActivity(new Intent(this, MainActivity.class),ActivityOptions.makeSceneTransitionAnimation(this).toBundle());

@@ -73,6 +73,8 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     SharedPreferences sharedPreferences;
     LinearLayout llNoSummaries;
     ImageView ivSubjectVector;
+
+    /**Usual onCreate function*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,30 +82,33 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         initComponents();
         initDrawer();
 
-        subject = new Subject(getIntent().getStringExtra("SubjectSelected"));
-        tvSubjectName.setText(getIntent().getStringExtra("SubjectSelected")); /*This line sets the name of the subject which was selected as the title of the subject's summary page*/
+
+            subject = new Subject(getIntent().getStringExtra("SubjectSelected"));
+            tvSubjectName.setText(getIntent().getStringExtra("SubjectSelected")); /*This line sets the name of the subject which was selected as the title of the subject's summary page*/
 
 
+            tvSubjectName.setPaintFlags(tvSubjectName.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG); //Makes the subject name textview bold
 
-        tvSubjectName.setPaintFlags(tvSubjectName.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG); //Makes the subject name textview bold
+            Drawable drawableVectorIcon = ContextCompat.getDrawable(getApplicationContext(),GlobalAcross.selectedSubjectVectorID);
 
-        Drawable drawableVectorIcon = ContextCompat.getDrawable(getApplicationContext(),GlobalAcross.selectedSubjectVectorID);
+            ivSubjectVector.setImageDrawable(drawableVectorIcon);
 
-        ivSubjectVector.setImageDrawable(drawableVectorIcon);
+            database = FirebaseDatabase.getInstance();
+            summariesRef = database.getReference(subject.getSubjectName());
+            loadSummariesListFromDB();
 
-        database = FirebaseDatabase.getInstance();
-        summariesRef = database.getReference(subject.getSubjectName());
-        loadSummariesListFromDB();
+
 
     }
 
-    //this function updates the number of liked in DB
+
+    /**This function updates the number of liked in DB*/
     public void updateLikesDB(String selectedKeySummary, long newLikes){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName()).child(selectedKeySummary).child("amountOfLikes");
         myRef.setValue(newLikes);
     }
 
-    //this function adds to the user the summaries that he liked, and add to the summary's users list the users that liked it
+    /**This function adds to the user the summaries that he liked, and add to the summary's users list the users that liked it*/
     public void updateListOfLikes(String selectedKeySummary, boolean add){
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/"+ currentUserIndex);
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName()).child(selectedKeySummary);
@@ -123,7 +128,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
 
     }
 
-
+    /**This function loads all of the summaries of this current subject from the realtime database withusing a query - uses FirebaseUI (updates LIVE)*/
     public void loadSummariesListFromDB() {
     options = new FirebaseRecyclerOptions.Builder<Summary>().setQuery(summariesRef, new SnapshotParser<Summary>() {
         @NonNull
@@ -299,7 +304,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     dataList.setAdapter(adapter);
     }
 
-
+    /**Sets all of the components to their ID's in the XML*/
     public void initComponents() {
         dataList = (RecyclerView)findViewById(R.id.recyclerView);
         drawerLayout = findViewById(R.id.drawer_layout_subject);
@@ -311,6 +316,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         ivSubjectVector = findViewById(R.id.ivSubjectVector);
     }
 
+    /**Sets the drawer and toolbar to be activated (& listeners etc)*/
     public void initDrawer(){
         setSupportActionBar(toolbar);
         navigationView.bringToFront();
@@ -321,6 +327,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    /**Closes the drawer if open and finishes otherwise*/
     @Override
     public void onBackPressed() {
          if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -331,6 +338,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         }
     }
 
+    /**Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)*/
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -396,11 +404,12 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         return false;
     }
 
+    /**This function sends the user to the AddSummary activity*/
     @Override
     public void onClick(View v) {
         if(v == floatingUploadButton){
             //Upload floating action button selected
-            floatingUploadButton.animate().rotation(360).setDuration(750).start();
+            floatingUploadButton.animate().rotationBy(360).setDuration(750);
             Intent intent = new Intent(this,AddSummaryActivity.class);
             intent.putExtra("Subject",subject.getSubjectName());
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());

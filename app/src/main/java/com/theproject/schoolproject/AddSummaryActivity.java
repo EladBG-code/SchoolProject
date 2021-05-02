@@ -77,6 +77,8 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     Summary summary;
     Uri pdfUri; //Uri are URLs that are meant for local storage
     boolean checkedRB;
+
+    /**Usual onCreate function that sets all of the required things to their appropriate values*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +107,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         subject = getIntent().getStringExtra("Subject");
     }
 
+    /**Function sets the drawer and toolbar**/
     public void drawerFunction(){
         drawerLayout = findViewById(R.id.drawer_layout_upload_summary);
         navigationView = findViewById(R.id.nav_view_upload_summary);
@@ -120,12 +123,13 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     }
 
 
-
+    /**Function sends onbackpressed*/
     @Override
     public void onBackPressed() {
         super.onBackPressed();
     }
 
+    /**Function sends the user back if presses the return button and uploads the PDF summary if it passes the validation and is pressed on publish cardview*/
     @Override
     public void onClick(View v) {
         if(v == floatingReturnButton){
@@ -141,8 +145,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
                 if (GlobalAcross.checkValid(summaryTitle, summaryDescription,AddSummaryActivity.this)) {
                     summary = new Summary(GlobalAcross.currentUser.getfName()+" "+GlobalAcross.currentUser.getlName(), summaryTitle.getText().toString(), summaryDescription.getText().toString(), getSharedPreferences("index", Context.MODE_PRIVATE));
                     summary.setId(database.getReference(subject).push().getKey());
-                    summaryID=summary.getId();
-//                    addSummaryToDB(summary);
+                    summaryID = summary.getId();
                     summariesRef = database.getReference(subject).push();
                     uploadFile(pdfUri);
 //                    Toast.makeText(this, "העלית את הסיכום בהצלחה", Toast.LENGTH_SHORT).show();
@@ -150,7 +153,8 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
                 }
             }
             else{
-                Toast.makeText(AddSummaryActivity.this, "בחרו קובץ.", Toast.LENGTH_SHORT).show();
+                if(pdfUri == null)
+                    Toast.makeText(AddSummaryActivity.this, "בחרו קובץ.", Toast.LENGTH_SHORT).show();
             }
         }
         if(v == ivAddAttachment){
@@ -182,6 +186,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    /**Function uses FirebaseStorage and uploads the selected PDF to the storage (generates UUID and checks if the file is too heavy and cancels the upload if it is)*/
     private void uploadFile(Uri pdfUri) {
         //Function that uploads the Uri to the storage cloud
         progressDialog = new ProgressDialog(this);
@@ -252,6 +257,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
 
     }
 
+    /**Function checks if the app has the proper permission and requests it if it doesn't*/
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
@@ -264,6 +270,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
 
     }
 
+    /**Function creates an action get content type intent that selects PDF only and starts activityForResult with resultCode 86 and the path*/
     public void selectPDF() {
         // Method for offering the user to select a PDF file using file manager with an intent
         Intent intent = new Intent()
@@ -273,6 +280,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         startActivityForResult(intent, 86);
     }
 
+    /**Function checks if the result code is 86 and and sets the PDF uri to it if it is.*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //This checks if the user has selected a file or not
@@ -286,6 +294,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    /**-Currently unused- This function checks if the a certain filer is heavier than X MB*/
     private boolean isFileLessThanX_MB(File file,int x) {
         int maxFileSize = x * 1024 * 1024;
         Long l = file.length();
@@ -294,13 +303,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         return finalFileSize >= maxFileSize;
     }
 
-//    public void addSummaryToDB(Summary summary) {
-//        // Pushes the summary onto the database
-//
-//        summariesRef = database.getReference(subject).push();
-//        summariesRef.setValue(summary);
-//    }
-
+    /**Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)*/
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         //Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();

@@ -68,6 +68,7 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
     int summaryCreatorIndex;
     PDFView pdfView;
 
+    /**Usual onCreate function*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,16 +88,11 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
         summaryKey = getIntent().getStringExtra("summaryKey");
         summarySubject = getIntent().getStringExtra("subject");
 
-        //tvPagesUpdate.setX(Resources.getSystem().getDisplayMetrics().widthPixels / 2);
-
-
-
         database = FirebaseDatabase.getInstance().getReference().child(summarySubject);
         getIndexKeyAndSubject();
-
-
     }
 
+    /**Sets the EditTexts and PDF to their appropriate values in the Firebase realtime database and FirebaseStorage*/
     public void getIndexKeyAndSubject(){
         ibEditSummary = findViewById(R.id.ibEditSummary);
         ibEditSummary.setOnClickListener(this);
@@ -182,6 +178,7 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
         });
     }
 
+    /**Sets the Toolbar and Drawer to their appropriate ID's in the XML and listens to clicking the navigation view as well as toggling the drawer layout as usual*/
     public void setToolbarAndDrawer() {
         drawerLayout = findViewById(R.id.drawer_layout_view_summary);
         navigationView = findViewById(R.id.nav_view_view_summary);
@@ -196,6 +193,7 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    /**Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)*/
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         //Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
@@ -266,12 +264,13 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
         return false;
     }
 
+    /**Usual onBackPressed function*/
     @Override
     public void onBackPressed() {
-
         super.onBackPressed();
     }
 
+    /**Function sends the user to edit their own summary with the appropriate values sent with the intent*/
     @Override
     public void onClick(View v) {
         if(v == ibEditSummary){

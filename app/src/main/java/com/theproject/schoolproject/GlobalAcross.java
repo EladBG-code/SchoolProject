@@ -7,9 +7,17 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class GlobalAcross {
     public static ArrayList<User> allUsers; //The ArrayList of all users (used for login - needs to be replaced)
@@ -21,6 +29,7 @@ public class GlobalAcross {
     public static int selectedSubjectVectorID;
 
     //Useful global functions across the application : for the current user
+    /**This function gets the user's current grade in its number and returns the string nickname of it in hebrew (10th grade = 1, 11th grade = 2, 12th grade = 3)*/
     public static String getCurrentUserGradeString(){
         int x = currentUser.getGrade();
         if(x == 1){
@@ -32,8 +41,10 @@ public class GlobalAcross {
         return "י"+'"'+"ב";
     }
 
-
-
+    /**This function sets the gradient backgrounds to several activities such as the profile activity etc.
+     * The function gets the drawerLayout of the activity and the EnterFadeDuration as well
+     * as the ExitFadeDuration in milliseconds and activaites it.
+     * */
     public static void activateGradientBackground(DrawerLayout layout,int millisecondsEnterFadeDuration, int millisecondsExitFadeDuration){
         //Global function for animating the gradient background of the app which some activities use
         AnimationDrawable animationDrawable = (AnimationDrawable)layout.getBackground();
@@ -42,11 +53,12 @@ public class GlobalAcross {
         animationDrawable.start();
     }
 
+    /**This function returns the string subject array of all of the subjects of high school which are used in the app*/
     public static String[] getAllSubjectsArr(){
-        String[] subjects = {"מתמטיקה","היסטוריה","לשון","אזרחות","תנ"+'"'+"ך","ספרות","אנגלית","ביולוגיה","מדעי המחשב","כימיה","פיזיקה","תולדות האומנות","תקשורת","מדעי החברה"};
-        return subjects;
+        return new String[]{"מתמטיקה","היסטוריה","לשון","אזרחות","תנ"+'"'+"ך","ספרות","אנגלית","ביולוגיה","מדעי המחשב","כימיה","פיזיקה","תולדות האומנות","תקשורת","מדעי החברה"};
     }
 
+    /**Identical to what the function above of this one does but instead - it returns an ArrayList of strings instead of normal string Array*/
     public static ArrayList<String> getAllSubjectsArrayList(){
         String[] subjectsArr = getAllSubjectsArr();
         ArrayList<String> subjectsArrayList = new ArrayList<>();
@@ -56,12 +68,14 @@ public class GlobalAcross {
         return subjectsArrayList;
     }
 
+    /**-Currently not in use- This function resets the currentUser's and the allUsers values to null - locally (is used when logging out)*/
     public static void logoutFunction(){
         allUsers = null;
         currentUser = null;
         //currentUserIndex = -1;
     }
 
+    /**This function validates the details of the user when they upload a summary (checks title & description)*/
     public static boolean checkValid(EditText title, EditText description, Context context){
         //This function checks if the entered parameters in the description and title of the summary withhold and are valid
         if(title.getText().toString().length() < 5){
@@ -79,15 +93,25 @@ public class GlobalAcross {
         return true;
     }
 
-    /*public static void logoutResetUser(){
-        currentUser.setEmail("");
-        currentUser.setfName("");
-        currentUser.setGrade(1);
-        currentUser.setlName("");
-        currentUser.setPassword("");
-        currentUser.setUsername("");
-        currentUser.setPfpPath("");
-    }*/
+    /**This function re-updates all of the user's values from the realtime database and sets them to the local variables*/
+    public static void updateCurrentUserData(){
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("UsersPlace").child(currentUserIndex+"");
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                currentUser.setEmail(snapshot.child("email").getValue().toString());
+                currentUser.setfName(snapshot.child("fName").getValue().toString());
+                currentUser.setlName(snapshot.child("lName").getValue().toString());
+                currentUser.setGrade(Integer.valueOf(snapshot.child("grade").getValue().toString()));
+                currentUser.setPassword(snapshot.child("password").getValue().toString());
+                currentUser.setPfpPath(snapshot.child("pfpPath").getValue().toString());
+                currentUser.setUsername(snapshot.child("username").getValue().toString());
+            }
 
-    //
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 }

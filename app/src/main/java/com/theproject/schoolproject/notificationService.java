@@ -43,6 +43,12 @@ public class notificationService extends Service {
         return null;
     }
 
+    /**This onStartCommand function of the service checks if the logged in user's summaries have passed
+     * or are equal to 5 likes. If it did pass or equal to 5 - the user receives a notification that tells them on which subject it happened
+     * as well as the fact that it passed or is equal to 5 likes at the moment (important to mention - this service works 24/7 on the device if the user is logged in
+     * - it is a foregroundService).
+     * If the notification which is received, is pressed then, the user enters the spoken of summary.
+     * */
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
         String[] arr = {"מתמטיקה","היסטוריה","לשון","אזרחות","תנ"+'"'+"ך","ספרות","אנגלית","ביולוגיה","מדעי המחשב","כימיה","פיזיקה","תולדות האומנות","תקשורת","מדעי החברה"};
@@ -96,10 +102,11 @@ public class notificationService extends Service {
                                                 ;
 
 
-
-                                        Intent resultIntent = new Intent(getApplicationContext(), ViewSummaryActivity.class);
+                                        //Intent resultIntent = new Intent(getApplicationContext(),ViewSummaryActivity.class);
+                                        Intent resultIntent = new Intent(getApplicationContext(), HomepageActivity.class);
                                         resultIntent.putExtra("summaryKey",key);
                                         resultIntent.putExtra("subject",subject);
+                                        resultIntent.putExtra("openedNotif",true);
                                         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
                                         stackBuilder.addParentStack(LoadingActivity.class);
                                         stackBuilder.addNextIntent(resultIntent);

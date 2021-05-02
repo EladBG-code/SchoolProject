@@ -159,7 +159,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="bottom"
-                        android:layout_marginTop="200sp">
+                        android:orientation="vertical"
+                        android:layoutDirection="rtl"
+                        android:layout_marginTop="120sp">
+
+                        <ImageView
+                            android:layout_width="175sp"
+                            android:layout_height="175sp"
+                            android:src="@drawable/applogo"
+                            android:layout_gravity="center"
+                            />
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/cvToSummaries"
@@ -190,6 +199,8 @@
                                 android:textStyle="bold" />
 
                         </androidx.cardview.widget.CardView>
+
+
 
                     </LinearLayout>
 

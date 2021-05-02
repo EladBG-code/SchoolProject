@@ -54,6 +54,7 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
     //public static final String fileName = "login";
     //public static final String Username = "username";
 
+    /**Regular onCreate function but this one requires a certain API requirement and it has to be met - the requirement is vital in order for the service to work*/
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +85,20 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         globalAcrossActions();
 
         startForegroundService(new Intent(HomepageActivity.this,notificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
+
+        if(getIntent().getBooleanExtra("openedNotif",false)){
+            GlobalAcross.updateCurrentUserData();
+            Intent intent = new Intent(HomepageActivity.this,ViewSummaryActivity.class);
+            intent.putExtra("summaryKey",getIntent().getStringExtra("summaryKey"));
+            intent.putExtra("subject",getIntent().getStringExtra("subject"));
+            startActivity(intent);
+        }
+
     }
 
+    /**This function checks if the user has a profile picture and if they do - it sets the ShapableImageView in the homepage to it withusing the reference
+     * in the realtime database for the FirebaseStorage load.
+     * */
     public void tryCatchPFP(){
         //This function checks if the user has a pfp path in the database and creates a temporary file and downloads it to it if they have a pfp
         if(!GlobalAcross.currentUser.getPfpPath().equals("none")){
@@ -118,6 +131,8 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
             }
         }
     }
+
+    /**This function checks the user's device's current hour and sets the welcoming hourly message accordingly to the real time in real life*/
     public void setEnterMessage(){
         int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         if (currentHour >= 0 && currentHour <= 8){
@@ -136,6 +151,8 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
             tvWelcomeMessage.setText("לילה טוב "+GlobalAcross.currentUser.getfName());
         }
     }
+
+    /**This function performs GlobalAcross (global class) functions and actions*/
     public void globalAcrossActions(){
         setEnterMessage();
         if(GlobalAcross.firstLoginSuggestion){
@@ -148,6 +165,7 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         //GlobalAcross.activateGradientBackground(drawerLayout);
     }
 
+    /**Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)*/
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         //Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
@@ -213,7 +231,9 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         return false;
     }
 
-
+    /**This function checks if the user edited a summary before entering this activity and if it does it finishes.
+     * Otherwise, this function checks if the drawer is open and closes it if it is. If it isn't open - it finishes.
+     * */
     @Override
     public void onBackPressed() {
         //This function makes sure the app doesn't close down if someone is back pressing in their phone
@@ -228,17 +248,11 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         }
     }
 
+    /**This function checks if the toSummaries cardview is selected and if it does - it sends the user to it.
+     * Otherwise, it checks if the minimized ImageView of the homepage picture is clicked and if it does it sends the user to the profile activity.
+     * */
     @Override
     public void onClick(View v) {
-//        if(v == cvDownloadPDFapp){
-//            //Open link to the app
-//            try {
-//                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.adobe.scan.android")));
-//            }
-//            catch (ActivityNotFoundException e){
-//                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.adobe.scan.android")));
-//            }
-//        }
         if(v == cvToSummaries){
             Intent intent = new Intent(this,SummariesSubjects.class);
             startActivity(intent);

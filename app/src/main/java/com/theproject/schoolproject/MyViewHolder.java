@@ -25,6 +25,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
     MaterialTextView mtvLikesNum;
     CardView cvEntireSummary;
 
+    /**Special ViewHolder function that sets all of the cards used in the summaries gridview ahead.*/
     public MyViewHolder(@NonNull View itemView) {
         super(itemView);
 
