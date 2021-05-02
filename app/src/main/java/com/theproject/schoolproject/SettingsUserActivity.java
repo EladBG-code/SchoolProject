@@ -68,6 +68,11 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
     Bitmap bitmapTemp;
     String tempPath;
     EditText etChangedEmail;
+
+    /**
+     * Usual onCreate function
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +82,9 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
         setCurrentGradeSelected();
     }
 
-    /**The function highlights the current class to being selected according to the actual class of the user*/
+    /**
+     * The function highlights the current class to being selected according to the actual class of the user
+     * */
     private void setCurrentGradeSelected() {
         switch (GlobalAcross.currentUser.getGrade()){
             case 1:{
@@ -104,7 +111,8 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
         }
     }
 
-    /**This function sets the toolbar and drawer according to their ID's and activates the gradient background and adds the cardview listeners
+    /**
+     * This function sets the toolbar and drawer according to their ID's and activates the gradient background and adds the cardview listeners
      * for each of the three classes.
      * */
     public void setToolbarAndDrawer(){
@@ -140,7 +148,11 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
         cvDeletePFP.setOnClickListener(this);
     }
 
-    /**Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)*/
+    /**
+     * Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)
+     * @param item
+     * @return
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         if (item.getTitle().equals("התנתקות")) {
@@ -205,7 +217,11 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
         return false;
     }
 
-    /**This function spins and highlights the new class when the action is completed and changed in the realtime database successfully*/
+    /**
+     * This function spins and highlights the new class when the action is completed and changed in the realtime database successfully
+     * @param i
+     * @param classCard
+     */
     public void changeGradeByGrade(final int i, final CardView classCard){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("UsersPlace").child(GlobalAcross.currentUserIndex+"").child("grade");
         myRef.setValue(i).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -224,9 +240,12 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
         });
     }
 
-    /**This function activates each of the three class's cardviews and deletes the profile picture of the user if the option is selected
+
+    /**
+     * This function activates each of the three class's cardviews and deletes the profile picture of the user if the option is selected
      * as well as saves their new email if the option is selected.
-     * */
+     * @param v
+     */
     @Override
     public void onClick(View v) {
 
@@ -350,7 +369,11 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
 
     }
 
-    /**The function returns the amount of illegal characters which are used in a certain string*/
+    /**
+     * The function returns the amount of illegal characters which are used in a certain string
+     * @param string
+     * @return
+     */
     public int illegalCharacterCount(String string){
         char[] illegalArr = {'!','#','$','%','^','&','*','(',')','-','+','=','/','\\','?',' '};
         char[] charArr = string.toCharArray();
@@ -364,7 +387,11 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
         return count;
     }
 
-    /**Boolean function that return a true if the new Email is validated and false otherise*/
+    /**
+     * Boolean function that return a true if the new Email is validated and false otherwise
+     * @param newEmail
+     * @return
+     */
     public boolean validateNewEmail(EditText newEmail){
         String string = newEmail.getText().toString();
         if(countCharInString(string,'@') == 1 && string.length() > 5 && illegalCharacterCount(string) == 0){
@@ -376,7 +403,12 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
         }
     }
 
-    /**Function checks how many times a certain char appears inside a string and returns that number*/
+    /**
+     * Function checks how many times a certain char appears inside a string and returns that number
+     * @param string
+     * @param ch
+     * @return
+     */
     public int countCharInString(String string,char ch){
         char[] chArray = string.toCharArray();
         int count = 0;

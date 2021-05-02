@@ -61,7 +61,10 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     SharedPreferences sharedPreferences;
     ProgressDialog progressDialog;
 
-    /**Usual onCreate function that just checks if the user has a profile picture and if they do it sets the appropriate imageview to it.*/
+    /**
+     * Usual onCreate function that just checks if the user has a profile picture and if they do it sets the appropriate imageview to it.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,7 +109,9 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     }
 
 
-    /**The function sets all the appropriate toolbar and drawer of the activity to their ID's*/
+    /**
+     * The function sets all the appropriate toolbar and drawer of the activity to their ID's
+     * */
     public void setToolbarAndDrawer(){
         drawerLayout = findViewById(R.id.drawer_layout_profile);
         navigationView = findViewById(R.id.nav_view_profile);
@@ -123,7 +128,11 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    /**Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)*/
+    /**
+     * Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)
+     * @param item
+     * @return
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         //Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
@@ -188,7 +197,9 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         return false;
     }
 
-    /**Usual onBackPressed function*/
+    /**
+     * Usual onBackPressed function
+     * */
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -196,6 +207,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
     /**This function checks if the user pressed the profileicon imageview and if they did - it prompts them with a dialog which asks if to pull the image from
      * the camera or from the memory and starts the activityForResult with the appropriate selection resultCode.
+     * @param v
      * */
     @Override
     public void onClick(View v) {
@@ -225,9 +237,13 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         }
     }
 
-    /**The function uploads the image from the selected source to the FirebaseStorage and updates its reference in the realtime database for the
+    /**
+     * The function uploads the image from the selected source to the FirebaseStorage and updates its reference in the realtime database for the
      * current user accordingly.
-     * */
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

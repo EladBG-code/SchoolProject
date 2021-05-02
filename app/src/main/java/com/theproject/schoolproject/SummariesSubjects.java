@@ -46,7 +46,10 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
     CardView cvMathematics,cvHistory,cvHebrew,cvCitizenship,cvBible,cvLiterature,cvEnglish,cvBiology,cvComputerScience,cvChemistry,cvPhysics,cvHistoryOfArt,cvCommunication,cvSociology;
     SharedPreferences sharedPreferences;
 
-    /**Usual onCreate function*/
+    /**
+     * Usual onCreate function
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +62,9 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
 
     }
 
-    /**Function sets the drawer to its appropriate values and activates the gradient background for the activity*/
+    /**
+     * Function sets the drawer to its appropriate values and activates the gradient background for the activity
+     * */
     public void drawerFunction(){
         drawerLayout = findViewById(R.id.drawer_layout_subjects);
         navigationView = findViewById(R.id.nav_view_subjects);
@@ -76,7 +81,9 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    /**The function assigns all subject cardviews in the gridview to their XML ID's appropriately and adds onClickListener to each of them*/
+    /**
+     * The function assigns all subject cardviews in the gridview to their XML ID's appropriately and adds onClickListener to each of them
+     * */
     public void attachAndClickListenSubjectCardViews(){
         cvMathematics = findViewById(R.id.cvMathematics);
         cvHistory = findViewById(R.id.cvHistory);
@@ -109,9 +116,12 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
         cvSociology.setOnClickListener(this);
     }
 
-    /**The function receives the string of the selected subject & its ID in the drawable folder of the vector asset image of the subject.
+    /**
+     * The function receives the string of the selected subject & its ID in the drawable folder of the vector asset image of the subject.
      * the function sends the user into the Activity that shows the summaries of the selected subject with the vector's ID image on top.
-     * */
+     * @param subjectSelected
+     * @param vectorID
+     */
     public void nextPageOfCardView(String subjectSelected,int vectorID){
         Intent intent = new Intent(this,ViewSummariesOnSubjectActivity.class);
         intent.putExtra("SubjectSelected",subjectSelected);
@@ -119,7 +129,10 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
         startActivity(intent);
     }
 
-    /**The onClick function sends the user to the appropriately selected button's subject (uses the nextPageOfCardView function)*/
+    /**
+     * The onClick function sends the user to the appropriately selected button's subject (uses the nextPageOfCardView function)
+     * @param v
+     * */
     @Override
     public void onClick(View v) {
 
@@ -181,7 +194,9 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
         }
     }
 
-    /**Closes drawer if it's open, otherwise finishes*/
+    /**
+     * Closes drawer if it's open, otherwise finishes
+     * */
     @Override
     public void onBackPressed() {
         if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -192,7 +207,12 @@ public class SummariesSubjects extends AppCompatActivity implements View.OnClick
         }
     }
 
-    /**Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)*/
+    /**
+     * Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities
+     * in the app and shows 2 dialogs (one for feedback and one for logging out)
+     * @param item
+     * @return
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         //Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();

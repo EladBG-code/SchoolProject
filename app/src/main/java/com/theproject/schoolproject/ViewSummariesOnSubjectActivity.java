@@ -74,7 +74,10 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     LinearLayout llNoSummaries;
     ImageView ivSubjectVector;
 
-    /**Usual onCreate function*/
+    /**
+     * Usual onCreate function
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,13 +105,21 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     }
 
 
-    /**This function updates the number of liked in DB*/
+    /**
+     * This function updates the number of liked in DB
+     * @param selectedKeySummary
+     * @param newLikes
+     */
     public void updateLikesDB(String selectedKeySummary, long newLikes){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName()).child(selectedKeySummary).child("amountOfLikes");
         myRef.setValue(newLikes);
     }
 
-    /**This function adds to the user the summaries that he liked, and add to the summary's users list the users that liked it*/
+    /**
+     * This function adds to the user the summaries that he liked, and add to the summary's users list the users that liked it
+     * @param selectedKeySummary
+     * @param add
+     */
     public void updateListOfLikes(String selectedKeySummary, boolean add){
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/"+ currentUserIndex);
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName()).child(selectedKeySummary);
@@ -128,7 +139,9 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
 
     }
 
-    /**This function loads all of the summaries of this current subject from the realtime database withusing a query - uses FirebaseUI (updates LIVE)*/
+    /**
+     * This function loads all of the summaries of this current subject from the realtime database withusing a query - uses FirebaseUI (updates LIVE)
+     * */
     public void loadSummariesListFromDB() {
     options = new FirebaseRecyclerOptions.Builder<Summary>().setQuery(summariesRef, new SnapshotParser<Summary>() {
         @NonNull
@@ -304,7 +317,9 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     dataList.setAdapter(adapter);
     }
 
-    /**Sets all of the components to their ID's in the XML*/
+    /**
+     * Sets all of the components to their ID's in the XML
+     */
     public void initComponents() {
         dataList = (RecyclerView)findViewById(R.id.recyclerView);
         drawerLayout = findViewById(R.id.drawer_layout_subject);
@@ -316,7 +331,9 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         ivSubjectVector = findViewById(R.id.ivSubjectVector);
     }
 
-    /**Sets the drawer and toolbar to be activated (& listeners etc)*/
+    /**
+     * Sets the drawer and toolbar to be activated (& listeners etc)
+     * */
     public void initDrawer(){
         setSupportActionBar(toolbar);
         navigationView.bringToFront();
@@ -327,7 +344,9 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    /**Closes the drawer if open and finishes otherwise*/
+    /**
+     * Closes the drawer if open and finishes otherwise
+     * */
     @Override
     public void onBackPressed() {
          if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -338,7 +357,11 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         }
     }
 
-    /**Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)*/
+    /**
+     * Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)
+     * @param item
+     * @return
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -404,7 +427,10 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         return false;
     }
 
-    /**This function sends the user to the AddSummary activity*/
+    /**
+     * This function sends the user to the AddSummary activity
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         if(v == floatingUploadButton){

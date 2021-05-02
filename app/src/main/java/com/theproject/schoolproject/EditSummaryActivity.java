@@ -76,7 +76,10 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
     Boolean subjectChanged;
     int deletionProgress = 0;
 
-    /**Usual onCreate function that sets the proper needs to their proper values*/
+    /**
+     * Usual onCreate function that sets the proper needs to their proper values
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +98,9 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
     }
 
-    /**This function sets the spinner adapter of the subject changing option to its ArrayList of all subjects from the GlobalAcross function*/
+    /**
+     * This function sets the spinner adapter of the subject changing option to its ArrayList of all subjects from the GlobalAcross function
+     */
     public void setSpinnerEditSubject(){
         spinnerEditSubject = findViewById(R.id.spinnerEditSubject);
         spinnerArray = GlobalAcross.getAllSubjectsArrayList();
@@ -104,7 +109,9 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         spinnerEditSubject.setAdapter(adapter);
     }
 
-    /**This function sets the text of the two EditTexts of the title and description to their actual values from the realtime database*/
+    /**
+     * This function sets the text of the two EditTexts of the title and description to their actual values from the realtime database
+     * */
     public void setEveryAttribute(){
         spinnerEditSubject.setSelection(finderSpinnerDefaultSubjectPosition(spinnerArray)); //sets the default value on the spinner as the current subject
         database = FirebaseDatabase.getInstance().getReference(subject);
@@ -122,7 +129,11 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         });
     }
 
-    /**This function sets the subject picking in order to change the spinner to its default value (which is the current subject its at)*/
+    /**
+     * This function sets the subject picking in order to change the spinner to its default value (which is the current subject its at)
+     * @param spinnerArray
+     * @return
+     */
     public int finderSpinnerDefaultSubjectPosition(ArrayList<String> spinnerArray){
         for(int i=0;i<spinnerArray.size();i++){
             if(spinnerArray.get(i).equals(subject)){
@@ -132,13 +143,17 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         return 0;
     }
 
-    /**Usual onBackPressed function that sends to former acitivity*/
+    /**
+     * Usual onBackPressed function that sends to former acitivity
+     */
     @Override
     public void onBackPressed() {
         finish();
     }
 
-    /**This function sets the Toolbar as well as the drawer (which inherits from navigationView) and sets the onclicklisteners of all needed buttons and cardviews*/
+    /**
+     * This function sets the Toolbar as well as the drawer (which inherits from navigationView) and sets the onclicklisteners of all needed buttons and cardviews
+     */
     public void setToolbarAndDrawer() {
         drawerLayout = findViewById(R.id.drawer_layout_edit_summary);
         navigationView = findViewById(R.id.nav_view_edit_summary);
@@ -163,7 +178,11 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
     }
 
-    /**Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)*/
+    /**
+     * Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)
+     * @param item
+     * @return
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         if (item.getTitle().equals("התנתקות")) {
@@ -233,17 +252,23 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         return false;
     }
 
-    /**This function splits into three parts:
-     * The first part is when the onClick - responds to the press of the floatingSaveButton
-     * The second part is when the onClick - responds to the press of the file change cardview
-     * The third part is when the onClick - responds to the press of the delete summary cardview
-     *
-     * The first part saves all changes
-     * The second part selects a new PDF file to the PDF uri from the user's phone
-     * The third part uses the ID of the current summary and deletes it on the realtime database
-     *
-     * After completing one of the three, the app finishes the activity
+    /**
      * */
+
+    /**
+     * This function splits into three parts:
+     *
+     *    The first part is when the onClick - responds to the press of the floatingSaveButton
+     *    The second part is when the onClick - responds to the press of the file change cardview
+     *    The third part is when the onClick - responds to the press of the delete summary cardview
+     *
+     *    The first part saves all changes
+     *    The second part selects a new PDF file to the PDF uri from the user's phone
+     *    The third part uses the ID of the current summary and deletes it on the realtime database
+     *
+     *    After completing one of the three, the app finishes the activity
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         if (v == floatingSaveButton) {
@@ -547,10 +572,12 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         }
     }
 
-    /**This function was created in order to prevent aSynchronization issues - because the changing of the PDF
+
+    /**
+     * This function was created in order to prevent aSynchronization issues - because the changing of the PDF
      * Awaits all former functions to finish so when it is called - it is called only when the rest are done with
      * The function uploads the new PDF file which was selected to the FirebaseStorage and updates the reference to it in the realtime database as well
-     * */
+     */
     public void aSyncPDFchange(){
         if(pdfUri != null){
 
@@ -652,7 +679,8 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
     }
 
-    /**This function was created in order to prevent aSynchronization issues (very much like the latter) and it changes the subject of the summary
+    /**
+     * This function was created in order to prevent aSynchronization issues (very much like the latter) and it changes the subject of the summary
      * only when the other changes are done (peformed with OnSuccess or OnComplete listeners (according to the needs)
      * */
     public void aSyncSubjectIf(){
@@ -773,7 +801,9 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         //}
     }
 
-    /**Function creates an action get content type intent that selects PDF only and starts activityForResult with resultCode 86 and the path*/
+    /**
+     * Function creates an action get content type intent that selects PDF only and starts activityForResult with resultCode 86 and the path
+     * */
     public void selectPDF() {
         // Method for offering the user to select a PDF file using file manager with an intent
         Intent intent = new Intent();
@@ -782,7 +812,12 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         startActivityForResult(intent, 86);
     }
 
-    /**Function checks if the result code is 86 and and sets the PDF uri to it if it is.*/
+    /**
+     * Function checks if the result code is 86 and and sets the PDF uri to it if it is
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //This checks if the user has selected a file or not
@@ -795,10 +830,15 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         }
     }
 
-    /**This function activates when the spinner is set (selected) on a new subject.
+    /**
+     * This function activates when the spinner is set (selected) on a new subject.
      * The function calls the void function: aSyncSubjectIf and performs the change (it also creates a new ID for every subject change since
      * it uses the .push function to the firebase realtime database.
-     * */
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         //Sets a string of when a choice on the subjects spinner is selected
@@ -844,7 +884,10 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         }
     }
 
-    /**When no subject is selected this function sets the subject selecting in order to change spinner - to its default value which is the current subject*/
+    /**
+     * When no subject is selected this function sets the subject selecting in order to change spinner - to its default value which is the current subject
+     * @param parent
+     */
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         spinnerSubjectCurrent = subject;

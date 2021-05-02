@@ -78,7 +78,10 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     Uri pdfUri; //Uri are URLs that are meant for local storage
     boolean checkedRB;
 
-    /**Usual onCreate function that sets all of the required things to their appropriate values*/
+    /**
+     * Usual onCreate function that sets all of the required things to their appropriate values
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +110,9 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         subject = getIntent().getStringExtra("Subject");
     }
 
-    /**Function sets the drawer and toolbar**/
+    /**
+     * Function sets the drawer and toolbar
+     */
     public void drawerFunction(){
         drawerLayout = findViewById(R.id.drawer_layout_upload_summary);
         navigationView = findViewById(R.id.nav_view_upload_summary);
@@ -123,13 +128,18 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     }
 
 
-    /**Function sends onbackpressed*/
+    /**
+     * Function sends onbackpressed
+     */
     @Override
     public void onBackPressed() {
         super.onBackPressed();
     }
 
-    /**Function sends the user back if presses the return button and uploads the PDF summary if it passes the validation and is pressed on publish cardview*/
+    /**
+     * Function sends the user back if presses the return button and uploads the PDF summary if it passes the validation and is pressed on publish cardview
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         if(v == floatingReturnButton){
@@ -186,7 +196,10 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    /**Function uses FirebaseStorage and uploads the selected PDF to the storage (generates UUID and checks if the file is too heavy and cancels the upload if it is)*/
+    /**
+     * Function uses FirebaseStorage and uploads the selected PDF to the storage (generates UUID and checks if the file is too heavy and cancels the upload if it is)
+     * @param pdfUri
+     */
     private void uploadFile(Uri pdfUri) {
         //Function that uploads the Uri to the storage cloud
         progressDialog = new ProgressDialog(this);
@@ -257,7 +270,12 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-    /**Function checks if the app has the proper permission and requests it if it doesn't*/
+    /**
+     * Function checks if the app has the proper permission and requests it if it doesn't
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
@@ -270,7 +288,9 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-    /**Function creates an action get content type intent that selects PDF only and starts activityForResult with resultCode 86 and the path*/
+    /**
+     * Function creates an action get content type intent that selects PDF only and starts activityForResult with resultCode 86 and the path
+     */
     public void selectPDF() {
         // Method for offering the user to select a PDF file using file manager with an intent
         Intent intent = new Intent()
@@ -280,7 +300,12 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         startActivityForResult(intent, 86);
     }
 
-    /**Function checks if the result code is 86 and and sets the PDF uri to it if it is.*/
+    /**
+     * Function checks if the result code is 86 and and sets the PDF uri to it if it is
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //This checks if the user has selected a file or not
@@ -294,7 +319,12 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    /**-Currently unused- This function checks if the a certain filer is heavier than X MB*/
+    /**
+     * -Currently unused- This function checks if the a certain filer is heavier than X MB
+     * @param file
+     * @param x
+     * @return
+     */
     private boolean isFileLessThanX_MB(File file,int x) {
         int maxFileSize = x * 1024 * 1024;
         Long l = file.length();
@@ -303,7 +333,11 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         return finalFileSize >= maxFileSize;
     }
 
-    /**Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)*/
+    /**
+     * Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)
+     * @param item
+     * @return
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         //Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();

@@ -37,7 +37,10 @@ public class LoadingActivity extends AppCompatActivity {
 
     SharedPreferences sharedPreferences;
 
-    /**Your usual on create function - except it's used for the loading activity*/
+    /**
+     * Your usual on create function - except it's used for the loading activity
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +91,8 @@ public class LoadingActivity extends AppCompatActivity {
         }
 
 
-    /**This function is called when the activity starts. The function checks if the user was logged in and if they were - it gets their values from
+    /**
+     * This function is called when the activity starts. The function checks if the user was logged in and if they were - it gets their values from
      * the realtime database and sets the appropriate GlobalAcross variables to them.
      * If they aren't - they are sent to log in (MainActivity).
      * */

@@ -40,7 +40,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final String Index = "index";
     public static final String Logged = "logged";
 
-    /**Usual onCreate function*/
+    /**
+     * Usual onCreate function
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,10 +68,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
-    /**This function sends the user to register if they press the register prompt (textview)
+
+    /**
+     * This function sends the user to register if they press the register prompt (textview)
      * Otherwise, is looks their details up in the realtime database if they press the login button after validation of details
      * and sets the appropriate variables in GlobalAcross as well.
-     * */
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         /*if(v == btnAutoFill){etPassword.setText("e123456"); etUsername.setText("eladbg");} */ //Remove this line once you're done with testing
@@ -113,9 +119,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
             }
 
-    /**This function looks up the username inserted into the EditText in the allUsers ArrayList and sends their index back if they are found.
+
+    /**
+     * This function looks up the username inserted into the EditText in the allUsers ArrayList and sends their index back if they are found.
      * If they aren't: -1 is sent back.
-     * */
+     * @param username
+     * @return
+     */
     public static int findIndexOfUser(String username)
     {
         int i = 0;
@@ -131,7 +141,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return -1;
     }
 
-    /**-Currently unused- This function logs the user in (like the other function) but in a better, more efficient way.*/
+    /**
+     * -Currently unused- This function logs the user in (like the other function) but in a better, more efficient way
+     * @param username
+     * @param password
+     */
     public void loginV2(String username,String password){
 
         //FUNCTION IS A W.I.P | Status - Unfinished
@@ -202,7 +216,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    /**Usual onBackPressed function*/
+    /**
+     * Usual onBackPressed function
+     * */
     @Override
     public void onBackPressed() {
         if(super.getClass() == RegisterActivity.class){
@@ -213,7 +229,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    /**If the validation does not come to be - the user's phone is greeted with a quick vibration*/
+    /**
+     * If the validation does not come to be - the user's phone is greeted with a quick vibration
+     * @param milisecondsToVibrate
+     */
     public void vibratePhone(int milisecondsToVibrate){
         //This function makes the phone vibrate for [secondsToVibrate] seconds.
         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
