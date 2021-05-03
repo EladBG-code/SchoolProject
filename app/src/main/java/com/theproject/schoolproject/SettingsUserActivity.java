@@ -93,6 +93,7 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
 
                 cvClassYodAlef.setCardBackgroundColor(Color.WHITE);
                 cvClassYodBeit.setCardBackgroundColor(Color.WHITE);
+                break;
             }
             case 2:{
                 //YodAlef
@@ -100,6 +101,7 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
 
                 cvClassYod.setCardBackgroundColor(Color.WHITE);
                 cvClassYodBeit.setCardBackgroundColor(Color.WHITE);
+                break;
             }
             case 3:{
                 //Yodbeit
@@ -107,6 +109,7 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
 
                 cvClassYodAlef.setCardBackgroundColor(Color.WHITE);
                 cvClassYod.setCardBackgroundColor(Color.WHITE);
+                break;
             }
         }
     }

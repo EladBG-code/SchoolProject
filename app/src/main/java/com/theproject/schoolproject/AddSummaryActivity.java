@@ -158,8 +158,6 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
                     summaryID = summary.getId();
                     summariesRef = database.getReference(subject).push();
                     uploadFile(pdfUri);
-//                    Toast.makeText(this, "העלית את הסיכום בהצלחה", Toast.LENGTH_SHORT).show();
-                    //super.onBackPressed();
                 }
             }
             else{

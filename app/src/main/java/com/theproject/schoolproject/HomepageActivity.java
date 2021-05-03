@@ -70,7 +70,6 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         tvWelcomeMessage = findViewById(R.id.tvHomeWelcome);
         cvToSummaries = findViewById(R.id.cvToSummaries);
         ivProfilePictureHomepage = findViewById(R.id.ivProfilePictureIconHomepage);
-        //tvWelcomeMessage.setText("ברוכים השבים "+GlobalAcross.currentUser.getfName()); /*Tells the user a welcome message with their own name! */
 
         setSupportActionBar(toolbar);
         navigationView.bringToFront();
