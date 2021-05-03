@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".EditSummaryActivity"></activity>
-        <activity android:name=".NotificationActivity" />
+
 
         <service
             android:name=".notificationService"
