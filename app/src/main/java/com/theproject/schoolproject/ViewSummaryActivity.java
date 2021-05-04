@@ -234,7 +234,7 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
 
         }
         if (item.getTitle().equals("סיכומים")) {
-            Intent intent = new Intent(ViewSummaryActivity.this, SummariesSubjects.class);
+            Intent intent = new Intent(ViewSummaryActivity.this, SummariesSubjectsActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;

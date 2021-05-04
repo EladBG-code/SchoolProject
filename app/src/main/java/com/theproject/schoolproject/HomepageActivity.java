@@ -209,7 +209,7 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
 
         }
         if(item.getTitle().equals("סיכומים")){
-            Intent intent = new Intent(HomepageActivity.this,SummariesSubjects.class);
+            Intent intent = new Intent(HomepageActivity.this,SummariesSubjectsActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;
@@ -268,7 +268,7 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
     @Override
     public void onClick(View v) {
         if(v == cvToSummaries){
-            Intent intent = new Intent(this,SummariesSubjects.class);
+            Intent intent = new Intent(this,SummariesSubjectsActivity.class);
             startActivity(intent);
             //finish();
         }

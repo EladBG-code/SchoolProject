@@ -366,7 +366,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
             return false;
         }
         if(item.getTitle().equals("סיכומים")){
-            Intent intent = new Intent(AddSummaryActivity.this, SummariesSubjects.class);
+            Intent intent = new Intent(AddSummaryActivity.this, SummariesSubjectsActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;

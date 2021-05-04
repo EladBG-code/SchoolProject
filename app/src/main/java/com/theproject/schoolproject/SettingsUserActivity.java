@@ -188,7 +188,7 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
 
         }
         if (item.getTitle().equals("סיכומים")) {
-            Intent intent = new Intent(SettingsUserActivity.this, SummariesSubjects.class);
+            Intent intent = new Intent(SettingsUserActivity.this, SummariesSubjectsActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;

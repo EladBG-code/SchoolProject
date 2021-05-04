@@ -166,7 +166,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
         }
         if (item.getTitle().equals("סיכומים")) {
-            Intent intent = new Intent(ProfileActivity.this, SummariesSubjects.class);
+            Intent intent = new Intent(ProfileActivity.this, SummariesSubjectsActivity.class);
             drawerLayout.closeDrawers();
             startActivity(intent);
             return false;

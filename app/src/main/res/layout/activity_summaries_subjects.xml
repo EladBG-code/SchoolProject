@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true"
     android:orientation="horizontal"
     android:textDirection="rtl"
-    tools:context=".SummariesSubjects">
+    tools:context=".SummariesSubjectsActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -497,7 +497,6 @@
                                 android:layout_width="55sp"
                                 android:layout_height="55sp"
                                 android:src="@drawable/web_programming_computer_science_vector_icon"
-                                android:tint="@color/black"
                                 android:layout_gravity="center"
                                 />
                             <TextView
