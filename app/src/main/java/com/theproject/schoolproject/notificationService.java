@@ -33,8 +33,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-public class notificationService extends Service {
-    public notificationService() {
+public class NotificationService extends Service {
+    public NotificationService() {
     }
 
     @Override
@@ -139,7 +139,7 @@ public class notificationService extends Service {
             });
 
         }
-        startService(new Intent(this,notificationService.class));
+        startService(new Intent(this,NotificationService.class));
         return super.onStartCommand(intent, flags, startId);
     }
 }
