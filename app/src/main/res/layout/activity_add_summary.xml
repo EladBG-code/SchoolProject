@@ -56,78 +56,81 @@
             android:id="@+id/tvFileSelected"
             />
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:layout_width="30sp"
-            android:layout_height="30sp"
-            android:id="@+id/ivAddAttachment"
-            android:background="@color/cardview_light_background"
-            android:gravity="top|left"
-            android:src="@drawable/attach_file_icon"
-            app:shapeAppearance="@style/roundedImageViewRounded"
-            app:strokeWidth="0.5sp"
-            app:strokeColor="@color/design_default_color_primary_dark"
-            />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cvAttachment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/cardview_dark_background"
-            android:clickable="true"
-            android:elevation="10sp"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:outlineAmbientShadowColor="@color/black"
-            android:outlineSpotShadowColor="@color/black"
-            app:cardBackgroundColor="@color/colorPrimaryDark"
-            app:cardCornerRadius="99sp">
 
 
-
-            <ImageView
-                android:layout_width="28sp"
-                android:layout_height="28sp"
-                android:layout_gravity="center"
-                android:layout_marginEnd="3sp"
-                android:layout_marginStart="3sp"
-                android:layout_marginTop="3sp"
-                android:layout_marginBottom="3sp"
-                android:src="@drawable/attach_file_icon"
-                app:tint="@color/white" />
-
-        </androidx.cardview.widget.CardView>
-
-
-
-
-
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cvPublish"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
             android:layout_marginLeft="100sp"
             android:layout_marginRight="100sp"
-            android:background="@color/cardview_dark_background"
-            android:clickable="true"
-            android:elevation="10sp"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:outlineAmbientShadowColor="@color/black"
-            android:outlineSpotShadowColor="@color/black"
-            app:cardBackgroundColor="@color/colorPrimaryDark"
-            app:cardCornerRadius="15sp">
+            android:layoutDirection="ltr"
+            >
 
-            <TextView
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cvAttachment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/cardview_dark_background"
+                android:clickable="true"
+                android:elevation="10sp"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:outlineAmbientShadowColor="@color/black"
+                android:outlineSpotShadowColor="@color/black"
+                app:cardBackgroundColor="@color/colorPrimaryDark"
+                app:cardCornerRadius="99sp"
+                android:layout_marginEnd="10sp"
+                >
+
+
+
+                <ImageView
+                    android:layout_width="28sp"
+                    android:layout_height="28sp"
+                    android:layout_marginEnd="5sp"
+                    android:layout_marginStart="5sp"
+                    android:layout_marginTop="5sp"
+                    android:layout_marginBottom="5sp"
+                    android:id="@+id/ivStatusAttachment"
+                    android:background="@drawable/attach_file_icon"
+                    android:backgroundTint="@color/white" />
+
+            </androidx.cardview.widget.CardView>
+
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cvPublish"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="7sp"
-                android:gravity="center|bottom"
-                android:text="פרסום"
-                android:textColor="@color/white"
-                android:textSize="28sp"
-                android:textStyle="bold" />
 
-        </androidx.cardview.widget.CardView>
+                android:background="@color/cardview_dark_background"
+                android:clickable="true"
+                android:elevation="10sp"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:outlineAmbientShadowColor="@color/black"
+                android:outlineSpotShadowColor="@color/black"
+                app:cardBackgroundColor="@color/colorPrimaryDark"
+                app:cardCornerRadius="15sp">
+
+                <TextView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="7sp"
+                    android:gravity="center|bottom"
+                    android:text="פרסום"
+                    android:textColor="@color/white"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+            </androidx.cardview.widget.CardView>
+
+
+        </LinearLayout>
+
 
     </LinearLayout>
 

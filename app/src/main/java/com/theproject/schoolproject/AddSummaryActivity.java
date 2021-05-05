@@ -1,6 +1,7 @@
 package com.theproject.schoolproject;
 
 import android.Manifest;
+import android.animation.Animator;
 import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -10,9 +11,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.transition.TransitionManager;
 import android.view.MenuItem;
 import android.view.View;
@@ -165,19 +168,69 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
             }
             else{
                 if(pdfUri == null)
-                    Toast.makeText(AddSummaryActivity.this, "בחרו קובץ.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddSummaryActivity.this, "אנא בחרו קובץ PDF ממכשירכם.", Toast.LENGTH_SHORT).show();
             }
         }
 
         if(v == cvAttachment){
-            // ADD AN ATTACHMENT (FILE) TO THE SUMMARY
-            if(ContextCompat.checkSelfPermission(AddSummaryActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){ //Checks if has the permission to read external storage
-                selectPDF();
+            if(pdfUri == null){
+                // ADD AN ATTACHMENT (FILE) TO THE SUMMARY [WHEN THE PDF ISN'T SELECTED]
+                cvAttachment.animate().rotationBy(360).setDuration(450).setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if(ContextCompat.checkSelfPermission(AddSummaryActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){ //Checks if has the permission to read external storage
+                            selectPDF();
+                        }
+                        else{
+                            ActivityCompat.requestPermissions(AddSummaryActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9); //Asks the user to give it the permission to do so if it doesn't have it and sets the request code to 9
+                            //onRequestPermissionResult will be the next line to this - all parameters are passed
+                        }
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                }).start();
             }
             else{
-                ActivityCompat.requestPermissions(AddSummaryActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9); //Asks the user to give it the permission to do so if it doesn't have it and sets the request code to 9
-                //onRequestPermissionResult will be the next line to this - all parameters are passed
+                //THERE IS A PDF SELECTED
+                cvAttachment.animate().rotationBy(360).setDuration(450).setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        pdfUri = null;
+                        cvAttachment.setCardBackgroundColor(cvPublish.getCardBackgroundColor());
+                        findViewById(R.id.ivStatusAttachment).setBackgroundResource(R.drawable.attach_file_icon);
+                        notification.setText("");
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        Toast.makeText(AddSummaryActivity.this, "בחירת קובץ ה- PDF הנוכחית הוסרה בהצלחה.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                }).start();
             }
+
 
         }
     }
@@ -246,6 +299,8 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
                 if (snapshot.getTotalByteCount() > 6291456) { //This if checks if the file which is being uploaded is over 6MB and cancels this immediately if it is
                     uploadTask.cancel();
                     Toast.makeText(AddSummaryActivity.this,"הקובץ כבד מדי! אנו מרשים רק עד 6 MB.",Toast.LENGTH_LONG).show();
+                    cvAttachment.setCardBackgroundColor(cvPublish.getCardBackgroundColor());
+                    findViewById(R.id.ivStatusAttachment).setBackgroundResource(R.drawable.attach_file_icon);
                     progressDialog.dismiss();
                 } else {
                     int currentProgress = (int) (100 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount()); //Formula to get the progress percentage of bytes transferred over total bytes times 100 casted into int
@@ -293,17 +348,63 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
      * @param data
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable final Intent data) {
         //This checks if the user has selected a file or not
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 86 && resultCode == RESULT_OK && data != null) {
                 pdfUri = data.getData(); // This will return the Uri of the selected file
-                notification.setText("הקובץ: " + data.getData().getLastPathSegment() + " נבחר.");
-                cvAttachment.setCardBackgroundColor(Color.RED);
+            cvAttachment.animate().rotationBy(-360).setDuration(550).setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    cvAttachment.setCardBackgroundColor(Color.RED);
+                    findViewById(R.id.ivStatusAttachment).setBackgroundResource(R.drawable.attachment_attached_icon);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    String PDFname = getFileName(pdfUri);
+                    notification.setText("הקובץ בשם: "+PDFname+" נבחר.");
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            }).start();
+
+
         }
         else {
-            Toast.makeText(AddSummaryActivity.this, "אנא בחרו קובץ", Toast.LENGTH_SHORT).show();
+            if (pdfUri == null)
+                Toast.makeText(AddSummaryActivity.this, "אנא בחרו קובץ", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
     }
 
     /**
