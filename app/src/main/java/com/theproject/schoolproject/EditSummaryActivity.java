@@ -47,6 +47,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -592,7 +593,9 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                             progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
                             //Will upload the new File here
                             final String newFileName = UUID.randomUUID().toString();
-                            storage.getReference().child("SummariesFiles").child(newFileName).putFile(pdfUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+                            final UploadTask newUploadTask = storage.getReference().child("SummariesFiles").child(newFileName).putFile(pdfUri);
+                            newUploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                     progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
@@ -613,7 +616,20 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                         }
                                     });
                                 }
-                            });
+                            })
+                            .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                                    //Tracks the progress of our upload task (progressbar)
+                                    if (snapshot.getTotalByteCount() > 6291456) { //This if checks if the file which is being uploaded is over 6MB and cancels this immediately if it is
+                                        newUploadTask.cancel();
+                                        Toast.makeText(EditSummaryActivity.this,"הקובץ כבד מדי! אנו מרשים רק עד 6 MB.",Toast.LENGTH_LONG).show();
+                                        pdfUri = null;
+                                        progressDialog.dismiss();
+                                    }
+                                }
+                            })
+                            ;
 
                         }
                     }).addOnFailureListener(new OnFailureListener() { //This onfailurelistener tries to delete the file a second time inside of it

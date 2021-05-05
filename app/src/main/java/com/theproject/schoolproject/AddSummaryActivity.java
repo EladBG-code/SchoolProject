@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Bundle;
@@ -59,15 +60,13 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
 
     String subject;
     FloatingActionButton floatingReturnButton;
-    CardView cvPublish;
+    CardView cvPublish,cvAttachment;
     EditText summaryTitle,summaryDescription;
     String summaryID;
     FirebaseDatabase database;
     FirebaseStorage storage;
     DatabaseReference summariesRef;
     ShapeableImageView ivAddAttachment;
-    RadioButton isAttachment;
-    LinearLayout llAttachment;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     MaterialToolbar toolbar;
@@ -76,7 +75,8 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     TextView notification;
     Summary summary;
     Uri pdfUri; //Uri are URLs that are meant for local storage
-    boolean checkedRB;
+
+    boolean hasFile;
 
     /**
      * Usual onCreate function that sets all of the required things to their appropriate values
@@ -87,6 +87,8 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_summary);
 
+        hasFile = false;
+
         database = FirebaseDatabase.getInstance();// is used for storing URLs of uploaded files...
         storage = FirebaseStorage.getInstance();//is used for uploadinf files... Examples: PDF, Word etc
 
@@ -96,18 +98,19 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         cvPublish = findViewById(R.id.cvPublish);
         summaryTitle = findViewById(R.id.etSummaryTitle);
         summaryDescription = findViewById(R.id.etSummaryDescription);
-        ivAddAttachment = findViewById(R.id.ivAddAttachment);
-        isAttachment = findViewById(R.id.rbIsAttachment);
-        llAttachment = findViewById(R.id.llAttachments);
+
+        cvAttachment = findViewById(R.id.cvAttachment);
+
+
+
         notification = findViewById(R.id.tvFileSelected);
-        checkedRB = false;
 
         floatingReturnButton.setOnClickListener(this);
         cvPublish.setOnClickListener(this);
-        ivAddAttachment.setOnClickListener(this);
 
-        isAttachment.setOnClickListener(this);
         subject = getIntent().getStringExtra("Subject");
+
+        cvAttachment.setOnClickListener(this);
     }
 
     /**
@@ -165,9 +168,9 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
                     Toast.makeText(AddSummaryActivity.this, "בחרו קובץ.", Toast.LENGTH_SHORT).show();
             }
         }
-        if(v == ivAddAttachment){
-            // ADD AN ATTACHMENT (FILE) TO THE SUMMARY
 
+        if(v == cvAttachment){
+            // ADD AN ATTACHMENT (FILE) TO THE SUMMARY
             if(ContextCompat.checkSelfPermission(AddSummaryActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){ //Checks if has the permission to read external storage
                 selectPDF();
             }
@@ -175,22 +178,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
                 ActivityCompat.requestPermissions(AddSummaryActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9); //Asks the user to give it the permission to do so if it doesn't have it and sets the request code to 9
                 //onRequestPermissionResult will be the next line to this - all parameters are passed
             }
-        }
 
-
-        if(v == isAttachment){
-            // RADIO BUTTON THAT SETS THE ATTACHMENT LINEARLAYOUT TO VISIBLE / GONE FOR THE USER TO SEE IF THERE IS AN ATTACHMENT
-
-            if(checkedRB == false){
-                checkedRB=true;
-                isAttachment.setChecked(checkedRB);
-                llAttachment.setVisibility(View.VISIBLE);
-            }
-            else{
-                checkedRB=false;
-                isAttachment.setChecked(checkedRB);
-                llAttachment.setVisibility(View.GONE);
-            }
         }
     }
 
@@ -311,6 +299,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         if (requestCode == 86 && resultCode == RESULT_OK && data != null) {
                 pdfUri = data.getData(); // This will return the Uri of the selected file
                 notification.setText("הקובץ: " + data.getData().getLastPathSegment() + " נבחר.");
+                cvAttachment.setCardBackgroundColor(Color.RED);
         }
         else {
             Toast.makeText(AddSummaryActivity.this, "אנא בחרו קובץ", Toast.LENGTH_SHORT).show();
