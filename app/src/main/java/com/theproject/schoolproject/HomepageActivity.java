@@ -86,7 +86,7 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
 
         globalAcrossActions();
 
-        startForegroundService(new Intent(HomepageActivity.this,notificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
+        startForegroundService(new Intent(HomepageActivity.this,NotificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
 
         if(getIntent().getBooleanExtra("openedNotif",false)){
             GlobalAcross.updateCurrentUserData();

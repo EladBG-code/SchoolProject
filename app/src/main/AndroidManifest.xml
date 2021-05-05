@@ -17,7 +17,7 @@
 
 
         <service
-            android:name=".notificationService"
+            android:name=".NotificationService"
             android:enabled="true"
             android:exported="true" />
 
