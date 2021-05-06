@@ -96,14 +96,26 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         >
+        <ProgressBar
+            android:layout_width="23sp"
+            android:layout_height="23sp"
+            android:indeterminateTint="@color/white"
+            android:id="@+id/pbLogin"
+            android:layout_gravity="center"
+            android:visibility="invisible"
+            style="@style/Widget.AppCompat.ProgressBar"
+            />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textSize="20sp"
             android:text="התחברו"
+            android:id="@+id/tvLoginCV"
             android:textColor="@color/cardview_light_background"
             android:textStyle="bold" />
+
     </androidx.cardview.widget.CardView>
 
     <LinearLayout

@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import android.view.KeyEvent;
@@ -74,6 +75,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     SharedPreferences sharedPreferences;
     LinearLayout llNoSummaries;
     ImageView ivSubjectVector;
+    MediaPlayer mp;
 
     /**
      * Usual onCreate function
@@ -86,6 +88,8 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         initComponents();
         initDrawer();
 
+
+        mp = MediaPlayer.create(this, R.raw.add_summary_sound);
 
             subject = new Subject(getIntent().getStringExtra("SubjectSelected"));
             tvSubjectName.setText(getIntent().getStringExtra("SubjectSelected")); /*This line sets the name of the subject which was selected as the title of the subject's summary page*/
@@ -439,6 +443,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
             floatingUploadButton.animate().rotationBy(360).setDuration(550).setListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
+                    startAddSound();
                     floatingUploadButton.setClickable(false);
                 }
 
@@ -464,6 +469,10 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
 
         }
 
+    }
+
+    public void startAddSound(){
+        mp.start();
     }
 
 
