@@ -62,6 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:fitsSystemWindows="true"
             android:layout_gravity="center"
             android:layout_marginLeft="100sp"
             android:layout_marginRight="100sp"
@@ -89,10 +90,10 @@
                 <ImageView
                     android:layout_width="28sp"
                     android:layout_height="28sp"
-                    android:layout_marginEnd="5sp"
-                    android:layout_marginStart="5sp"
-                    android:layout_marginTop="5sp"
-                    android:layout_marginBottom="5sp"
+                    android:layout_marginEnd="7sp"
+                    android:layout_marginStart="7sp"
+                    android:layout_marginTop="7sp"
+                    android:layout_marginBottom="7sp"
                     android:id="@+id/ivStatusAttachment"
                     android:background="@drawable/attach_file_icon"
                     android:backgroundTint="@color/white" />

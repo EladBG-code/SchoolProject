@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -140,6 +141,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return -1;
     }
+
+//    public static int findIndexOfUserV2(String username){
+//        DatabaseReference usersPlaceRef = FirebaseDatabase.getInstance().getReference("UsersPlace");
+//
+//        Query queryUsername = usersPlaceRef
+//                .orderByChild("username")
+//                .equalTo(username);
+//        queryUsername.
+//    }
 
     /**
      * -Currently unused- This function logs the user in (like the other function) but in a better, more efficient way

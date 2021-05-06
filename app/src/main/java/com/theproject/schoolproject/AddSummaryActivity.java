@@ -9,10 +9,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.pdf.PdfDocument;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
@@ -44,6 +47,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.internal.FlowLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -56,6 +60,7 @@ import com.google.firebase.storage.UploadTask;
 import org.w3c.dom.Document;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.UUID;
 
@@ -69,7 +74,6 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     FirebaseDatabase database;
     FirebaseStorage storage;
     DatabaseReference summariesRef;
-    ShapeableImageView ivAddAttachment;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     MaterialToolbar toolbar;
@@ -78,6 +82,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     TextView notification;
     Summary summary;
     Uri pdfUri; //Uri are URLs that are meant for local storage
+    MediaPlayer mp;
 
     boolean hasFile;
 
@@ -94,6 +99,8 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
 
         database = FirebaseDatabase.getInstance();// is used for storing URLs of uploaded files...
         storage = FirebaseStorage.getInstance();//is used for uploadinf files... Examples: PDF, Word etc
+
+        mp = MediaPlayer.create(this, R.raw.clip_sound_effect);
 
         drawerFunction();
 
@@ -114,6 +121,13 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         subject = getIntent().getStringExtra("Subject");
 
         cvAttachment.setOnClickListener(this);
+    }
+
+    public void startAttachSound(){
+        mp.start();
+    }
+    public void stopAttachSound(){
+        mp.stop();
     }
 
     /**
@@ -152,18 +166,55 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
             // RETURN TO THE PAGE BEFORE THE CURRENT
             //finish();
             //startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-            finishAfterTransition();
+            finish();
         }
         if(v == cvPublish){
             // UPLOAD SUMMARY BUTTON
 
             if (pdfUri != null) {
-                if (GlobalAcross.checkValid(summaryTitle, summaryDescription,AddSummaryActivity.this)) {
-                    summary = new Summary(GlobalAcross.currentUser.getfName()+" "+GlobalAcross.currentUser.getlName(), summaryTitle.getText().toString(), summaryDescription.getText().toString(), getSharedPreferences("index", Context.MODE_PRIVATE));
-                    summary.setId(database.getReference(subject).push().getKey());
-                    summaryID = summary.getId();
-                    summariesRef = database.getReference(subject).push();
-                    uploadFile(pdfUri);
+                Cursor returnCursor = getContentResolver().query(pdfUri, null, null, null, null);
+                int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+                returnCursor.moveToFirst();
+
+                if(returnCursor.getLong(sizeIndex) < 6291456) { //Checks if the file size is over 6MB withusing a curser that checks the file's size
+
+
+                    if (GlobalAcross.checkValid(summaryTitle, summaryDescription, AddSummaryActivity.this)) {
+                        summary = new Summary(GlobalAcross.currentUser.getfName() + " " + GlobalAcross.currentUser.getlName(), summaryTitle.getText().toString(), summaryDescription.getText().toString(), getSharedPreferences("index", Context.MODE_PRIVATE));
+                        summary.setId(database.getReference(subject).push().getKey());
+                        summaryID = summary.getId();
+                        summariesRef = database.getReference(subject).push();
+                        uploadFile(pdfUri);
+                    }
+                }
+                else{
+                    //Size over 6MB
+                    cvAttachment.animate().rotationBy(-360).setDuration(650).setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            pdfUri = null;
+                            notification.setText("");
+                            Toast.makeText(AddSummaryActivity.this,"הקובץ כבד מדי! אנו מרשים רק עד 6 MB.",Toast.LENGTH_LONG).show();
+                            cvAttachment.setCardBackgroundColor(cvPublish.getCardBackgroundColor());
+                            findViewById(R.id.ivStatusAttachment).setBackgroundResource(R.drawable.attach_file_icon);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+
+                        }
+                    }).start();
+
                 }
             }
             else{
@@ -175,15 +226,16 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         if(v == cvAttachment){
             if(pdfUri == null){
                 // ADD AN ATTACHMENT (FILE) TO THE SUMMARY [WHEN THE PDF ISN'T SELECTED]
-                cvAttachment.animate().rotationBy(360).setDuration(450).setListener(new Animator.AnimatorListener() {
+                cvAttachment.animate().rotationBy(360).setDuration(550).setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
-
+                        cvAttachment.setClickable(false);
                     }
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         if(ContextCompat.checkSelfPermission(AddSummaryActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){ //Checks if has the permission to read external storage
+                            cvAttachment.setClickable(true);
                             selectPDF();
                         }
                         else{
@@ -202,20 +254,25 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
 
                     }
                 }).start();
+
+
             }
             else{
                 //THERE IS A PDF SELECTED
-                cvAttachment.animate().rotationBy(360).setDuration(450).setListener(new Animator.AnimatorListener() {
+                cvAttachment.animate().rotationBy(360).setDuration(550).setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
+                        startAttachSound();
+                        cvAttachment.setClickable(false);
                         pdfUri = null;
                         cvAttachment.setCardBackgroundColor(cvPublish.getCardBackgroundColor());
                         findViewById(R.id.ivStatusAttachment).setBackgroundResource(R.drawable.attach_file_icon);
-                        notification.setText("");
                     }
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
+                        cvAttachment.setClickable(true);
+                        notification.setText("");
                         Toast.makeText(AddSummaryActivity.this, "בחירת קובץ ה- PDF הנוכחית הוסרה בהצלחה.", Toast.LENGTH_SHORT).show();
                     }
 
@@ -239,7 +296,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
      * Function uses FirebaseStorage and uploads the selected PDF to the storage (generates UUID and checks if the file is too heavy and cancels the upload if it is)
      * @param pdfUri
      */
-    private void uploadFile(Uri pdfUri) {
+    private void uploadFile(final Uri pdfUri) {
         //Function that uploads the Uri to the storage cloud
         progressDialog = new ProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -251,6 +308,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         final String fileName = UUID.randomUUID().toString();
         StorageReference storageReference = storage.getReference(); //Sets the root path
         final StorageTask uploadTask = storageReference.child("SummariesFiles").child(fileName).putFile(pdfUri);
+
 
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -296,16 +354,11 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
                 //Tracks the progress of our upload task (progressbar)
-                if (snapshot.getTotalByteCount() > 6291456) { //This if checks if the file which is being uploaded is over 6MB and cancels this immediately if it is
-                    uploadTask.cancel();
-                    Toast.makeText(AddSummaryActivity.this,"הקובץ כבד מדי! אנו מרשים רק עד 6 MB.",Toast.LENGTH_LONG).show();
-                    cvAttachment.setCardBackgroundColor(cvPublish.getCardBackgroundColor());
-                    findViewById(R.id.ivStatusAttachment).setBackgroundResource(R.drawable.attach_file_icon);
-                    progressDialog.dismiss();
-                } else {
-                    int currentProgress = (int) (100 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount()); //Formula to get the progress percentage of bytes transferred over total bytes times 100 casted into int
-                    progressDialog.setProgress(currentProgress);
-                }
+                //This if checks if the file which is being uploaded is over 6MB and cancels this immediately if it is
+
+                int currentProgress = (int) (100 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount()); //Formula to get the progress percentage of bytes transferred over total bytes times 100 casted into int
+                progressDialog.setProgress(currentProgress);
+
             }
         });
 
@@ -329,6 +382,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
 
     }
 
+
     /**
      * Function creates an action get content type intent that selects PDF only and starts activityForResult with resultCode 86 and the path
      */
@@ -341,6 +395,15 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         startActivityForResult(intent, 86);
     }
 
+    private void startSound(String filename) throws IOException {
+        AssetFileDescriptor afd = getAssets().openFd(filename);
+        MediaPlayer player = new MediaPlayer();
+        player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+        player.prepareAsync();
+        player.start();
+    }
+
+
     /**
      * Function checks if the result code is 86 and and sets the PDF uri to it if it is
      * @param requestCode
@@ -351,17 +414,49 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
     protected void onActivityResult(int requestCode, int resultCode, @Nullable final Intent data) {
         //This checks if the user has selected a file or not
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == 86 && resultCode == RESULT_OK && data != null) {
-                pdfUri = data.getData(); // This will return the Uri of the selected file
+
+//            MediaPlayer mediaPlayer = new MediaPlayer();
+//            AssetFileDescriptor afd;
+//            try {
+//                afd = getAssets().openFd("clip_sound_effect.mp3");
+//                mediaPlayer.setDataSource(afd.getFileDescriptor());
+//                mediaPlayer.prepare();
+//                mediaPlayer.start();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            Toast.makeText(AddSummaryActivity.this, "Playing audio from Asset directory", Toast.LENGTH_SHORT).show();
+
             cvAttachment.animate().rotationBy(-360).setDuration(550).setListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
+
+//                    try {
+//                        startSound("clip_sound_effect.mp3");
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//
+
+                    startAttachSound();
+
+
+//                    MediaPlayer mediaPlayer = MediaPlayer.create(AddSummaryActivity.this, );
+//                    mediaPlayer.start(); // no need to call prepare(); create() does that for you
+
+
+                    pdfUri = data.getData(); // This will return the Uri of the selected file
                     cvAttachment.setCardBackgroundColor(Color.RED);
                     findViewById(R.id.ivStatusAttachment).setBackgroundResource(R.drawable.attachment_attached_icon);
+                    cvAttachment.setClickable(false);
                 }
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
+                    cvAttachment.setClickable(true);
                     String PDFname = getFileName(pdfUri);
                     notification.setText("הקובץ בשם: "+PDFname+" נבחר.");
                 }
@@ -376,12 +471,10 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
 
                 }
             }).start();
-
-
         }
         else {
             if (pdfUri == null)
-                Toast.makeText(AddSummaryActivity.this, "אנא בחרו קובץ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddSummaryActivity.this, "אנא בחרו קובץ PDF", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -413,13 +506,13 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
      * @param x
      * @return
      */
-    private boolean isFileLessThanX_MB(File file,int x) {
-        int maxFileSize = x * 1024 * 1024;
-        Long l = file.length();
-        String fileSize = l.toString();
-        int finalFileSize = Integer.parseInt(fileSize);
-        return finalFileSize >= maxFileSize;
-    }
+//    private boolean isFileLessThanX_MB(File file,int x) {
+//        int maxFileSize = x * 1024 * 1024;
+//        Long l = file.length();
+//        String fileSize = l.toString();
+//        int finalFileSize = Integer.parseInt(fileSize);
+//        return finalFileSize >= maxFileSize;
+//    }
 
     /**
      * Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)

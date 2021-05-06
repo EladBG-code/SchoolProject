@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.animation.Animator;
 import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -112,6 +113,12 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
                 break;
             }
         }
+    }
+
+    public void setModeAllCards(boolean mode){
+        cvClassYod.setClickable(mode);
+        cvClassYodAlef.setClickable(mode);
+        cvClassYodBeit.setClickable(mode);
     }
 
     /**
@@ -226,19 +233,42 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
      * @param classCard
      */
     public void changeGradeByGrade(final int i, final CardView classCard){
+        setModeAllCards(false);
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("UsersPlace").child(GlobalAcross.currentUserIndex+"").child("grade");
         myRef.setValue(i).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                classCard.animate().rotationBy(360).setDuration(1200);
-                GlobalAcross.currentUser.setGrade(i);
-                setCurrentGradeSelected();
-                Snackbar.make(findViewById(R.id.linearLayoutSettings),"הכיתה שונתה בהצלחה.",Snackbar.LENGTH_LONG)
-                        .setAction("הבנתי", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v){
-                            }})
-                        .show();
+                classCard.animate().rotationBy(360).setDuration(1200).setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        GlobalAcross.currentUser.setGrade(i);
+                        setCurrentGradeSelected();
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        setModeAllCards(true);
+                        Snackbar.make(findViewById(R.id.linearLayoutSettings),"הכיתה שונתה בהצלחה.",Snackbar.LENGTH_LONG)
+                                .setAction("הבנתי", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v){
+                                    }})
+                                .show();
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                }).start();
+
+
+
             }
         });
     }

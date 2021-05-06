@@ -1,5 +1,6 @@
 package com.theproject.schoolproject;
 
+import android.animation.Animator;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -435,10 +436,32 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     public void onClick(View v) {
         if(v == floatingUploadButton){
             //Upload floating action button selected
-            floatingUploadButton.animate().rotationBy(360).setDuration(750);
-            Intent intent = new Intent(this,AddSummaryActivity.class);
-            intent.putExtra("Subject",subject.getSubjectName());
-            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+            floatingUploadButton.animate().rotationBy(360).setDuration(550).setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    floatingUploadButton.setClickable(false);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    floatingUploadButton.setClickable(true);
+                    Intent intent = new Intent(ViewSummariesOnSubjectActivity.this,AddSummaryActivity.class);
+                    intent.putExtra("Subject",subject.getSubjectName());
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(ViewSummariesOnSubjectActivity.this).toBundle());
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            }).start();
+
+
         }
 
     }
