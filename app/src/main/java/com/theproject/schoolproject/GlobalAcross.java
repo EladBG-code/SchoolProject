@@ -87,9 +87,7 @@ public class GlobalAcross {
      * */
 
     public static void logoutFunction(){
-        allUsers = null;
         currentUser = null;
-        //currentUserIndex = -1;
     }
 
     /**

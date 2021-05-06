@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     FirebaseDatabase database;
     CardView cvLoginBtn;
     DatabaseReference myRef;
+    int indexOX;
 
     SharedPreferences sharedPreferences;
 
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        indexOX = -1;
 
         etPassword = findViewById(R.id.etPasswordL);
         etUsername = findViewById(R.id.etUsernameL);
@@ -88,9 +91,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "אנא בדקו אם מלאתם את שדה הסיסמה ושם המשתמש.", Toast.LENGTH_SHORT).show();
             }
             else{
-                //loginV2(etUsername.getText().toString(),etPassword.getText().toString());   ----> W.I.P - Very important function!
 
+
+                {               //Temp testing
+
+//                    findIndexOfUserV2(etUsername.getText().toString());
+
+                    findIndexOfUserV2();
+
+//                    int indexUser = findIndexOfUserV2();
+
+
+
+                }               //Temp testing
+
+
+
+
+
+
+ /*                            WORKING CODE BELOW                                        */
+
+                /*
                 int index = findIndexOfUser(etUsername.getText().toString());
+
                 if (index != -1) {
                     if (GlobalAcross.allUsers.get(index).getPassword().equals(etPassword.getText().toString())) {
                         GlobalAcross.currentUser = GlobalAcross.allUsers.get(index);
@@ -116,40 +140,146 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     vibratePhone(200);
                     Toast.makeText(this, "המשתמש אינו קיים במערכת כלל.", Toast.LENGTH_SHORT).show();
                 }
+                */
+
+                /*                            WORKING CODE ABOVE                                        */
+
+
             }
         }
             }
 
 
-    /**
-     * This function looks up the username inserted into the EditText in the allUsers ArrayList and sends their index back if they are found.
-     * If they aren't: -1 is sent back.
-     * @param username
-     * @return
-     */
-    public static int findIndexOfUser(String username)
-    {
-        int i = 0;
-        for (User user:GlobalAcross.allUsers)
-        {
-            if (user.getUsername().equals(username))
-            {
-                GlobalAcross.currentUserIndex = i;
-                return i;
+
+
+
+
+    public void setCurrentUser(int index){
+        DatabaseReference usersPlaceRef = FirebaseDatabase.getInstance().getReference("UsersPlace").child(index+"");
+        usersPlaceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                GenericTypeIndicator<User> typeIndicator = new GenericTypeIndicator<User>() {};
+                GlobalAcross.currentUser = snapshot.getValue(typeIndicator);
+
+                Toast.makeText(MainActivity.this, "התחברת בהצלחה " + GlobalAcross.currentUser.getfName()+ '!', Toast.LENGTH_SHORT).show();
+                sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt(Index,indexOX);
+                editor.putBoolean(Logged,true);
+                editor.commit();
+
+                Intent intent = new Intent(MainActivity.this, HomepageActivity.class);
+                startActivity(intent);
+                finish();
             }
-            i++;
-        }
-        return -1;
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
-//    public static int findIndexOfUserV2(String username){
-//        DatabaseReference usersPlaceRef = FirebaseDatabase.getInstance().getReference("UsersPlace");
-//
-//        Query queryUsername = usersPlaceRef
-//                .orderByChild("username")
-//                .equalTo(username);
-//        queryUsername.
-//    }
+    public static User getUserFromIndex(String index){
+        DatabaseReference usersPlaceRef = FirebaseDatabase.getInstance().getReference("UsersPlace").child(index);
+        final User[] user = {null};
+
+        usersPlaceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                GenericTypeIndicator<User> t = new GenericTypeIndicator<User>() {};
+                user[0] = snapshot.getValue(t);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        return user[0];
+
+    }
+
+    public void isPasswordCorrect(){
+        DatabaseReference usersPlaceRef = FirebaseDatabase.getInstance().getReference("UsersPlace").child(indexOX+"").child("password");
+        usersPlaceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String realPass = snapshot.getValue().toString();
+                if (etPassword.getText().toString().equals(realPass)){
+                    //Password and username are correct by this point!
+
+
+                    setCurrentUser(indexOX);
+
+
+
+                }
+                else{
+                    //Password is incorrect!
+                    vibratePhone(200);
+                    Toast.makeText(MainActivity.this, "יש לבדוק את הסיסמה ולנסות שוב.", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    public void findIndexOfUserV2(){
+        DatabaseReference usersPlaceRef = FirebaseDatabase.getInstance().getReference("UsersPlace");
+
+        final Query queryUsername = usersPlaceRef
+                .orderByChild("username")
+                .equalTo(etUsername.getText().toString());
+
+        queryUsername.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    //Username exists!
+                    indexOX = Integer.valueOf(snapshot.getChildren().iterator().next().getKey());
+
+                    //Toast.makeText(MainActivity.this,indexOX+" is your index",Toast.LENGTH_LONG).show();
+
+                    if (indexOX != -1){
+                        //Username exists!
+
+                            //Username and Password are correct and the user exists!
+
+                            //GlobalAcross.currentUser = getUserFromIndex(String.valueOf(indexUser));
+
+                            //Set the current user as the proper one
+
+                            isPasswordCorrect();
+
+
+
+
+
+                    }
+                    else{
+                        //Username doesn't exist!
+                        vibratePhone(200);
+                        Toast.makeText(MainActivity.this, "יש לבדוק את פרטי ההתחברות ולנסות שוב.", Toast.LENGTH_SHORT).show();
+                    }
+
+
+                }
+                else{
+                    //Username doesn't exist!
+                    vibratePhone(200);
+                    Toast.makeText(MainActivity.this, "יש לבדוק את פרטי ההתחברות ולנסות שוב.", Toast.LENGTH_SHORT).show();
+                }
+                            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
     /**
      * -Currently unused- This function logs the user in (like the other function) but in a better, more efficient way

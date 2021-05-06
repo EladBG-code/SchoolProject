@@ -22,7 +22,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import static com.theproject.schoolproject.GlobalAcross.allUsers;
 import static com.theproject.schoolproject.GlobalAcross.currentUser;
 import static com.theproject.schoolproject.GlobalAcross.currentUserIndex;
 
@@ -105,8 +104,8 @@ public class LoadingActivity extends AppCompatActivity {
                 GenericTypeIndicator<ArrayList<User>> t = new GenericTypeIndicator<ArrayList<User>>() {};
                 if (sharedPreferences.getBoolean("logged", false)) {
                     //Checks if the user was logged in the device and places the correct path reference for his saved index and pulls out the class out of the arraylist in the firebase database
-                    currentUser = snapshot.getValue(t).get(sharedPreferences.getInt("index", 0));
                     currentUserIndex = sharedPreferences.getInt("index",0);
+                    currentUser = snapshot.getValue(t).get(currentUserIndex);
                     progressBar.setProgress(100);
                     loadingP.setText(100+"%");
                     Intent intent = new Intent(LoadingActivity.this, HomepageActivity.class);
@@ -114,10 +113,7 @@ public class LoadingActivity extends AppCompatActivity {
                 }
                 else {
                     //Was not logged in the current device
-                    allUsers = new ArrayList<>();
-                    if (snapshot.getValue(t) != null) {
-                        allUsers.addAll(snapshot.getValue(t));
-                    }
+
                     Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
                     startActivity(intent);
                 }
