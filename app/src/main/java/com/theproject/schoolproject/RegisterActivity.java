@@ -303,6 +303,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 //GlobalAcross.setUserIndex(GlobalAcross.allUsers.size());
                 //Toast.makeText(this, GlobalAcross.getUserIndex(), Toast.LENGTH_SHORT).show();
                 myRef.setValue(GlobalAcross.allUsers);
+                
                 GlobalAcross.currentUser = newUser;
                 Toast.makeText(this, "נרשמת בהצלחה!", Toast.LENGTH_SHORT).show();
                 GlobalAcross.firstLoginSuggestion = true;
