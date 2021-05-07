@@ -1,15 +1,19 @@
 package com.theproject.schoolproject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -25,8 +29,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class RegisterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener{
     //XML Spinner items insertion below
@@ -290,6 +297,15 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         }
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+
+
     /**
      * This function registers the user into the realtime database if they pass the validation and if they choose to go back to login - they are moved appropriately.
      * @param v
@@ -298,17 +314,67 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
     public void onClick(View v) {
         if(v == cvRegisterBtn){
             if(validDetails(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString())){
-                User newUser = new User(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString(),classNum);
-                GlobalAcross.allUsers.add(newUser);
+
+
+                if (!isNetworkAvailable()){
+                    //NO INTERNET
+                    Toast.makeText(RegisterActivity.this, "אאוץ'! נתקלנו בבעיית אינטרנט.", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    //HAS INTERNET
+                    myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            User newUser = new User(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString(),classNum);
+                            Long listSize = snapshot.getChildrenCount();
+                            myRef.child(listSize+"").setValue(newUser);
+
+
+
+                            GlobalAcross.currentUser = newUser;
+                            Toast.makeText(RegisterActivity.this, "נרשמת בהצלחה!", Toast.LENGTH_SHORT).show();
+                            GlobalAcross.firstLoginSuggestion = true;
+
+                            SharedPreferences sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putInt("index",listSize.intValue());
+                            editor.putBoolean("logged",true);
+                            editor.commit();
+
+                            Intent intent = new Intent(RegisterActivity.this, HomepageActivity.class);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+
+
+
+
+                /*                            WORKING CODE BELOW                           */
+
+                /*
+                String key = myRef.getKey();
+                myRef.child(key).push();
+                myRef.child(key).setValue(newUser);
+
+                //GlobalAcross.allUsers.add(newUser);
                 //GlobalAcross.setUserIndex(GlobalAcross.allUsers.size());
                 //Toast.makeText(this, GlobalAcross.getUserIndex(), Toast.LENGTH_SHORT).show();
-                myRef.setValue(GlobalAcross.allUsers);
+                //myRef.setValue(GlobalAcross.allUsers);
                 
                 GlobalAcross.currentUser = newUser;
                 Toast.makeText(this, "נרשמת בהצלחה!", Toast.LENGTH_SHORT).show();
                 GlobalAcross.firstLoginSuggestion = true;
                 Intent intent = new Intent(this, HomepageActivity.class);
                 startActivity(intent);
+                */
+
+                /*                            WORKING CODE ABOVE                           */
             }
         }
         if(v == tvLoginBack){

@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +73,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     DatabaseReference summariesRef;
     FirebaseRecyclerOptions<Summary> options;
     FirebaseRecyclerAdapter<Summary, MyViewHolder> adapter;
+    ProgressBar pbLoadingSummaries;
     SharedPreferences sharedPreferences;
     LinearLayout llNoSummaries;
     ImageView ivSubjectVector;
@@ -89,6 +91,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         initDrawer();
 
 
+        pbLoadingSummaries = findViewById(R.id.pbLoadingSummaries);
         mp = MediaPlayer.create(this, R.raw.add_summary_sound);
 
             subject = new Subject(getIntent().getStringExtra("SubjectSelected"));
@@ -189,6 +192,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         public void onDataChanged() {
             if (adapter.getItemCount() == 0){
                 llNoSummaries.setVisibility(View.VISIBLE);
+                pbLoadingSummaries.setVisibility(View.INVISIBLE);
             }
             else{
                 llNoSummaries.setVisibility(View.GONE);
@@ -226,6 +230,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
 
         @Override
         protected void onBindViewHolder(@NonNull final MyViewHolder holder, final int position, @NonNull final Summary model) {
+            pbLoadingSummaries.setVisibility(View.INVISIBLE);
         holder.tvTitle.setText(model.getTitle());
         if(model.getDescription().length() > 15){
             holder.tvDescription.setText(model.getDescription().substring(0,15)+"...");
