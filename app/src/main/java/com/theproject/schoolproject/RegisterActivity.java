@@ -339,6 +339,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putInt("index",listSize.intValue());
                             editor.putBoolean("logged",true);
+                            GlobalAcross.currentUserIndex = listSize.intValue();
                             editor.commit();
 
                             Intent intent = new Intent(RegisterActivity.this, HomepageActivity.class);
