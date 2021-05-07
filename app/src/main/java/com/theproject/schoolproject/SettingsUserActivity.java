@@ -168,23 +168,11 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
         if (item.getTitle().equals("התנתקות")) {
 
             androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(SettingsUserActivity.this);
-            builder.setMessage("האם את\\ה בטוח\\ה שאת\\ה רוצה להתנתק?")
+            builder.setMessage(GlobalAcross.logoutMessage)
                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            GlobalAcross.currentUser = null;
-                            Intent intent = new Intent(SettingsUserActivity.this, LoadingActivity.class);
-                            Toast.makeText(SettingsUserActivity.this, "התנתקת בהצלחה.", Toast.LENGTH_SHORT - 5000).show();
-                            sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
-                            GlobalAcross.currentUser = null;
-
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.remove(MainActivity.Index); //Shared preferences - login keeper (key and value)
-                            editor.remove(MainActivity.Logged); //Shared preferences - login keeper
-                            editor.commit();
-
-                            startActivity(intent);
-                            finish();
+                            logoutFunction();
                         }
                     })
                     .setNegativeButton("לא", null);
@@ -450,6 +438,21 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
                 count++;
         }
         return count++;
+    }
+
+    public void logoutFunction(){
+        GlobalAcross.currentUser = null;
+        Intent intent = new Intent(getApplicationContext(), LoadingActivity.class);
+        Toast.makeText(getApplicationContext(), "התנתקת בהצלחה.", Toast.LENGTH_SHORT - 5000).show();
+        sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("index"); //Shared preferences - login keeper (key and value)
+        editor.remove("logged"); //Shared preferences - login keeper
+        editor.commit();
+
+        startActivity(intent);
+        finish();
     }
 
 }

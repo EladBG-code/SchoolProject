@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-    public void setCurrentUser(int index){
+    public void setCurrentUser(final int index){
         DatabaseReference usersPlaceRef = FirebaseDatabase.getInstance().getReference("UsersPlace").child(index+"");
         usersPlaceRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -175,6 +175,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 Toast.makeText(MainActivity.this, "התחברת בהצלחה " + GlobalAcross.currentUser.getfName()+ '!', Toast.LENGTH_SHORT).show();
                 sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+
+                GlobalAcross.currentUserIndex = indexOX;
+
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putInt(Index,indexOX);
                 editor.putBoolean(Logged,true);

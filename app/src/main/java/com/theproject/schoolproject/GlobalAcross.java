@@ -1,6 +1,8 @@
 package com.theproject.schoolproject;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.text.Layout;
 import android.widget.ArrayAdapter;
@@ -27,6 +29,7 @@ public class GlobalAcross {
     public static String infoMessage;
     public static int editingTemp;
     public static int selectedSubjectVectorID;
+    public static String logoutMessage = "האם אתם בטוחים שאתם רוצים להתנתק?";
 
     //Useful global functions across the application : for the current user
     /**
@@ -43,6 +46,7 @@ public class GlobalAcross {
         }
         return "י"+'"'+"ב";
     }
+
 
 
     /**
