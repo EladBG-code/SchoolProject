@@ -50,6 +50,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -178,7 +179,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
                     }
                     //else if(child.getChildrenCount() != 1){
                     else
-                        usersThatLiked = (ArrayList<String>) child.getValue();
+                        usersThatLiked = (ArrayList<String>)child.getValue();
                     //}
                 }
             }
