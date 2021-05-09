@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import android.view.KeyEvent;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +50,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -71,9 +74,11 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     DatabaseReference summariesRef;
     FirebaseRecyclerOptions<Summary> options;
     FirebaseRecyclerAdapter<Summary, MyViewHolder> adapter;
+    ProgressBar pbLoadingSummaries;
     SharedPreferences sharedPreferences;
     LinearLayout llNoSummaries;
     ImageView ivSubjectVector;
+    MediaPlayer mp;
 
     /**
      * Usual onCreate function
@@ -86,6 +91,9 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         initComponents();
         initDrawer();
 
+
+        pbLoadingSummaries = findViewById(R.id.pbLoadingSummaries);
+        mp = MediaPlayer.create(this, R.raw.add_summary_sound);
 
             subject = new Subject(getIntent().getStringExtra("SubjectSelected"));
             tvSubjectName.setText(getIntent().getStringExtra("SubjectSelected")); /*This line sets the name of the subject which was selected as the title of the subject's summary page*/
@@ -171,7 +179,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
                     }
                     //else if(child.getChildrenCount() != 1){
                     else
-                        usersThatLiked = (ArrayList<String>) child.getValue();
+                        usersThatLiked = (ArrayList<String>)child.getValue();
                     //}
                 }
             }
@@ -185,6 +193,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         public void onDataChanged() {
             if (adapter.getItemCount() == 0){
                 llNoSummaries.setVisibility(View.VISIBLE);
+                pbLoadingSummaries.setVisibility(View.INVISIBLE);
             }
             else{
                 llNoSummaries.setVisibility(View.GONE);
@@ -222,6 +231,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
 
         @Override
         protected void onBindViewHolder(@NonNull final MyViewHolder holder, final int position, @NonNull final Summary model) {
+            pbLoadingSummaries.setVisibility(View.INVISIBLE);
         holder.tvTitle.setText(model.getTitle());
         if(model.getDescription().length() > 15){
             holder.tvDescription.setText(model.getDescription().substring(0,15)+"...");
@@ -358,6 +368,21 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         }
     }
 
+    public void logoutFunction(){
+        GlobalAcross.currentUser = null;
+        Intent intent = new Intent(getApplicationContext(), LoadingActivity.class);
+        Toast.makeText(getApplicationContext(), "התנתקת בהצלחה.", Toast.LENGTH_SHORT - 5000).show();
+        sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("index"); //Shared preferences - login keeper (key and value)
+        editor.remove("logged"); //Shared preferences - login keeper
+        editor.commit();
+
+        startActivity(intent);
+        finish();
+    }
+
     /**
      * Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)
      * @param item
@@ -368,22 +393,11 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
 
         if(item.getTitle().equals("התנתקות")){
             AlertDialog.Builder builder = new AlertDialog.Builder(ViewSummariesOnSubjectActivity.this);
-            builder.setMessage("האם את\\ה בטוח\\ה שאת\\ה רוצה להתנתק?")
+            builder.setMessage(GlobalAcross.logoutMessage)
                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            currentUser = null;
-                            Intent intent = new Intent(ViewSummariesOnSubjectActivity.this, LoadingActivity.class);
-                            Toast.makeText(ViewSummariesOnSubjectActivity.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT).show();
-                            sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
-                            GlobalAcross.currentUser = null;
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.remove(MainActivity.Index); //Shared preferences - login keeper (key and value)
-                            editor.remove(MainActivity.Logged); //Shared preferences - login keeper
-                            editor.commit();
-
-                            startActivity(intent);
-                            finish();
+                           logoutFunction();
                         }
                     })
                     .setNegativeButton("לא",null);
@@ -439,6 +453,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
             floatingUploadButton.animate().rotationBy(360).setDuration(550).setListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
+                    startAddSound();
                     floatingUploadButton.setClickable(false);
                 }
 
@@ -464,6 +479,10 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
 
         }
 
+    }
+
+    public void startAddSound(){
+        mp.start();
     }
 
 

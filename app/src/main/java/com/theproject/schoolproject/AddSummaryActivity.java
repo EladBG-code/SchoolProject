@@ -500,19 +500,20 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         return result;
     }
 
-    /**
-     * -Currently unused- This function checks if the a certain filer is heavier than X MB
-     * @param file
-     * @param x
-     * @return
-     */
-//    private boolean isFileLessThanX_MB(File file,int x) {
-//        int maxFileSize = x * 1024 * 1024;
-//        Long l = file.length();
-//        String fileSize = l.toString();
-//        int finalFileSize = Integer.parseInt(fileSize);
-//        return finalFileSize >= maxFileSize;
-//    }
+    public void logoutFunction(){
+        GlobalAcross.currentUser = null;
+        Intent intent = new Intent(getApplicationContext(), LoadingActivity.class);
+        Toast.makeText(getApplicationContext(), "התנתקת בהצלחה.", Toast.LENGTH_SHORT - 5000).show();
+        sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("index"); //Shared preferences - login keeper (key and value)
+        editor.remove("logged"); //Shared preferences - login keeper
+        editor.commit();
+
+        startActivity(intent);
+        finish();
+    }
 
     /**
      * Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)
@@ -525,22 +526,11 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         if(item.getTitle().equals("התנתקות")){
             //This lines below represent the builder of the dialog of the disconnect
             AlertDialog.Builder builder = new AlertDialog.Builder(AddSummaryActivity.this);
-            builder.setMessage("האם את\\ה בטוח\\ה שאת\\ה רוצה להתנתק?")
+            builder.setMessage(GlobalAcross.logoutMessage)
                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            GlobalAcross.currentUser = null;
-                            Intent intent = new Intent(AddSummaryActivity.this,MainActivity.class);
-                            Toast.makeText(AddSummaryActivity.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT).show();
-                            sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
-
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.remove(MainActivity.Index); //Shared preferences - login keeper (key and value)
-                            editor.remove(MainActivity.Logged); //Shared preferences - login keeper
-                            editor.commit();
-
-                            startActivity(intent);
-                            finish();
+                           logoutFunction();
                         }
                     })
                     .setNegativeButton("לא",null);

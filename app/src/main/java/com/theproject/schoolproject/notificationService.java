@@ -1,5 +1,6 @@
 package com.theproject.schoolproject;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,6 +12,10 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.widget.Toast;
@@ -28,6 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,8 +89,13 @@ public class NotificationService extends Service {
                                 FirebaseDatabase.getInstance().getReference(subject).child(key).child("hasNotified").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
+
+                                        Uri notifSoundUri = Uri.parse("android.resource://com.my.package/" + R.raw.service_notification_sound_effect);
+
                                         int NOTIFICATION_ID = 234;
+
                                         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
                                         String CHANNEL_ID = "HS+";
                                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                                             CharSequence name = "HS+";
@@ -97,6 +108,7 @@ public class NotificationService extends Service {
                                             mChannel.enableVibration(true);
                                             mChannel.setShowBadge(false);
                                             notificationManager.createNotificationChannel(mChannel);
+
                                         }
 
                                         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
@@ -107,8 +119,8 @@ public class NotificationService extends Service {
                                                 .setSmallIcon(R.drawable.like_icon)
                                                 .setAutoCancel(true)
                                                 .setStyle(new NotificationCompat.BigTextStyle())
+                                                .setSound(notifSoundUri)
                                                 ;
-
 
                                         //Intent resultIntent = new Intent(getApplicationContext(),ViewSummaryActivity.class);
                                         Intent resultIntent = new Intent(getApplicationContext(), HomepageActivity.class);
@@ -120,6 +132,8 @@ public class NotificationService extends Service {
                                         stackBuilder.addNextIntent(resultIntent);
                                         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_ONE_SHOT);
                                         builder.setContentIntent(resultPendingIntent);
+//                                        MediaPlayer mediaPlayer = MediaPlayer.create(NotificationService.this, R.raw.service_notification_sound_effect);
+//                                        mediaPlayer.start();
                                         notificationManager.notify(NOTIFICATION_ID, builder.build());
 
                                     }

@@ -172,6 +172,21 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         //GlobalAcross.activateGradientBackground(drawerLayout);
     }
 
+    public void logoutFunction(){
+        GlobalAcross.currentUser = null;
+        Intent intent = new Intent(getApplicationContext(), LoadingActivity.class);
+        Toast.makeText(getApplicationContext(), "התנתקת בהצלחה.", Toast.LENGTH_SHORT - 5000).show();
+        sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("index"); //Shared preferences - login keeper (key and value)
+        editor.remove("logged"); //Shared preferences - login keeper
+        editor.commit();
+
+        startActivity(intent);
+        finish();
+    }
+
     /**
      * Repeated function that operates the side drawer (inherits navigationView) that navigates to the proper activities in the app and shows 2 dialogs (one for feedback and one for logging out)
      * @param item
@@ -183,22 +198,11 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         if(item.getTitle().equals("התנתקות")){
 
             androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(HomepageActivity.this);
-            builder.setMessage("האם את\\ה בטוח\\ה שאת\\ה רוצה להתנתק?")
+            builder.setMessage(GlobalAcross.logoutMessage)
                     .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            GlobalAcross.currentUser = null; /*Temp disable*/
-                            Intent intent = new Intent(HomepageActivity.this,LoadingActivity.class);
-                            Toast.makeText(HomepageActivity.this,"התנתקת בהצלחה.", Toast.LENGTH_SHORT-5000).show();
-                            sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
-
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.remove(MainActivity.Index); //Shared preferences - login keeper (key and value)
-                            editor.remove(MainActivity.Logged); //Shared preferences - login keeper
-                            editor.commit();
-
-                            startActivity(intent);
-                            finishAfterTransition();
+                           logoutFunction();
                         }
                     })
                     .setNegativeButton("לא",null);

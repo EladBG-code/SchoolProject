@@ -15,6 +15,7 @@ import android.os.Vibrator;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,10 +32,11 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText etPassword,etUsername;
-    TextView tvRegister;
+    TextView tvRegister,tvLoginCV;
     FirebaseDatabase database;
     CardView cvLoginBtn;
     DatabaseReference myRef;
+    ProgressBar pbLogin;
     int indexOX;
 
     SharedPreferences sharedPreferences;
@@ -57,7 +59,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         etUsername = findViewById(R.id.etUsernameL);
         /*btnAutoFill = findViewById(R.id.btnAutoFill); */ //Remove this line once you're done with testing
         tvRegister = findViewById(R.id.tvRegister);
+        tvLoginCV = findViewById(R.id.tvLoginCV);
         cvLoginBtn = findViewById(R.id.cvLoginBtn);
+        pbLogin = findViewById(R.id.pbLogin);
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("UsersPlace");
@@ -68,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         /*btnAutoFill.setOnClickListener(this); */ //Remove this line once you're done with testing
 
         sharedPreferences = getSharedPreferences(Index,Context.MODE_PRIVATE);
+
+
 
 
         }
@@ -86,8 +92,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(this, RegisterActivity.class), ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }
         if(v == cvLoginBtn){
+            pbLogin.setVisibility(View.VISIBLE);
+            tvLoginCV.setVisibility(View.INVISIBLE);
             if (etUsername.getText().toString().isEmpty() || etPassword.getText().toString().isEmpty()) {
                 vibratePhone(200);
+                pbLogin.setVisibility(View.INVISIBLE);
+                tvLoginCV.setVisibility(View.VISIBLE);
                 Toast.makeText(this, "אנא בדקו אם מלאתם את שדה הסיסמה ושם המשתמש.", Toast.LENGTH_SHORT).show();
             }
             else{
@@ -97,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 //                    findIndexOfUserV2(etUsername.getText().toString());
 
+                    //Fixes memory problems and entirely cloud based as well as it works in sync instead of async now
                     findIndexOfUserV2();
 
 //                    int indexUser = findIndexOfUserV2();
@@ -154,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-    public void setCurrentUser(int index){
+    public void setCurrentUser(final int index){
         DatabaseReference usersPlaceRef = FirebaseDatabase.getInstance().getReference("UsersPlace").child(index+"");
         usersPlaceRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -164,6 +175,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 Toast.makeText(MainActivity.this, "התחברת בהצלחה " + GlobalAcross.currentUser.getfName()+ '!', Toast.LENGTH_SHORT).show();
                 sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+
+                GlobalAcross.currentUserIndex = indexOX;
+
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putInt(Index,indexOX);
                 editor.putBoolean(Logged,true);
@@ -178,25 +192,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
-    }
-
-    public static User getUserFromIndex(String index){
-        DatabaseReference usersPlaceRef = FirebaseDatabase.getInstance().getReference("UsersPlace").child(index);
-        final User[] user = {null};
-
-        usersPlaceRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                GenericTypeIndicator<User> t = new GenericTypeIndicator<User>() {};
-                user[0] = snapshot.getValue(t);
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        return user[0];
-
     }
 
     public void isPasswordCorrect(){
@@ -217,6 +212,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 else{
                     //Password is incorrect!
                     vibratePhone(200);
+                    tvLoginCV.setVisibility(View.VISIBLE);
+                    pbLogin.setVisibility(View.INVISIBLE);
                     Toast.makeText(MainActivity.this, "יש לבדוק את הסיסמה ולנסות שוב.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -264,6 +261,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //Username doesn't exist!
                         vibratePhone(200);
                         Toast.makeText(MainActivity.this, "יש לבדוק את פרטי ההתחברות ולנסות שוב.", Toast.LENGTH_SHORT).show();
+                        tvLoginCV.setVisibility(View.VISIBLE);
+                        pbLogin.setVisibility(View.INVISIBLE);
                     }
 
 
@@ -272,6 +271,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //Username doesn't exist!
                     vibratePhone(200);
                     Toast.makeText(MainActivity.this, "יש לבדוק את פרטי ההתחברות ולנסות שוב.", Toast.LENGTH_SHORT).show();
+                    tvLoginCV.setVisibility(View.VISIBLE);
+                    pbLogin.setVisibility(View.INVISIBLE);
                 }
                             }
             @Override
@@ -281,80 +282,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    /**
-     * -Currently unused- This function logs the user in (like the other function) but in a better, more efficient way
-     * @param username
-     * @param password
-     */
-    public void loginV2(String username,String password){
-
-        //FUNCTION IS A W.I.P | Status - Unfinished
-
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference dbUsername = database.getReference("UsersPlace");
-        DatabaseReference dbPassword;
-        final String[] userPass = new String[2];
-        final long[] limit = new long[1];
-        dbUsername.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                //Get the amount of users on the app
-                limit[0] = snapshot.getChildrenCount();
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                //Failure case
-            }
-        });
-
-        for(int i=0;i<limit[0];i++){
-            dbUsername = database.getReference("UsersPlace/"+i+"/username");
-            dbPassword = database.getReference("UsersPlace/"+i+"/password");
-
-            dbUsername.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    userPass[0] = snapshot.getValue(new GenericTypeIndicator<String>(){});
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-
-            dbPassword.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    userPass[1] = snapshot.getValue(new GenericTypeIndicator<String>(){});
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-
-            if(userPass[0].equals(username) && userPass[1].equals(password)){
-                dbUsername = database.getReference("UsersPlace/"+i);
-                dbUsername.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.getValue(new GenericTypeIndicator<User>() {}) != null) {
-                            GlobalAcross.currentUser = snapshot.getValue(new GenericTypeIndicator<User>() {});
-                            Toast.makeText(MainActivity.this, "Success!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-            }
-        }
-
-    }
 
     /**
      * Usual onBackPressed function
