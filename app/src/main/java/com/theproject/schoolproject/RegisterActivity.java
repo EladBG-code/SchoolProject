@@ -35,6 +35,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class RegisterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener{
     //XML Spinner items insertion below
     int classNum;
@@ -327,7 +329,15 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             User newUser = new User(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString(),classNum);
                             Long listSize = snapshot.getChildrenCount();
-                            myRef.child(listSize+"").setValue(newUser);
+
+                            if (listSize == 0){
+                                ArrayList<User> userArrayListStart = new ArrayList<>();
+                                userArrayListStart.add(newUser);
+                                myRef.setValue(userArrayListStart);
+                            }
+                            else{
+                                myRef.child(listSize+"").setValue(newUser);
+                            }
 
 
 
