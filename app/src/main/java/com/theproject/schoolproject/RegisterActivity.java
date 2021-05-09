@@ -1,5 +1,6 @@
 package com.theproject.schoolproject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -25,8 +26,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class RegisterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener{
     //XML Spinner items insertion below
@@ -68,6 +72,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("UsersPlace");
+
 
         // Read from the database
     }
@@ -166,14 +171,16 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         //The integer classNum represents the class the user is in: for 10th grade it will be 1, for 11th- 2, for 12th- 3
-        if (arrClasses[i].equals("י'")){
-            classNum = 1;
-        }
-        if (arrClasses[i].equals("י"+'"'+"א")){
-            classNum = 2;
-        }
-        if (arrClasses[i].equals("י"+'"'+"ב")){
-            classNum = 3;
+        switch (arrClasses[i]) {
+            case "י'": {
+                classNum = 1;
+            }
+            case "י" + '"' + "א": {
+                classNum = 2;
+            }
+            case "י" + '"' + "ב": {
+                classNum = 3;
+            }
         }
     }
     
@@ -303,7 +310,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 //GlobalAcross.setUserIndex(GlobalAcross.allUsers.size());
                 //Toast.makeText(this, GlobalAcross.getUserIndex(), Toast.LENGTH_SHORT).show();
                 myRef.setValue(GlobalAcross.allUsers);
-                
+
                 GlobalAcross.currentUser = newUser;
                 Toast.makeText(this, "נרשמת בהצלחה!", Toast.LENGTH_SHORT).show();
                 GlobalAcross.firstLoginSuggestion = true;

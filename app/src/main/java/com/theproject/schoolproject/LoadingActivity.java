@@ -104,8 +104,8 @@ public class LoadingActivity extends AppCompatActivity {
                 GenericTypeIndicator<ArrayList<User>> t = new GenericTypeIndicator<ArrayList<User>>() {};
                 if (sharedPreferences.getBoolean("logged", false)) {
                     //Checks if the user was logged in the device and places the correct path reference for his saved index and pulls out the class out of the arraylist in the firebase database
-                    currentUserIndex = sharedPreferences.getInt("index",0);
-                    currentUser = snapshot.getValue(t).get(currentUserIndex);
+                    GlobalAcross.currentUserIndex = sharedPreferences.getInt("index",0);
+                    currentUser = snapshot.getValue(t).get(GlobalAcross.currentUserIndex);
                     progressBar.setProgress(100);
                     loadingP.setText(100+"%");
                     Intent intent = new Intent(LoadingActivity.this, HomepageActivity.class);
