@@ -49,8 +49,6 @@ public class NotificationService extends Service {
         return null;
     }
 
-
-
     /**
      * This onStartCommand function of the service checks if the logged in user's summaries have passed
      * or are equal to 5 likes. If it did pass or equal to 5 - the user receives a notification that tells them on which subject it happened
@@ -68,7 +66,9 @@ public class NotificationService extends Service {
         String[] arr = {"מתמטיקה","היסטוריה","לשון","אזרחות","תנ"+'"'+"ך","ספרות","אנגלית","ביולוגיה","מדעי המחשב","כימיה","פיזיקה","תולדות האומנות","תקשורת","מדעי החברה"};
         //14 subjects
         final ArrayList<String> keys = new ArrayList<>();
+
         final SharedPreferences sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+
         for(final String subject : arr){
             final DatabaseReference ref = FirebaseDatabase.getInstance().getReference(subject);
 
@@ -78,9 +78,12 @@ public class NotificationService extends Service {
                     //GenericTypeIndicator<HashMap<String,Summary>> t = new GenericTypeIndicator<HashMap<String,Summary>>(){};
                     final String subject = snapshot.getKey(); //subject
                     if((HashMap<String,Summary>)snapshot.getValue() != null){
+
                         Map<String,HashMap <String,String>> summaries = new HashMap<String,HashMap <String,String>>((HashMap<String,HashMap <String,String>>)snapshot.getValue());
                         for (Map.Entry<String,HashMap <String,String>> entry : summaries.entrySet()) {
+
 //                            System.out.println(entry.getKey() + "/" + entry.getValue().getAmountOfLikes());
+
                             Map<String, String> summary = new HashMap<String, String>((HashMap<String, String>) entry.getValue());
                             //int userIndex = sharedPreferences.getInt("index",0);
                             if (String.valueOf(summary.get("amountOfLikes")).equals(String.valueOf(5)) && String.valueOf(summary.get("creatorIndex")).equals(String.valueOf(GlobalAcross.currentUserIndex)) && String.valueOf(summary.get("hasNotified")).equals("false")) { //Checks if amountOfLikes of current summary is equal to 5 (it is a long so converting to strings is necessary
