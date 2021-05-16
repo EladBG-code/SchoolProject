@@ -52,6 +52,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +89,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
         subject = getIntent().getStringExtra("subject");
         summaryKey = getIntent().getStringExtra("key");
+
 
         subjectChanged = false;
         pdfUri = null;
@@ -308,6 +310,8 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                             GlobalAcross.editingTemp += 2;   //adds 2 : one for deletion & one for uploading the new PDF
                         }
 
+
+
                         //FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("amountOfItemsToEdit").setValue(GlobalAcross.editingTemp); /*experiment*/
                         //Toast.makeText(EditSummaryActivity.this,temp,Toast.LENGTH_SHORT).show(); /*experiment*/
 
@@ -327,7 +331,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                             Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
                                             intent.putExtra("SubjectSelected", subject);
                                             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                                            finishAffinity();
+                                            finish();
                                         }
 
                                     }
@@ -355,36 +359,39 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                             if (pdfUri != null){
                                 //This function deletes the usersThatLiked the summary because the creator decided to change the PDF file & resets likes
                                 DatabaseReference deleteUsersRef = FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked");
-                                deleteUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        if(!snapshot.equals(null)){
+//                                deleteUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                    @Override
+//                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                        if(!snapshot.equals(null)){
+//
+//                                            final ArrayList<String> usersThatLikedCertainSummary = new ArrayList<>(); //ArrayList for indexes of users who liked the summary that's about to me deleted
+//                                            for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
+//                                                usersThatLikedCertainSummary.add(child.getValue().toString());
+//                                            }
+//                                            FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("amountOfLikes").setValue(0); //Resets amount of likes
+//                                            for (int i = 0; i < usersThatLikedCertainSummary.size(); i++) {
+//                                                //This onSuccess listener deletes the summary reference from the favoriteSummaries of every user who liked that certain summary
+//                                                FirebaseDatabase.getInstance().getReference("UserHashMap/" + usersThatLikedCertainSummary.get(i)).child("favoriteSummaries").child(summaryKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                                    @Override
+//                                                    public void onSuccess(Void aVoid) {
+//                                                        deletionProgress += (100 / (usersThatLikedCertainSummary.size() + 2));
+//                                                        //System.out.println(deletionProgress);
+//                                                        progressDialog.setProgress(deletionProgress);
+//                                                    }
+//                                                });
+//                                            }
+//                                            FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked").removeValue();
+//                                        }
+//                                    }
+//
+//                                    @Override
+//                                    public void onCancelled(@NonNull DatabaseError error) {
+//
+//                                    }
+//                                });
 
-                                            final ArrayList<String> usersThatLikedCertainSummary = new ArrayList<>(); //ArrayList for indexes of users who liked the summary that's about to me deleted
-                                            for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
-                                                usersThatLikedCertainSummary.add(child.getValue().toString());
-                                            }
-                                            FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("amountOfLikes").setValue(0); //Resets amount of likes
-                                            for (int i = 0; i < usersThatLikedCertainSummary.size(); i++) {
-                                                //This onSuccess listener deletes the summary reference from the favoriteSummaries of every user who liked that certain summary
-                                                FirebaseDatabase.getInstance().getReference("UsersPlace/" + usersThatLikedCertainSummary.get(i)).child("favoriteSummaries").child(summaryKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        deletionProgress += (100 / (usersThatLikedCertainSummary.size() + 2));
-                                                        //System.out.println(deletionProgress);
-                                                        progressDialog.setProgress(deletionProgress);
-                                                    }
-                                                });
-                                            }
-                                            FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked").removeValue();
-                                        }
-                                    }
+                                deleteChildrenFromRefMapPlus(FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked"),subject,summaryKey);
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-
-                                    }
-                                });
 
                             }
                             aSyncPDFchange();
@@ -601,6 +608,43 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         }
     }
 
+    private void deleteChildrenFromRefMapPlus(DatabaseReference myRef, final String summarySubject, final String summaryKey) {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot != null){
+                    final Long childrenCount = snapshot.getChildrenCount();
+
+                    for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
+                        FirebaseDatabase.getInstance().getReference("UserHashMap").child(child.getKey()).child("favoriteSummaries").removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                deletionProgress += (100 / (childrenCount / 100 + 2));
+                                //System.out.println(deletionProgress);
+                                progressDialog.setProgress(deletionProgress);
+                            }
+                        });
+                    }
+
+                    FirebaseDatabase.getInstance().getReference(summarySubject).child(summaryKey).child("usersThatLiked").removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            FirebaseDatabase.getInstance().getReference(summarySubject).child(summaryKey).child("amountOfLikes").setValue(0);
+                        }
+                    });
+
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     public void deleteChildrenFromRefMap(DatabaseReference myRef){
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -665,7 +709,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                                 Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
                                                 intent.putExtra("SubjectSelected", subject);
                                                 startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                                                finishAffinity();
+                                                finish();
                                             }
                                             //aSyncSubjectIf();
                                         }
@@ -700,7 +744,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                     Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
                                     intent.putExtra("SubjectSelected", subject);
                                     startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                                    finishAffinity();
+                                    finish();
                                 }
                             }).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -725,7 +769,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                                         Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
                                                         intent.putExtra("SubjectSelected", subject);
                                                         startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                                                        finishAffinity();
+                                                        finish();
 
                                                     }
                                                     //aSyncSubjectIf();
@@ -742,7 +786,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     Toast.makeText(EditSummaryActivity.this,"אאוץ'! נתקלנו בשגיאה - נסו שוב מאוחר יותר", Toast.LENGTH_SHORT).show();
-                    finishAffinity();
+                    finish();
                 }
             });
 
@@ -761,7 +805,9 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
             FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                     final Summary tempCopy = new Summary();
+
                     tempCopy.setAmountOfLikes(Long.valueOf(snapshot.child("amountOfLikes").getValue().toString()));
                     tempCopy.setAuthor(snapshot.child("author").getValue().toString());
                     tempCopy.setCreatorKey(snapshot.child("creatorKey").getValue().toString());

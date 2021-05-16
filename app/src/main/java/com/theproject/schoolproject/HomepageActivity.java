@@ -66,10 +66,12 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
 
+        tvWelcomeMessage = findViewById(R.id.tvHomeWelcome);
+        globalAcrossActions();
+
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbarHome);
-        tvWelcomeMessage = findViewById(R.id.tvHomeWelcome);
         cvToSummaries = findViewById(R.id.cvToSummaries);
         ivProfilePictureHomepage = findViewById(R.id.ivProfilePictureIconHomepage);
 
@@ -89,7 +91,6 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
 
         tryCatchPFP();
 
-        globalAcrossActions();
 
         startForegroundService(new Intent(HomepageActivity.this,NotificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
 
@@ -172,7 +173,6 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
             //First login --> show the user the ad to use the pdf scanner here
             tvWelcomeMessage.setText("ברוכים הבאים "+GlobalAcross.currentUser.getfName()+"!");
         }
-        GlobalAcross.infoMessage ="שלום "+GlobalAcross.currentUser.getfName()+" שמי אלעד ואני פיתחתי את אפליקציה זו. אשמח לקבל פידבק ל E-mail שלי: "+"eladbgbusiness@gmail.com";
 
         //GlobalAcross.activateGradientBackground(drawerLayout);
     }

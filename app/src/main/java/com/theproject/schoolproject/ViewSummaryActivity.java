@@ -283,7 +283,7 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
      * */
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        finish();
     }
 
     /**

@@ -7,6 +7,8 @@
         <item name="colorAccent">@color/colorPrimaryDark</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="toolbarStyle">@style/custom_toolbar</item>
+        <item name="android:navigationBarColor">@color/colorPrimary</item>
+
     </style>
 
     <style name="HeaderBar">
@@ -25,5 +27,7 @@
     <style name="custom_toolbar" parent="@style/Widget.AppCompat.Toolbar">
         <item name="titleTextColor">#FFFFFF</item>
     </style>
+
+
 
 </resources>

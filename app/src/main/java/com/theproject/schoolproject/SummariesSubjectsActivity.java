@@ -1,13 +1,16 @@
 package com.theproject.schoolproject;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.TooltipCompat;
 import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,11 +24,17 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Layout;
+import android.transition.Explode;
+import android.transition.Slide;
+import android.transition.TransitionManager;
+import android.util.Pair;
 import android.util.Xml;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -53,6 +62,13 @@ public class SummariesSubjectsActivity extends AppCompatActivity implements View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//            getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+//            getWindow().setExitTransition(new android.transition.Scene());
+//        }
+
+
         setContentView(R.layout.activity_summaries_subjects);
 
         drawerFunction();
@@ -100,6 +116,11 @@ public class SummariesSubjectsActivity extends AppCompatActivity implements View
         cvCommunication = findViewById(R.id.cvCommunication);
         cvSociology = findViewById(R.id.cvSociology);
 
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // only for oreo and newer devices - will have the tooltip feature
+            setToolTips();
+        }
+
         cvMathematics.setOnClickListener(this);
         cvHebrew.setOnClickListener(this);
         cvHistory.setOnClickListener(this);
@@ -117,16 +138,58 @@ public class SummariesSubjectsActivity extends AppCompatActivity implements View
     }
 
     /**
+     * The following function sets the tooltips of each cardview
+     */
+    public void setToolTips(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            cvMathematics.setTooltipText("מתמטיקה");
+            cvHistory.setTooltipText("היסטוריה");
+            cvHebrew.setTooltipText("עברית");
+            cvCitizenship.setTooltipText("אזרחות");
+            cvBible.setTooltipText("תנ"+'"'+"ך");
+            cvLiterature.setTooltipText("ספרות");
+            cvEnglish.setTooltipText("אנגלית");
+            cvBiology.setTooltipText("ביולוגיה");
+            cvComputerScience.setTooltipText("מדעי המחשב");
+            cvChemistry.setTooltipText("כימיה");
+            cvPhysics.setTooltipText("פיזיקה");
+            cvHistoryOfArt.setTooltipText("תולדות האומנות");
+            cvCommunication.setTooltipText("תקשורת");
+            cvSociology.setTooltipText("מדעי החברה");
+
+        }
+    }
+
+    /**
      * The function receives the string of the selected subject & its ID in the drawable folder of the vector asset image of the subject.
      * the function sends the user into the Activity that shows the summaries of the selected subject with the vector's ID image on top.
      * @param subjectSelected
      * @param vectorID
      */
-    public void nextPageOfCardView(String subjectSelected,int vectorID){
+    public void nextPageOfCardView(String subjectSelected,int vectorID,CardView cvSubject){
+
+        // Check if we're running on Android 5.0 or higher
         Intent intent = new Intent(this,ViewSummariesOnSubjectActivity.class);
-        intent.putExtra("SubjectSelected",subjectSelected);
-        GlobalAcross.selectedSubjectVectorID = vectorID;
-        startActivity(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // Apply activity transition
+
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, cvSubject,subjectSelected);
+
+
+
+            intent.putExtra("SubjectSelected",subjectSelected);
+            GlobalAcross.selectedSubjectVectorID = vectorID;
+            startActivity(intent,options.toBundle());
+
+        } else {
+            // Swap without transition
+            intent.putExtra("SubjectSelected",subjectSelected);
+            GlobalAcross.selectedSubjectVectorID = vectorID;
+            startActivity(intent);
+
+        }
+
+
     }
 
     /**
@@ -138,59 +201,59 @@ public class SummariesSubjectsActivity extends AppCompatActivity implements View
 
         if(v == cvMathematics){
             //Math subject
-            nextPageOfCardView("מתמטיקה",R.drawable.calculating_mathematics_vector_icon);
+            nextPageOfCardView("מתמטיקה",R.drawable.calculating_mathematics_vector_icon,cvMathematics);
         }
         if(v == cvHebrew){
             //Hebrew subject
-            nextPageOfCardView("לשון",R.drawable.essay_lashon_hebrew_vector_icon);
+            nextPageOfCardView("לשון",R.drawable.essay_lashon_hebrew_vector_icon,cvHebrew);
         }
         if(v == cvHistory){
             //History subject
-            nextPageOfCardView("היסטוריה",R.drawable.pillar_history_vector_icon);
+            nextPageOfCardView("היסטוריה",R.drawable.pillar_history_vector_icon,cvHistory);
         }
         if(v == cvCitizenship){
             //Citizenship subject
-            nextPageOfCardView("אזרחות",R.drawable.israeli_flag_citizenship_vector_icon);
+            nextPageOfCardView("אזרחות",R.drawable.israeli_flag_citizenship_vector_icon,cvCitizenship);
         }
         if(v == cvBible){
             //Bible subject
-            nextPageOfCardView("תנ"+'"'+"ך",R.drawable.hebrew_bible_bible_vector_icon);
+            nextPageOfCardView("תנ"+'"'+"ך",R.drawable.hebrew_bible_bible_vector_icon,cvBible);
         }
         if(v == cvLiterature){
             //Literature subject
-            nextPageOfCardView("ספרות",R.drawable.book_literature_vector_icon);
+            nextPageOfCardView("ספרות",R.drawable.book_literature_vector_icon,cvLiterature);
         }
         if(v == cvEnglish){
             //English subject
-            nextPageOfCardView("אנגלית",R.drawable.abc_blocks_english_vector_icon);
+            nextPageOfCardView("אנגלית",R.drawable.abc_blocks_english_vector_icon,cvEnglish);
         }
         if(v == cvBiology){
             //Biology subject
-            nextPageOfCardView("ביולוגיה",R.drawable.dna_biology_vector_icon);
+            nextPageOfCardView("ביולוגיה",R.drawable.dna_biology_vector_icon,cvBiology);
         }
         if(v == cvComputerScience){
             //Computer Science subject
-            nextPageOfCardView("מדעי המחשב",R.drawable.web_programming_computer_science_vector_icon);
+            nextPageOfCardView("מדעי המחשב",R.drawable.web_programming_computer_science_vector_icon,cvComputerScience);
         }
         if(v == cvChemistry){
             //Chemistry subject
-            nextPageOfCardView("כימיה",R.drawable.chemical_jar_chemistry_vector_icon);
+            nextPageOfCardView("כימיה",R.drawable.chemical_jar_chemistry_vector_icon,cvChemistry);
         }
         if(v == cvPhysics){
             //Physics subject
-            nextPageOfCardView("פיזיקה",R.drawable.formula_physics_vector_icon);
+            nextPageOfCardView("פיזיקה",R.drawable.formula_physics_vector_icon,cvPhysics);
         }
         if(v == cvHistoryOfArt){
             //Arts subject
-            nextPageOfCardView("תולדות האומנות",R.drawable.hieroglyph_history_of_art_vector_icon);
+            nextPageOfCardView("תולדות האומנות",R.drawable.hieroglyph_history_of_art_vector_icon,cvHistoryOfArt);
         }
         if(v == cvCommunication){
             //Communication subject
-            nextPageOfCardView("תקשורת",R.drawable.communication_communication_vector_icon);
+            nextPageOfCardView("תקשורת",R.drawable.communication_communication_vector_icon,cvCommunication);
         }
         if(v == cvSociology){
             //Social Studies subject
-            nextPageOfCardView("מדעי החברה",R.drawable.social_network_sociology_vector_icon);
+            nextPageOfCardView("מדעי החברה",R.drawable.social_network_sociology_vector_icon,cvSociology);
         }
     }
 

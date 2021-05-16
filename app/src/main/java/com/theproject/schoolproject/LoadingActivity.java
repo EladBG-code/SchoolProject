@@ -176,6 +176,8 @@ public class LoadingActivity extends AppCompatActivity {
                     GenericTypeIndicator<User> typeUser = new GenericTypeIndicator<User>() {};
                     currentUser = snapshot.getValue(typeUser);
 
+                    GlobalAcross.infoMessage ="שלום "+GlobalAcross.currentUser.getfName()+" שמי אלעד ואני פיתחתי את אפליקציה זו. אשמח לקבל פידבק ל E-mail שלי: "+"eladbgbusiness@gmail.com";
+
                     progressBar.setProgress(100);
                     loadingP.setText(100 + "%");
 
