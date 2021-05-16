@@ -180,7 +180,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
 
 
                     if (GlobalAcross.checkValid(summaryTitle, summaryDescription, AddSummaryActivity.this)) {
-                        summary = new Summary(GlobalAcross.currentUser.getfName() + " " + GlobalAcross.currentUser.getlName(), summaryTitle.getText().toString(), summaryDescription.getText().toString(), getSharedPreferences("index", Context.MODE_PRIVATE));
+                        summary = new Summary(GlobalAcross.currentUser.getfName() + " " + GlobalAcross.currentUser.getlName(), summaryTitle.getText().toString(), summaryDescription.getText().toString());
                         summary.setId(database.getReference(subject).push().getKey());
                         summaryID = summary.getId();
                         summariesRef = database.getReference(subject).push();
@@ -395,13 +395,6 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         startActivityForResult(intent, 86);
     }
 
-    private void startSound(String filename) throws IOException {
-        AssetFileDescriptor afd = getAssets().openFd(filename);
-        MediaPlayer player = new MediaPlayer();
-        player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-        player.prepareAsync();
-        player.start();
-    }
 
 
     /**
@@ -507,7 +500,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove("index"); //Shared preferences - login keeper (key and value)
+        editor.remove("key");
         editor.remove("logged"); //Shared preferences - login keeper
         editor.commit();
 

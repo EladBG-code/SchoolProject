@@ -67,8 +67,6 @@ public class NotificationService extends Service {
     public int onStartCommand(final Intent intent, int flags, int startId) {
         String[] arr = {"מתמטיקה","היסטוריה","לשון","אזרחות","תנ"+'"'+"ך","ספרות","אנגלית","ביולוגיה","מדעי המחשב","כימיה","פיזיקה","תולדות האומנות","תקשורת","מדעי החברה"};
         //14 subjects
-        final ArrayList<String> keys = new ArrayList<>();
-        final SharedPreferences sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
         for(final String subject : arr){
             final DatabaseReference ref = FirebaseDatabase.getInstance().getReference(subject);
 
@@ -83,14 +81,16 @@ public class NotificationService extends Service {
 //                            System.out.println(entry.getKey() + "/" + entry.getValue().getAmountOfLikes());
                             Map<String, String> summary = new HashMap<String, String>((HashMap<String, String>) entry.getValue());
                             //int userIndex = sharedPreferences.getInt("index",0);
-                            if (String.valueOf(summary.get("amountOfLikes")).equals(String.valueOf(5)) && String.valueOf(summary.get("creatorIndex")).equals(String.valueOf(GlobalAcross.currentUserIndex)) && String.valueOf(summary.get("hasNotified")).equals("false")) { //Checks if amountOfLikes of current summary is equal to 5 (it is a long so converting to strings is necessary
+                            SharedPreferences sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+
+                            if (String.valueOf(summary.get("amountOfLikes")).equals(String.valueOf(5)) && summary.get("creatorKey").equals(sharedPreferences.getString("key","")) && String.valueOf(summary.get("hasNotified")).equals("false")) { //Checks if amountOfLikes of current summary is equal to 5 (it is a long so converting to strings is necessary
                                 //Toast.makeText(notificationService.this,"dd",Toast.LENGTH_SHORT).show();
                                 final String key = entry.getKey();
                                 FirebaseDatabase.getInstance().getReference(subject).child(key).child("hasNotified").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
 
-                                        Uri notifSoundUri = Uri.parse("android.resource://com.my.package/" + R.raw.service_notification_sound_effect);
+                                       // Uri notifSoundUri = Uri.parse("android.resource://com.my.package/" + R.raw.service_notification_sound_effect);
 
                                         int NOTIFICATION_ID = 234;
 
@@ -114,12 +114,12 @@ public class NotificationService extends Service {
                                         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                                                 .setSmallIcon(R.mipmap.ic_launcher)
                                                 .setContentTitle("חדשות מעולות!")
-                                                .setContentText("הסיכום שלך בנושא " + subject + " הגיע לחמישה לייקים או יותר!")
+                                                .setContentText("הסיכום שלך במקצוע " + subject + " הגיע לחמישה לייקים או יותר!")
                                                 .setOngoing(false)
                                                 .setSmallIcon(R.drawable.like_icon)
                                                 .setAutoCancel(true)
                                                 .setStyle(new NotificationCompat.BigTextStyle())
-                                                .setSound(notifSoundUri)
+//                                                .setSound(notifSoundUri)
                                                 ;
 
                                         //Intent resultIntent = new Intent(getApplicationContext(),ViewSummaryActivity.class);

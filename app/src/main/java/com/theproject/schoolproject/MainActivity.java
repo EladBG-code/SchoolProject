@@ -37,7 +37,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     CardView cvLoginBtn;
     DatabaseReference myRef;
     ProgressBar pbLogin;
+
     int indexOX;
+    String keyOX;
 
     SharedPreferences sharedPreferences;
 
@@ -64,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         pbLogin = findViewById(R.id.pbLogin);
 
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("UsersPlace");
+        myRef = database.getReference("UserHashMap");
         
         cvLoginBtn.setOnClickListener(this);
         tvRegister.setOnClickListener(this);
@@ -92,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(this, RegisterActivity.class), ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }
         if(v == cvLoginBtn){
+
             pbLogin.setVisibility(View.VISIBLE);
             tvLoginCV.setVisibility(View.INVISIBLE);
             if (etUsername.getText().toString().isEmpty() || etPassword.getText().toString().isEmpty()) {
@@ -108,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                    findIndexOfUserV2(etUsername.getText().toString());
 
                     //Fixes memory problems and entirely cloud based as well as it works in sync instead of async now
-                    findIndexOfUserV2();
+                    loginFuncV2();
 
 //                    int indexUser = findIndexOfUserV2();
 
@@ -165,22 +168,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-    public void setCurrentUser(final int index){
-        DatabaseReference usersPlaceRef = FirebaseDatabase.getInstance().getReference("UsersPlace").child(index+"");
-        usersPlaceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+    public void setCurrentUser(){
+        DatabaseReference userHashMapRef = FirebaseDatabase.getInstance().getReference("UserHashMap").child(keyOX);
+        userHashMapRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                GenericTypeIndicator<User> typeIndicator = new GenericTypeIndicator<User>() {};
-                GlobalAcross.currentUser = snapshot.getValue(typeIndicator);
+                GenericTypeIndicator<User> userType = new GenericTypeIndicator<User>() {};
+                GlobalAcross.currentUser = snapshot.getValue(userType);
 
                 Toast.makeText(MainActivity.this, "התחברת בהצלחה " + GlobalAcross.currentUser.getfName()+ '!', Toast.LENGTH_SHORT).show();
                 sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
 
-                GlobalAcross.currentUserIndex = indexOX;
+                //GlobalAcross.currentUserIndex = indexOX;
+                GlobalAcross.currentUserKey = keyOX;
 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt(Index,indexOX);
-                editor.putBoolean(Logged,true);
+                //editor.putInt(Index,indexOX);
+                editor.putString("key",keyOX);
+                editor.putBoolean("logged",true);
                 editor.commit();
 
                 Intent intent = new Intent(MainActivity.this, HomepageActivity.class);
@@ -194,77 +199,65 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    public void isPasswordCorrect(){
-        DatabaseReference usersPlaceRef = FirebaseDatabase.getInstance().getReference("UsersPlace").child(indexOX+"").child("password");
-        usersPlaceRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String realPass = snapshot.getValue().toString();
-                if (etPassword.getText().toString().equals(realPass)){
-                    //Password and username are correct by this point!
+//    public void isPasswordCorrect(){
+//        DatabaseReference usersPlaceRef = FirebaseDatabase.getInstance().getReference("UsersPlace").child(indexOX+"").child("password");
+//        usersPlaceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                String realPass = snapshot.getValue().toString();
+//                if (etPassword.getText().toString().equals(realPass)){
+//                    //Password and username are correct by this point!
+//
+//
+//                    setCurrentUser(indexOX);
+//
+//
+//
+//                }
+//                else{
+//                    //Password is incorrect!
+//                    vibratePhone(200);
+//                    tvLoginCV.setVisibility(View.VISIBLE);
+//                    pbLogin.setVisibility(View.INVISIBLE);
+//                    Toast.makeText(MainActivity.this, "יש לבדוק את הסיסמה ולנסות שוב.", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//
+//    }
 
+    public void loginFuncV2(){
 
-                    setCurrentUser(indexOX);
+        DatabaseReference usersPlaceRef = FirebaseDatabase.getInstance().getReference("UserHashMap");
 
-
-
-                }
-                else{
-                    //Password is incorrect!
-                    vibratePhone(200);
-                    tvLoginCV.setVisibility(View.VISIBLE);
-                    pbLogin.setVisibility(View.INVISIBLE);
-                    Toast.makeText(MainActivity.this, "יש לבדוק את הסיסמה ולנסות שוב.", Toast.LENGTH_SHORT).show();
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-    }
-
-    public void findIndexOfUserV2(){
-        DatabaseReference usersPlaceRef = FirebaseDatabase.getInstance().getReference("UsersPlace");
-
-        final Query queryUsername = usersPlaceRef
-                .orderByChild("username")
-                .equalTo(etUsername.getText().toString());
-
-        queryUsername.addListenerForSingleValueEvent(new ValueEventListener() {
+        Query userHashMapRef = FirebaseDatabase.getInstance().getReference("UserHashMap").orderByChild("username").equalTo(etUsername.getText().toString()).limitToFirst(1);
+        userHashMapRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
-                    //Username exists!
-                    indexOX = Integer.valueOf(snapshot.getChildren().iterator().next().getKey());
+                    //Username exists in database and is therefore correct
 
-                    //Toast.makeText(MainActivity.this,indexOX+" is your index",Toast.LENGTH_LONG).show();
+                    if (snapshot.getChildren().iterator().next().child("password").getValue().toString().equals(etPassword.getText().toString())){
+                        //Username and password are correct
+                        keyOX = snapshot.getChildren().iterator().next().getKey();
+                        setCurrentUser();
 
-                    if (indexOX != -1){
-                        //Username exists!
-
-                            //Username and Password are correct and the user exists!
-
-                            //GlobalAcross.currentUser = getUserFromIndex(String.valueOf(indexUser));
-
-                            //Set the current user as the proper one
-
-                            isPasswordCorrect();
-
-
-
-
+                        //Comment to show the key of the user
+                        //Toast.makeText(MainActivity.this, keyOX, Toast.LENGTH_SHORT).show();
 
                     }
                     else{
-                        //Username doesn't exist!
+                        //Username is correct but password isn't
+
                         vibratePhone(200);
-                        Toast.makeText(MainActivity.this, "יש לבדוק את פרטי ההתחברות ולנסות שוב.", Toast.LENGTH_SHORT).show();
                         tvLoginCV.setVisibility(View.VISIBLE);
                         pbLogin.setVisibility(View.INVISIBLE);
+                        Toast.makeText(MainActivity.this, "יש לבדוק את הסיסמה ולנסות שוב.", Toast.LENGTH_SHORT).show();
                     }
-
 
                 }
                 else{
@@ -274,12 +267,73 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     tvLoginCV.setVisibility(View.VISIBLE);
                     pbLogin.setVisibility(View.INVISIBLE);
                 }
-                            }
+            }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        final Query queryUsername = usersPlaceRef
+//                .orderByChild("username")
+//                .equalTo(etUsername.getText().toString());
+//
+//
+//        queryUsername.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if (snapshot.exists() && !snapshot.getKey().equals(null)) {
+//
+//                    keyOX = snapshot.getKey();
+//
+//                    String realPass = snapshot.child("password").getValue().toString();
+//
+//                    Toast.makeText(MainActivity.this, realPass, Toast.LENGTH_SHORT).show();
+//
+//                    if (realPass.equals(etPassword.getText().toString())) {
+//                        //If the inserted password is correct
+//                        setCurrentUser();
+//                    } else {
+//                        //Username is correct but password isn't
+//
+//                        vibratePhone(200);
+//                        tvLoginCV.setVisibility(View.VISIBLE);
+//                        pbLogin.setVisibility(View.INVISIBLE);
+//                        Toast.makeText(MainActivity.this, "יש לבדוק את הסיסמה ולנסות שוב.", Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    //Toast.makeText(MainActivity.this,indexOX+" is your index",Toast.LENGTH_LONG).show();
+//                }
+//                else {
+//                    //Username doesn't exist!
+//                    vibratePhone(200);
+//                    Toast.makeText(MainActivity.this, "יש לבדוק את פרטי ההתחברות ולנסות שוב.", Toast.LENGTH_SHORT).show();
+//                    tvLoginCV.setVisibility(View.VISIBLE);
+//                    pbLogin.setVisibility(View.INVISIBLE);
+//                }
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+
+
+
     }
 
 

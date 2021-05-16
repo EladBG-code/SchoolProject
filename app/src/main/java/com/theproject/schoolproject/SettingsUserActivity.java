@@ -222,7 +222,7 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
      */
     public void changeGradeByGrade(final int i, final CardView classCard){
         setModeAllCards(false);
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("UsersPlace").child(GlobalAcross.currentUserIndex+"").child("grade");
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("UserHashMap").child(GlobalAcross.currentUserKey).child("grade");
         myRef.setValue(i).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -332,7 +332,7 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
                                     public void onSuccess(Void aVoid) {
                                         tempPath = GlobalAcross.currentUser.getPfpPath();
                                         GlobalAcross.currentUser.setPfpPath("none");
-                                        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("UsersPlace/"+GlobalAcross.currentUserIndex+"/pfpPath");
+                                        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("UserHashMap").child(GlobalAcross.currentUserKey).child("pfpPath");
                                         myRef.setValue("none").addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
@@ -371,7 +371,7 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
             if(!etChangedEmail.getText().toString().equals(GlobalAcross.currentUser.getEmail())){
                 if(validateNewEmail(etChangedEmail)){
                     //Change the email in the database and make a snackbar here //
-                    DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("UsersPlace").child(GlobalAcross.currentUserIndex+"").child("email");
+                    DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("UserHashMap").child(GlobalAcross.currentUserKey).child("email");
                     myRef.setValue(etChangedEmail.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -399,7 +399,7 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
         char[] illegalArr = {'!','#','$','%','^','&','*','(',')','-','+','=','/','\\','?',' '};
         char[] charArr = string.toCharArray();
         int count = 0;
-        for(int i=0;i<charArr.length;i++){
+        for(int i=0; i < charArr.length ;i++){
             for(int k=0;k<illegalArr.length;k++){
                 if(charArr[i] == illegalArr[k])
                     count++;
@@ -447,7 +447,7 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
         sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove("index"); //Shared preferences - login keeper (key and value)
+        editor.remove("key");
         editor.remove("logged"); //Shared preferences - login keeper
         editor.commit();
 

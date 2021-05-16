@@ -28,7 +28,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import static com.theproject.schoolproject.GlobalAcross.currentUser;
-import static com.theproject.schoolproject.GlobalAcross.currentUserIndex;
 
 public class LoadingActivity extends AppCompatActivity {
 
@@ -96,9 +95,28 @@ public class LoadingActivity extends AppCompatActivity {
                 Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
                 startActivity(intent);
             }
+            else{
+                if (sharedPreferences.getBoolean("logged",false)){
+                    doesUserExistInDB(sharedPreferences.getString("key",""));
+                }
+                else{
+                    Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
 
-            database = FirebaseDatabase.getInstance();
-            myRef = database.getReference("UsersPlace");
+            }
+
+
+
+
+
+
+
+
+
+            //            WORKING CODE BELOW
+
+            /*
              myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                  @Override
                  public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -127,39 +145,100 @@ public class LoadingActivity extends AppCompatActivity {
                  public void onCancelled(@NonNull DatabaseError error) {
 
                  }
-             });
+             });*/
 
-        /* myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                GenericTypeIndicator<ArrayList<User>> t = new GenericTypeIndicator<ArrayList<User>>() {};
-                if (sharedPreferences.getBoolean("logged", false)) {
-                    //Checks if the user was logged in the device and places the correct path reference for his saved index and pulls out the class out of the arraylist in the firebase database
-                    currentUser = dataSnapshot.getValue(t).get(sharedPreferences.getInt("index", 0));
-                    Toast.makeText(LoadingActivity.this, "ברוכים השבים " + currentUser.getfName() + '.', Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(LoadingActivity.this, HomepageActivity.class);
-                    startActivity(intent);
-                }
-                else {
-                    //Was not logged in the current device
-                    allUsers = new ArrayList<>();
-                    if (dataSnapshot.getValue(t) != null) {
-                        allUsers.addAll(dataSnapshot.getValue(t));
-                    }
-                    Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
-                    startActivity(intent);
-                }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-            }
-        }); */
+            //            WORKING CODE ABOVE
+
+
     }
 
+    /**
+     * The following function logs the user in if they exist in the database
+     */
+    private void logThemIn(){
+        if (sharedPreferences.getBoolean("logged",false)){
+            //User was logged in before and had their details saved
+
+            GlobalAcross.currentUserKey = sharedPreferences.getString("key",""); //Defines the Global Key of the logged in User
+
+            database = FirebaseDatabase.getInstance();
+
+            myRef = database.getReference("UserHashMap").child(GlobalAcross.currentUserKey);
+
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    GenericTypeIndicator<User> typeUser = new GenericTypeIndicator<User>() {};
+                    currentUser = snapshot.getValue(typeUser);
+
+                    progressBar.setProgress(100);
+                    loadingP.setText(100 + "%");
+
+                    Toast.makeText(LoadingActivity.this, "ברוכים השבים "+currentUser.getfName()+"!", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(LoadingActivity.this, HomepageActivity.class);
+                    startActivity(intent);
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
+        }
+        else{
+            //User was not logged in before and needs to register / login
+
+            Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    /**
+     * The following function checks if the user's saved key exists in the database (it can not exist in cases where I - the creator delete the user manually) and logs them in if they exist
+     * @param sharedPreferenceKey
+     */
+    private void doesUserExistInDB(String sharedPreferenceKey) {
+            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("UserHashMap").child(sharedPreferenceKey);
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()){
+                        //User exists in database so log them in
+                        logThemIn();
+                    }
+                    else{
+                        //User doesn't exist in database so direct them to login
+
+                        sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.remove("index"); //Shared preferences - login keeper (key and value)
+                        editor.remove("logged"); //Shared preferences - login keeper
+                        editor.commit();
+
+                        Toast.makeText(getApplicationContext(),"אאוץ'! נתקלנו בשגיאת מסד נתונים.",Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+    }
+
+    /**
+     * The following function checks if the user has an available internet connection in order to login
+     * @return
+     */
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

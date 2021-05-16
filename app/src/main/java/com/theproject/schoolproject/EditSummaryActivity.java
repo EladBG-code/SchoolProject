@@ -57,7 +57,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.theproject.schoolproject.GlobalAcross.currentUserIndex;
 
 public class EditSummaryActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -187,7 +186,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove("index"); //Shared preferences - login keeper (key and value)
+        editor.remove("key");
         editor.remove("logged"); //Shared preferences - login keeper
         editor.commit();
 
@@ -491,32 +490,53 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                             progressDialog.setProgress(0);
                             progressDialog.show();
 
+                            deleteChildrenFromRefMap(myRef);
+
                             myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                public void onDataChange(@NonNull final DataSnapshot snapshot) {
                                     if (snapshot != null) {
                                         //Checks if the summary even has likes to start with the deletion
 
-                                        final ArrayList<String> usersThatLikedCertainSummary = new ArrayList<>(); //ArrayList for indexes of users who liked the summary that's about to me deleted
-                                        for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
-                                            usersThatLikedCertainSummary.add(child.getValue().toString());
-                                        }
-                                        for (int i = 0; i < usersThatLikedCertainSummary.size(); i++) {
-                                            final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/" + usersThatLikedCertainSummary.get(i));
-                                            usersRef.child("favoriteSummaries").child(summaryKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    deletionProgress += (100 / (usersThatLikedCertainSummary.size() + 2));
-                                                    //System.out.println(deletionProgress);
-                                                    progressDialog.setProgress(deletionProgress);
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
+                                        //HashMap<String,String> usersThatLikedCertainSummaryMap = new HashMap<>(snapshot.getValue(new GenericTypeIndicator<HashMap<String,String>>() {}));
 
-                                                }
-                                            });
-                                        }
+                                        //final ArrayList<String> usersThatLikedCertainSummary = new ArrayList<>(); //ArrayList for indexes of users who liked the summary that's about to me deleted
+
+                                        final Long childrenCount = snapshot.getChildrenCount();
+
+//                                        for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
+//                                            FirebaseDatabase.getInstance().getReference("UserHashMap").child(child.getKey()).child("favoriteSummaries").removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                                @Override
+//                                                public void onSuccess(Void aVoid) {
+//                                                    deletionProgress += (100 / (childrenCount/100 + 2));
+//                                                    //System.out.println(deletionProgress);
+//                                                    progressDialog.setProgress(deletionProgress);
+//                                                }
+//                                            });
+//
+//
+//                                            //usersThatLikedCertainSummary.add(child.getValue().toString());
+//                                        }
+
+
+//                                        for (int i = 0; i < usersThatLikedCertainSummary.size(); i++) {
+//                                            final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/" + usersThatLikedCertainSummary.get(i));
+//                                            usersRef.child("favoriteSummaries").child(summaryKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                                @Override
+//                                                public void onSuccess(Void aVoid) {
+//                                                    deletionProgress += (100 / (usersThatLikedCertainSummary.size() + 2));
+//                                                    //System.out.println(deletionProgress);
+//                                                    progressDialog.setProgress(deletionProgress);
+//                                                }
+//                                            }).addOnFailureListener(new OnFailureListener() {
+//                                                @Override
+//                                                public void onFailure(@NonNull Exception e) {
+//
+//                                                }
+//                                            });
+//                                        }
+
+
                                         //The code gets here once it deletes all of the data the users who had the this summary as a favorite
 
                                         //The string file in the reference inside the realtime database is opened and a storageref is opening and deleting the included file
@@ -527,7 +547,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                                 storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
-                                                        deletionProgress += 100 / (usersThatLikedCertainSummary.size() + 2);
+                                                        deletionProgress += 100 / (childrenCount + 2);
                                                         progressDialog.setProgress(deletionProgress);
                                                     }
                                                 });
@@ -542,8 +562,10 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                         FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                deletionProgress += 100 / (usersThatLikedCertainSummary.size() + 2); //The last piece to get 100% on the progressbar after the entire summary is removed from the realtime database
+                                             //The last piece to get 100% on the progressbar after the entire summary is removed from the realtime database
+
                                                 progressDialog.setProgress(deletionProgress);
+                                                progressDialog.dismiss();
                                                 Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
                                                 intent.putExtra("SubjectSelected", subject);
                                                 Toast.makeText(EditSummaryActivity.this, "הסיכום שלך נמחק בהצלחה!", Toast.LENGTH_SHORT).show();
@@ -578,6 +600,33 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         }
     }
 
+    public void deleteChildrenFromRefMap(DatabaseReference myRef){
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot != null){
+                    final Long childrenCount = snapshot.getChildrenCount();
+
+                    for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
+                        FirebaseDatabase.getInstance().getReference("UserHashMap").child(child.getKey()).child("favoriteSummaries").removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                deletionProgress += (100 / (childrenCount / 100 + 2));
+                                //System.out.println(deletionProgress);
+                                progressDialog.setProgress(deletionProgress);
+                            }
+                        });
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
     /**
      * This function was created in order to prevent aSynchronization issues - because the changing of the PDF
@@ -714,7 +763,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                     final Summary tempCopy = new Summary();
                     tempCopy.setAmountOfLikes(Long.valueOf(snapshot.child("amountOfLikes").getValue().toString()));
                     tempCopy.setAuthor(snapshot.child("author").getValue().toString());
-                    tempCopy.setCreatorIndex(Integer.valueOf(snapshot.child("creatorIndex").getValue().toString()));
+                    tempCopy.setCreatorKey(snapshot.child("creatorKey").getValue().toString());
                     tempCopy.setDescription(snapshot.child("description").getValue().toString());
                     tempCopy.setFileRef(snapshot.child("fileRef").getValue().toString());
                     if(snapshot.child("hasNotified").getValue().equals(true)){
@@ -724,6 +773,8 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                         tempCopy.setHasNotified(false);
                     }
 
+                    deleteChildrenFromRefMap(FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked"));
+
                     if(!snapshot.child("usersThatLiked").equals(null)){
                         //If thee summary has likes it'll copy the value of it and set it onto the new summary class
 
@@ -731,9 +782,11 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                                for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
-                                    FirebaseDatabase.getInstance().getReference("UsersPlace").child(child.getValue().toString()).child("favoriteSummaries").child(summaryKey).removeValue(); //Removes all of the users who liked that certain summary on the database
-                                }
+//                                for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
+//                                    FirebaseDatabase.getInstance().getReference("UsersPlace").child(child.getValue().toString()).child("favoriteSummaries").child(summaryKey).removeValue(); //Removes all of the users who liked that certain summary on the database
+//                                }
+                                deleteChildrenFromRefMap(FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked"));
+
                             }
 
                             @Override
@@ -760,25 +813,27 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                     //Enters when the new summary has been successfully pushed onto the database under the new subject
                                     summaryKey = tempCopy.getId();
 
+                                    deleteChildrenFromRefMap(FirebaseDatabase.getInstance().getReference(spinnerSubjectCurrent).child(tempCopy.getId()).child("usersThatLiked"));
+
                                     FirebaseDatabase.getInstance().getReference(spinnerSubjectCurrent).child(tempCopy.getId()).child("usersThatLiked").addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                                             //Checks if the summary even has likes and if it does it changes the subject in it for each user onto the new subject
-                                            if(!snapshot.equals(null)) {
-
-                                                final ArrayList<String> usersThatLikedCertainSummary = new ArrayList<>(); //ArrayList for indexes of users who liked the summary that's about to be changed onto the new subject
-                                                for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
-                                                    usersThatLikedCertainSummary.add(child.getValue().toString());
-                                                }
-                                                for (int i = 0; i < usersThatLikedCertainSummary.size(); i++) {
-                                                    //FirebaseDatabase.getInstance().getReference(spinnerSubjectCurrent).child(tempCopy.getId()).child("usersThatLiked").child(String.valueOf(i)).setValue(i);
-                                                    //final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/" + usersThatLikedCertainSummary.get(i));
-                                                    FirebaseDatabase.getInstance().getReference("UsersPlace/"+ usersThatLikedCertainSummary.get(i)).child("favoriteSummaries").child(summaryKey).removeValue(); //Removes the old favorite summaries for the old key and summary for the former summary
-                                                    //Temporarily disabled
-                                                    //FirebaseDatabase.getInstance().getReference("UsersPlace/"+ usersThatLikedCertainSummary.get(i)).child("favoriteSummaries").child(tempCopy.getId()).setValue(spinnerSubjectCurrent); //Sets the new summary and summary id as favorite for each liker of the summary
-                                                }
-                                            }
+//                                            if(!snapshot.equals(null)) {
+//
+//                                                final ArrayList<String> usersThatLikedCertainSummary = new ArrayList<>(); //ArrayList for indexes of users who liked the summary that's about to be changed onto the new subject
+//                                                for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
+//                                                    usersThatLikedCertainSummary.add(child.getValue().toString());
+//                                                }
+//                                                for (int i = 0; i < usersThatLikedCertainSummary.size(); i++) {
+//                                                    //FirebaseDatabase.getInstance().getReference(spinnerSubjectCurrent).child(tempCopy.getId()).child("usersThatLiked").child(String.valueOf(i)).setValue(i);
+//                                                    //final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/" + usersThatLikedCertainSummary.get(i));
+//                                                    FirebaseDatabase.getInstance().getReference("UsersPlace/"+ usersThatLikedCertainSummary.get(i)).child("favoriteSummaries").child(summaryKey).removeValue(); //Removes the old favorite summaries for the old key and summary for the former summary
+//                                                    //Temporarily disabled
+//                                                    //FirebaseDatabase.getInstance().getReference("UsersPlace/"+ usersThatLikedCertainSummary.get(i)).child("favoriteSummaries").child(tempCopy.getId()).setValue(spinnerSubjectCurrent); //Sets the new summary and summary id as favorite for each liker of the summary
+//                                                }
+//                                            }
                                             subjectChanged = true;
                                             progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
                                             if (progressDialog.getProgress() == 100){

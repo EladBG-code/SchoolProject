@@ -71,7 +71,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         setContentView(R.layout.activity_profile);
 
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("UsersPlace").child(GlobalAcross.currentUserIndex+"").child("pfpPath");
+        myRef = database.getReference("UserHashMap").child(GlobalAcross.currentUserKey).child("pfpPath");
 
         setToolbarAndDrawer();
         ivProfileIcon = findViewById(R.id.ivProfilePictureIcon);
@@ -86,7 +86,6 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         if(!GlobalAcross.currentUser.getPfpPath().equals("none")){
             //The if only goes through if the user does have a profile picture
             firePfpRef = storage.getInstance().getReference().child(GlobalAcross.currentUser.getPfpPath());
-            ShapeableImageView ivPFP = findViewById(R.id.ivProfilePictureIcon);
 
             try {
                 final File localFile = File.createTempFile("profilePicture","png");
@@ -135,7 +134,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove("index"); //Shared preferences - login keeper (key and value)
+        editor.remove("key");
         editor.remove("logged"); //Shared preferences - login keeper
         editor.commit();
 

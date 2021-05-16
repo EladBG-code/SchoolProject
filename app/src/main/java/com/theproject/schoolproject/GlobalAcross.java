@@ -22,14 +22,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GlobalAcross {
-    public static ArrayList<User> allUsers; //The ArrayList of all users (used for login - needs to be replaced)
+    //public static ArrayList<User> allUsers; //The ArrayList of all users (used for login - needs to be replaced)
     public static User currentUser; //Current logged in user
-    public static int currentUserIndex;
+//    public static int currentUserIndex; //Needs to be replaced by currentUserKey
     public static boolean firstLoginSuggestion = false;
     public static String infoMessage;
     public static int editingTemp;
     public static int selectedSubjectVectorID;
     public static String logoutMessage = "האם אתם בטוחים שאתם רוצים להתנתק?";
+
+    public static String currentUserKey;
 
     //Useful global functions across the application : for the current user
     /**
@@ -87,14 +89,6 @@ public class GlobalAcross {
     }
 
     /**
-     * -Currently not in use- This function resets the currentUser's and the allUsers values to null - locally (is used when logging out)
-     * */
-
-    public static void logoutFunction(){
-        currentUser = null;
-    }
-
-    /**
      * This function validates the details of the user when they upload a summary (checks title & description)
      * @param title
      * @param description
@@ -122,7 +116,7 @@ public class GlobalAcross {
      * This function re-updates all of the user's values from the realtime database and sets them to the local variables
      * */
     public static void updateCurrentUserData(){
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("UsersPlace").child(currentUserIndex+"");
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("UserHashMap").child(currentUserKey);
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

@@ -214,7 +214,7 @@ public class SummariesSubjectsActivity extends AppCompatActivity implements View
         sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove("index"); //Shared preferences - login keeper (key and value)
+        editor.remove("key");
         editor.remove("logged"); //Shared preferences - login keeper
         editor.commit();
 

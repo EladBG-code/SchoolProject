@@ -3,6 +3,7 @@ package com.theproject.schoolproject;
 import android.content.SharedPreferences;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Summary {
 
@@ -14,8 +15,10 @@ public class Summary {
     private String fileRef;
     private long amountOfLikes;
     private boolean hasNotified;
-    private int creatorIndex;
-    private ArrayList<String> usersThatLiked;
+    private String creatorKey;
+    private ArrayList<String> usersThatLiked; //Needs to be replaced with usersThatLikedHash
+    private HashMap<String, String> usersThatLikedHash;
+
 
     /**
      * Returns string subject of the current summary
@@ -48,9 +51,8 @@ public class Summary {
      * @param author
      * @param title
      * @param description
-     * @param sharedPreferences
      */
-    public Summary(String author, String title, String description,SharedPreferences sharedPreferences) {
+    public Summary(String author, String title, String description) {
         this.author = author;
         this.title = title;
         this.description = description;
@@ -58,7 +60,7 @@ public class Summary {
         this.hasNotified = false;
         this.id = "";
         this.fileRef = "none";
-        this.creatorIndex = sharedPreferences.getInt("index",0);
+        this.creatorKey = GlobalAcross.currentUserKey;
     }
 
     /**
@@ -74,6 +76,7 @@ public class Summary {
         this.title = title;
         this.description = description;
         this.subject = subject;
+        this.creatorKey = GlobalAcross.currentUserKey;
         //EDITOR NOTE URGENT: ADD IMAGE\FILE UPLOADING SYSTEM
     }
 
@@ -93,6 +96,17 @@ public class Summary {
         this.subject = subject;
         this.amountOfLikes=amountOfLikes;
         this.usersThatLiked = usersThatLiked;
+        this.usersThatLikedHash = null;
+        //EDITOR NOTE URGENT: ADD IMAGE\FILE UPLOADING SYSTEM
+    }
+
+    public Summary(String author, String title, String description, String subject, Long amountOfLikes, HashMap<String,String> usersThatLikedHash) {
+        this.author = author;
+        this.title = title;
+        this.description = description;
+        this.subject = subject;
+        this.amountOfLikes=amountOfLikes;
+        this.usersThatLikedHash = usersThatLikedHash;
         //EDITOR NOTE URGENT: ADD IMAGE\FILE UPLOADING SYSTEM
     }
 
@@ -210,21 +224,6 @@ public class Summary {
         this.hasNotified = hasNotified;
     }
 
-    /**
-     * Returns the creator's index
-     * @return
-     */
-    public int getCreatorIndex() {
-        return creatorIndex;
-    }
-
-    /**
-     * Sets the creator's index
-     * @param creatorIndex
-     */
-    public void setCreatorIndex(int creatorIndex) {
-        this.creatorIndex = creatorIndex;
-    }
 
     /**
      * Returns a string value which is this summary's ID
@@ -256,5 +255,21 @@ public class Summary {
      */
     public void setFileRef(String fileRef) {
         this.fileRef = fileRef;
+    }
+
+    public HashMap<String, String> getUsersThatLikedHash() {
+        return usersThatLikedHash;
+    }
+
+    public void setUsersThatLikedHash(HashMap<String, String> usersThatLikedHash) {
+        this.usersThatLikedHash = usersThatLikedHash;
+    }
+
+    public String getCreatorKey() {
+        return creatorKey;
+    }
+
+    public void setCreatorKey(String creatorKey) {
+        this.creatorKey = creatorKey;
     }
 }

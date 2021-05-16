@@ -31,6 +31,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -81,6 +83,9 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         navigationView.setNavigationItemSelectedListener(this);
         ivProfilePictureHomepage.setOnClickListener(this);
         cvToSummaries.setOnClickListener(this);
+
+        /* sharedPreferences = getSharedPreferences("index", Context.MODE_PRIVATE);
+        Toast.makeText(getApplicationContext(), sharedPreferences.getString("key",""), Toast.LENGTH_SHORT).show(); */
 
         tryCatchPFP();
 
@@ -179,7 +184,7 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove("index"); //Shared preferences - login keeper (key and value)
+        editor.remove("key");
         editor.remove("logged"); //Shared preferences - login keeper
         editor.commit();
 
@@ -260,6 +265,9 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
            finishAffinity();
         }
         else{
+
+
+
             drawerLayout.openDrawer(GravityCompat.START);
         }
     }

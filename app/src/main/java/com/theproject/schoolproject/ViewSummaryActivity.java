@@ -63,6 +63,8 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
     String summarySubject,summaryKey;
     ProgressBar pbLoadingPDF;
 
+    String summaryCreatorKey;
+
     TextView tvPagesUpdate;
 
     int summaryCreatorIndex;
@@ -161,8 +163,10 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
                     }
                 });
 
-                summaryCreatorIndex = Integer.valueOf(snapshot.child("creatorIndex").getValue().toString());
-                if(summaryCreatorIndex == GlobalAcross.currentUserIndex){
+                //summaryCreatorIndex = Integer.valueOf(snapshot.child("creatorIndex").getValue().toString());
+                summaryCreatorKey = snapshot.child("creatorKey").getValue().toString();
+
+                if(summaryCreatorKey.equals( GlobalAcross.currentUserKey)){
                     //Enables the edit shapableimage in the toolbar if the currentuserindex is equal to the summary creator's index
                     ibEditSummary.setVisibility(View.VISIBLE);
                 }

@@ -59,7 +59,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.theproject.schoolproject.GlobalAcross.currentUser;
-import static com.theproject.schoolproject.GlobalAcross.currentUserIndex;
 
 public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
@@ -130,17 +129,24 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
      * @param add
      */
     public void updateListOfLikes(String selectedKeySummary, boolean add){
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/"+ currentUserIndex);
+        //DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/"+ currentUserIndex);
+
+        DatabaseReference userHashMapRef = FirebaseDatabase.getInstance().getReference("UserHashMap").child(GlobalAcross.currentUserKey);
+
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject.getSubjectName()).child(selectedKeySummary);
         //if add=1 - add the summary to the list of summaries that the user liked
         if(add){
-            usersRef.child("favoriteSummaries").child(selectedKeySummary).setValue(subject.getSubjectName());
-            myRef.child("usersThatLiked").child(String.valueOf(currentUserIndex)).setValue(currentUserIndex);
+
+            userHashMapRef.child("favoriteSummaries").child(selectedKeySummary).setValue(subject.getSubjectName());
+
+            myRef.child("usersThatLiked").child(GlobalAcross.currentUserKey).setValue(GlobalAcross.currentUserKey);
+
         }
         //if add=0 - remove the summary from the list of summaries that the user liked
         else{
-            usersRef.child("favoriteSummaries").child(selectedKeySummary).removeValue();
-            myRef.child("usersThatLiked").child(String.valueOf(currentUserIndex)).setValue("none");
+            userHashMapRef.child("favoriteSummaries").child(selectedKeySummary).removeValue();
+
+            myRef.child("usersThatLiked").child(GlobalAcross.currentUserKey).removeValue();
 
 
 
@@ -159,9 +165,12 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
             //Todo: Add subject here somehow !
             String author="", title="", description="", subject1="" ;
             long amountOfLikes = 0;
-            ArrayList<String> usersThatLiked = null;
+            HashMap<String,String> usersThatLikedHash = null;
             for (DataSnapshot child : snapshot.getChildren()) {
-                if(child.getKey().equals("author")) {
+                if (child.getKey().equals("usersThatLiked")){
+                    usersThatLikedHash = (HashMap<String,String>) child.getValue();
+                }
+                else if(child.getKey().equals("author")) {
                     author= (String) child.getValue();
                 }
                 else if(child.getKey().equals("title")) {
@@ -173,17 +182,9 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
                 else if(child.getKey().equals("amountOfLikes")){
                     amountOfLikes= (Long) child.getValue();
                 }
-                else if(child.getKey().equals("usersThatLiked")) {
-                    if(!child.hasChildren()){
-                        usersThatLiked=null;
-                    }
-                    //else if(child.getChildrenCount() != 1){
-                    else
-                        usersThatLiked = (ArrayList<String>)child.getValue();
-                    //}
-                }
+
             }
-            Summary summary = new Summary(author, title, description,subject1,amountOfLikes,usersThatLiked);
+            Summary summary = new Summary(author, title, description,subject1,amountOfLikes,usersThatLikedHash);
             return summary;
         }
     }).build();
@@ -243,7 +244,24 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
 
         holder.mtvLikesNum.setText(amountOfLikesFunc(model.getAmountOfLikes()));
 
-        if(model.getUsersThatLiked()==null){
+
+
+        if (model.getUsersThatLikedHash() == null){
+            holder.btnHeart.setChecked(false);
+        }
+        else{
+            if (model.getUsersThatLikedHash().containsKey(GlobalAcross.currentUserKey)){
+                holder.btnHeart.setChecked(true);
+                holder.mtvLikesNum.setTextColor(Color.RED);
+            }
+            else{
+                holder.btnHeart.setChecked(false);
+                holder.mtvLikesNum.setTextColor(Color.BLACK);
+            }
+        }
+
+
+     /*   if(model.getUsersThatLiked()==null){       //temporarily disabled
             holder.btnHeart.setChecked(false);
         }
        else {
@@ -256,13 +274,15 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
                 holder.btnHeart.setChecked(false);
                 holder.mtvLikesNum.setTextColor(Color.BLACK);
             }
-        }
+        }   */
+
+
         // this function is adding one like to the summary
         holder.btnHeart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String selectedKeySummary = getRef(position).getKey();
-                long newLikes=model.getAmountOfLikes();
+                long newLikes = model.getAmountOfLikes();
                 if(holder.btnHeart.isChecked()){
                    newLikes += 1;
                    updateLikesDB(selectedKeySummary, newLikes);
@@ -375,7 +395,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove("index"); //Shared preferences - login keeper (key and value)
+        editor.remove("key");
         editor.remove("logged"); //Shared preferences - login keeper
         editor.commit();
 

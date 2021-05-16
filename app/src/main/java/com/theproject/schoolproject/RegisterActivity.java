@@ -29,6 +29,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -205,7 +206,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
      */
     public boolean strContainArr(String str,char[] arr){
         for(int i=0;i<str.length();i++){
-            for(int j=0;j<arr.length;j++){
+            for(int j=0; j < arr.length; j++){
                 if(str.charAt(i) == arr[j]){
                     return true;
                 }
@@ -286,16 +287,16 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
     /**
      * If the validation does not come to be - the user's phone is greeted with a quick vibration
-     * @param milisecondsToVibrate
+     * @param millisecondsToVibrate
      */
-    public void vibratePhone(int milisecondsToVibrate){
+    public void vibratePhone(int millisecondsToVibrate){
         //This function makes the phone vibrate for [secondsToVibrate] seconds.
         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            v.vibrate(VibrationEffect.createOneShot(milisecondsToVibrate, VibrationEffect.DEFAULT_AMPLITUDE));
+            v.vibrate(VibrationEffect.createOneShot(millisecondsToVibrate, VibrationEffect.DEFAULT_AMPLITUDE));
         }
         else {
-            v.vibrate(milisecondsToVibrate);
+            v.vibrate(millisecondsToVibrate);
         }
     }
 
@@ -324,43 +325,87 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 }
                 else{
                     //HAS INTERNET
-                    myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    DatabaseReference tempRef = FirebaseDatabase.getInstance().getReference("UserHashMap");
+                    final String newUserKey = tempRef.push().getKey();
+
+                    tempRef.child(newUserKey).setValue(new User(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString(),classNum)).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        public void onSuccess(Void aVoid) {
                             User newUser = new User(etFName.getText().toString(),etLName.getText().toString(),etUsername.getText().toString(),etEmail.getText().toString(),etPassword.getText().toString(),classNum);
-                            Long listSize = snapshot.getChildrenCount();
-
-                            if (listSize == 0){
-                                ArrayList<User> userArrayListStart = new ArrayList<>();
-                                userArrayListStart.add(newUser);
-                                myRef.setValue(userArrayListStart);
-                            }
-                            else{
-                                myRef.child(listSize+"").setValue(newUser);
-                            }
-
-
-
                             GlobalAcross.currentUser = newUser;
+
                             Toast.makeText(RegisterActivity.this, "נרשמת בהצלחה!", Toast.LENGTH_SHORT).show();
                             GlobalAcross.firstLoginSuggestion = true;
 
-                            SharedPreferences sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = getSharedPreferences("index", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putInt("index",listSize.intValue());
-                            editor.putBoolean("logged",true);
-                            GlobalAcross.currentUserIndex = listSize.intValue();
+                            //editor.putInt("index", listSize.intValue());
+                            GlobalAcross.currentUserKey = newUserKey;
+                            editor.putString("key", newUserKey);
+                            editor.putBoolean("logged", true);
+//                            GlobalAcross.currentUserIndex = listSize.intValue();
                             editor.commit();
 
                             Intent intent = new Intent(RegisterActivity.this, HomepageActivity.class);
                             startActivity(intent);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
 
                         }
                     });
+
+
+
+
+                    /*                                            WORKING CODE BELOW                                    */
+
+                    /*
+                        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                User newUser = new User(etFName.getText().toString(), etLName.getText().toString(), etUsername.getText().toString(), etEmail.getText().toString(), etPassword.getText().toString(), classNum);
+                                Long listSize = snapshot.getChildrenCount();
+
+                                if (listSize == 0) {
+                                    ArrayList<User> userArrayListStart = new ArrayList<>();
+                                    userArrayListStart.add(newUser);
+                                    myRef.setValue(userArrayListStart);
+                                } else {
+                                    myRef.child(listSize + "").setValue(newUser);
+                                }
+
+
+                                GlobalAcross.currentUser = newUser;
+                                Toast.makeText(RegisterActivity.this, "נרשמת בהצלחה!", Toast.LENGTH_SHORT).show();
+                                GlobalAcross.firstLoginSuggestion = true;
+
+                                SharedPreferences sharedPreferences = getSharedPreferences("index", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putInt("index", listSize.intValue());
+                                editor.putBoolean("logged", true);
+                                GlobalAcross.currentUserIndex = listSize.intValue();
+                                editor.commit();
+
+                                Intent intent = new Intent(RegisterActivity.this, HomepageActivity.class);
+                                startActivity(intent);
+
+
+
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        }); */
+
+                    /*                                            WORKING CODE ABOVE                                    */
+
+
+
+
+
                 }
 
 
