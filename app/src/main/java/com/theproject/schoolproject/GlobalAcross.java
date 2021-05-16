@@ -39,14 +39,20 @@ public class GlobalAcross {
      * @return
      */
     public static String getCurrentUserGradeString(){
-        int x = currentUser.getGrade();
-        if(x == 1){
-            return "י'";
+        switch (currentUser.getGrade()){
+            case 1:{
+                return "י'";
+            }
+            case 2:{
+                return "י"+'"'+"א";
+            }
+            case 3:{
+                return "י"+'"'+"ב";
+            }
+            default:{
+                return "";
+            }
         }
-        if(x == 2){
-            return "י"+'"'+"א";
-        }
-        return "י"+'"'+"ב";
     }
 
 

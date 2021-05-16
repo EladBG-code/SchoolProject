@@ -109,6 +109,14 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
     }
 
+    public boolean isValidEmailAddress(String email) {
+        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+        java.util.regex.Matcher m = p.matcher(email);
+
+        return m.matches();
+    }
+
 
 
     /**
@@ -264,15 +272,21 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
             }
         }
 
+        {
+            if (!isValidEmailAddress(email))
+                return false;
+        }
+
         //This section validates the username
         {
-            /*if(!username.matches(".*[א-ת]+.*") || username.matches(".*[a-z]+.*") || username.matches(".*[A-Z]+.*")){
-
+            if(!(!username.matches(".*[א-ת]+.*") && (username.matches(".*[a-z]+.*") || username.matches(".*[A-Z]+.*")))){
+                if (username.equals(null) || username.isEmpty())
+                    return false;
                 //This section makes the phone vibrate and display a toast telling the user to recheck their details
                 vibratePhone(200);
                 Toast.makeText(this, "שם המשתמש יכול להכיל רק אותיות (באנגלית) ומספרים", Toast.LENGTH_SHORT).show();
                 return false;
-            }*/
+            }
         }
 
 

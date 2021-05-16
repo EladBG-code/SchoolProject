@@ -38,6 +38,7 @@ public class LoadingActivity extends AppCompatActivity {
     int pbStatus = 0;
     private Handler mHandler = new Handler();
 
+    Thread thread;
     SharedPreferences sharedPreferences;
 
     /**
@@ -55,7 +56,7 @@ public class LoadingActivity extends AppCompatActivity {
         // Read from the database
         sharedPreferences = getSharedPreferences("index", Context.MODE_PRIVATE);
 
-        Thread thread = new Thread(new Runnable() { //This makes a thread that runs in the background regardless of the UI loading in here that does both actions
+        thread = new Thread(new Runnable() { //This makes a thread that runs in the background regardless of the UI loading in here that does both actions
             @Override
             public void run() {
                 while (pbStatus < 100) {
@@ -92,6 +93,9 @@ public class LoadingActivity extends AppCompatActivity {
         public void loadingFunc() {
             if (!isNetworkAvailable()){
                 Toast.makeText(LoadingActivity.this, "אאוץ'! נתקלנו בבעיית אינטרנט.", Toast.LENGTH_SHORT).show();
+                try {
+                    thread.join();
+                } catch (InterruptedException e) { }
                 Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
                 startActivity(intent);
             }
