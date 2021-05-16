@@ -190,6 +190,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         editor.remove("logged"); //Shared preferences - login keeper
         editor.commit();
 
+        stopService(new Intent(getApplicationContext(),NotificationService.class));
         startActivity(intent);
         finish();
     }
