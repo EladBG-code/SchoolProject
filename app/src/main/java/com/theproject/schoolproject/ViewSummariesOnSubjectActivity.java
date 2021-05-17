@@ -101,13 +101,15 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
             tvSubjectName.setPaintFlags(tvSubjectName.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG); //Makes the subject name textview bold
 
             Drawable drawableVectorIcon = ContextCompat.getDrawable(getApplicationContext(),GlobalAcross.selectedSubjectVectorID);
+            drawableVectorIcon.setTint(Color.GRAY);
 
             ivSubjectVector.setImageDrawable(drawableVectorIcon);
 
+
             database = FirebaseDatabase.getInstance();
             summariesRef = database.getReference(subject.getSubjectName());
-            loadSummariesListFromDB();
 
+            loadSummariesListFromDB();
 
 
     }
@@ -158,7 +160,8 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
      * This function loads all of the summaries of this current subject from the realtime database withusing a query - uses FirebaseUI (updates LIVE)
      * */
     public void loadSummariesListFromDB() {
-    options = new FirebaseRecyclerOptions.Builder<Summary>().setQuery(summariesRef, new SnapshotParser<Summary>() {
+        pbLoadingSummaries.setVisibility(View.VISIBLE);
+        options = new FirebaseRecyclerOptions.Builder<Summary>().setQuery(summariesRef, new SnapshotParser<Summary>() {
         @NonNull
         @Override
         public Summary parseSnapshot(@NonNull DataSnapshot snapshot) {
@@ -190,11 +193,15 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     }).build();
     adapter = new FirebaseRecyclerAdapter<Summary, MyViewHolder>(options) {
 
+
+
         @Override
         public void onDataChanged() {
+
+            pbLoadingSummaries.setVisibility(View.GONE);
+
             if (adapter.getItemCount() == 0){
                 llNoSummaries.setVisibility(View.VISIBLE);
-                pbLoadingSummaries.setVisibility(View.INVISIBLE);
             }
             else{
                 llNoSummaries.setVisibility(View.GONE);
@@ -232,7 +239,9 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
 
         @Override
         protected void onBindViewHolder(@NonNull final MyViewHolder holder, final int position, @NonNull final Summary model) {
-            pbLoadingSummaries.setVisibility(View.INVISIBLE);
+            pbLoadingSummaries.setVisibility(View.GONE);
+
+
         holder.tvTitle.setText(model.getTitle());
         if(model.getDescription().length() > 15){
             holder.tvDescription.setText(model.getDescription().substring(0,15)+"...");
@@ -346,6 +355,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     GridLayoutManager gridLayoutManager = new GridLayoutManager(this,2,GridLayoutManager.VERTICAL, false);
     dataList.setLayoutManager(gridLayoutManager);
     dataList.setAdapter(adapter);
+
     }
 
     /**

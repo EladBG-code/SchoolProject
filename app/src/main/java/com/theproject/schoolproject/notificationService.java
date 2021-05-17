@@ -15,6 +15,8 @@ import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -31,6 +33,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
@@ -65,95 +68,210 @@ public class NotificationService extends Service {
      */
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
-        String[] arr = {"מתמטיקה","היסטוריה","לשון","אזרחות","תנ"+'"'+"ך","ספרות","אנגלית","ביולוגיה","מדעי המחשב","כימיה","פיזיקה","תולדות האומנות","תקשורת","מדעי החברה"};
+        String[] arr = GlobalAcross.getAllSubjectsArr();
         //14 subjects
+//        for(final String subject : arr){
+//            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference(subject);
+//
+//            ref.orderByChild("amountOfLikes").addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    //GenericTypeIndicator<HashMap<String,Summary>> t = new GenericTypeIndicator<HashMap<String,Summary>>(){};
+//                    final String subject = snapshot.getKey(); //subject
+//                    if((HashMap<String,Summary>)snapshot.getValue() != null){
+//                        Map<String,HashMap <String,String>> summaries = new HashMap<String,HashMap <String,String>>((HashMap<String,HashMap <String,String>>)snapshot.getValue());
+//                        for (Map.Entry<String,HashMap <String,String>> entry : summaries.entrySet()) {
+////                            System.out.println(entry.getKey() + "/" + entry.getValue().getAmountOfLikes());
+//                            Map<String, String> summary = new HashMap<String, String>((HashMap<String, String>) entry.getValue());
+//                            //int userIndex = sharedPreferences.getInt("index",0);
+//                            SharedPreferences sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+//
+//                            if (String.valueOf(summary.get("amountOfLikes")).equals(String.valueOf(5)) && summary.get("creatorKey").equals(sharedPreferences.getString("key","")) && String.valueOf(summary.get("hasNotified")).equals("false")) { //Checks if amountOfLikes of current summary is equal to 5 (it is a long so converting to strings is necessary
+//                                //Toast.makeText(notificationService.this,"dd",Toast.LENGTH_SHORT).show();
+//                                final String key = entry.getKey();
+//                                FirebaseDatabase.getInstance().getReference(subject).child(key).child("hasNotified").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                    @Override
+//                                    public void onComplete(@NonNull Task<Void> task) {
+//
+//                                       // Uri notifSoundUri = Uri.parse("android.resource://com.my.package/" + R.raw.service_notification_sound_effect);
+//
+//                                        int NOTIFICATION_ID = 234;
+//
+//                                        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//
+//                                        String CHANNEL_ID = "HS+";
+//                                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//                                            CharSequence name = "HS+";
+//                                            String Description = "Likes";
+//                                            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+//                                            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+//                                            mChannel.setDescription(Description);
+//                                            mChannel.enableLights(true);
+//                                            mChannel.setLightColor(Color.RED);
+//                                            mChannel.enableVibration(true);
+//                                            mChannel.setShowBadge(false);
+//                                            notificationManager.createNotificationChannel(mChannel);
+//
+//                                        }
+//
+//                                        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+//                                                .setSmallIcon(R.mipmap.ic_launcher)
+//                                                .setContentTitle("חדשות מעולות!")
+//                                                .setContentText("הסיכום שלך במקצוע " + subject + " הגיע לחמישה לייקים או יותר!")
+//                                                .setOngoing(false)
+//                                                .setSmallIcon(R.drawable.like_icon)
+//                                                .setAutoCancel(true)
+//                                                .setStyle(new NotificationCompat.BigTextStyle())
+////                                                .setSound(notifSoundUri)
+//                                                ;
+//
+//                                        //Intent resultIntent = new Intent(getApplicationContext(),ViewSummaryActivity.class);
+//                                        Intent resultIntent = new Intent(getApplicationContext(), HomepageActivity.class);
+//                                        resultIntent.putExtra("summaryKey",key);
+//                                        resultIntent.putExtra("subject",subject);
+//                                        resultIntent.putExtra("openedNotif",true);
+//                                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+//                                        stackBuilder.addParentStack(LoadingActivity.class);
+//                                        stackBuilder.addNextIntent(resultIntent);
+//                                        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_ONE_SHOT);
+//                                        builder.setContentIntent(resultPendingIntent);
+////                                        MediaPlayer mediaPlayer = MediaPlayer.create(NotificationService.this, R.raw.service_notification_sound_effect);
+////                                        mediaPlayer.start();
+//                                        notificationManager.notify(NOTIFICATION_ID, builder.build());
+//
+//                                    }
+//                                });
+//
+//
+//                            }
+//
+//                        }
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                }
+//            });
+//
+//
+//
+//        }
+
+
         for(final String subject : arr){
-            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference(subject);
-
-            ref.orderByChild("amountOfLikes").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    //GenericTypeIndicator<HashMap<String,Summary>> t = new GenericTypeIndicator<HashMap<String,Summary>>(){};
-                    final String subject = snapshot.getKey(); //subject
-                    if((HashMap<String,Summary>)snapshot.getValue() != null){
-                        Map<String,HashMap <String,String>> summaries = new HashMap<String,HashMap <String,String>>((HashMap<String,HashMap <String,String>>)snapshot.getValue());
-                        for (Map.Entry<String,HashMap <String,String>> entry : summaries.entrySet()) {
+            final Query newQueryRefUSER = FirebaseDatabase.getInstance().getReference(subject).orderByChild("creatorKey").equalTo(getSharedPreferences("index",Context.MODE_PRIVATE).getString("key",""));
+            if (isNetworkAvailable()){
+                newQueryRefUSER.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            final String subject = snapshot.getKey(); //subject
+                            if((HashMap<String,Summary>)snapshot.getValue() != null){
+                                Map<String,HashMap <String,String>> summaries = new HashMap<String,HashMap <String,String>>((HashMap<String,HashMap <String,String>>)snapshot.getValue());
+                                for (Map.Entry<String,HashMap <String,String>> entry : summaries.entrySet()) {
 //                            System.out.println(entry.getKey() + "/" + entry.getValue().getAmountOfLikes());
-                            Map<String, String> summary = new HashMap<String, String>((HashMap<String, String>) entry.getValue());
-                            //int userIndex = sharedPreferences.getInt("index",0);
-                            SharedPreferences sharedPreferences = getSharedPreferences("index",Context.MODE_PRIVATE);
+                                    Map<String, String> summary = new HashMap<String, String>((HashMap<String, String>) entry.getValue());
 
-                            if (String.valueOf(summary.get("amountOfLikes")).equals(String.valueOf(5)) && summary.get("creatorKey").equals(sharedPreferences.getString("key","")) && String.valueOf(summary.get("hasNotified")).equals("false")) { //Checks if amountOfLikes of current summary is equal to 5 (it is a long so converting to strings is necessary
-                                //Toast.makeText(notificationService.this,"dd",Toast.LENGTH_SHORT).show();
-                                final String key = entry.getKey();
-                                FirebaseDatabase.getInstance().getReference(subject).child(key).child("hasNotified").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
+                                    if (String.valueOf(summary.get("amountOfLikes")).equals(String.valueOf(5)) && String.valueOf(summary.get("hasNotified")).equals("false")) { //Checks if amountOfLikes of current summary is equal to 5 (it is a long so converting to strings is necessary
 
-                                       // Uri notifSoundUri = Uri.parse("android.resource://com.my.package/" + R.raw.service_notification_sound_effect);
+                                        final String key = entry.getKey();
+                                        FirebaseDatabase.getInstance().getReference(subject).child(key).child("hasNotified").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
 
-                                        int NOTIFICATION_ID = 234;
+                                                int NOTIFICATION_ID = 234;
 
-                                        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-                                        String CHANNEL_ID = "HS+";
-                                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                            CharSequence name = "HS+";
-                                            String Description = "Likes";
-                                            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-                                            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
-                                            mChannel.setDescription(Description);
-                                            mChannel.enableLights(true);
-                                            mChannel.setLightColor(Color.RED);
-                                            mChannel.enableVibration(true);
-                                            mChannel.setShowBadge(false);
-                                            notificationManager.createNotificationChannel(mChannel);
+                                                String CHANNEL_ID = "HS+";
+                                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                                    CharSequence name = "HS+";
+                                                    String Description = "Likes";
+                                                    int importance = NotificationManager.IMPORTANCE_DEFAULT;
+                                                    NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+                                                    mChannel.setDescription(Description);
+                                                    mChannel.enableLights(true);
+                                                    mChannel.setLightColor(Color.RED);
+                                                    mChannel.enableVibration(true);
+                                                    mChannel.setShowBadge(false);
+                                                    notificationManager.createNotificationChannel(mChannel);
 
-                                        }
+                                                }
 
-                                        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
-                                                .setSmallIcon(R.mipmap.ic_launcher)
-                                                .setContentTitle("חדשות מעולות!")
-                                                .setContentText("הסיכום שלך במקצוע " + subject + " הגיע לחמישה לייקים או יותר!")
-                                                .setOngoing(false)
-                                                .setSmallIcon(R.drawable.like_icon)
-                                                .setAutoCancel(true)
-                                                .setStyle(new NotificationCompat.BigTextStyle())
+                                                NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                                                        .setSmallIcon(R.mipmap.ic_launcher)
+                                                        .setContentTitle("חדשות מעולות!")
+                                                        .setContentText("הסיכום שלך במקצוע " + subject + " הגיע לחמישה לייקים או יותר!")
+                                                        .setOngoing(false)
+                                                        .setSmallIcon(R.drawable.like_icon)
+                                                        .setAutoCancel(true)
+                                                        .setStyle(new NotificationCompat.BigTextStyle())
 //                                                .setSound(notifSoundUri)
-                                                ;
+                                                        ;
 
-                                        //Intent resultIntent = new Intent(getApplicationContext(),ViewSummaryActivity.class);
-                                        Intent resultIntent = new Intent(getApplicationContext(), HomepageActivity.class);
-                                        resultIntent.putExtra("summaryKey",key);
-                                        resultIntent.putExtra("subject",subject);
-                                        resultIntent.putExtra("openedNotif",true);
-                                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
-                                        stackBuilder.addParentStack(LoadingActivity.class);
-                                        stackBuilder.addNextIntent(resultIntent);
-                                        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_ONE_SHOT);
-                                        builder.setContentIntent(resultPendingIntent);
+                                                //Intent resultIntent = new Intent(getApplicationContext(),ViewSummaryActivity.class);
+                                                Intent resultIntent = new Intent(getApplicationContext(), HomepageActivity.class);
+                                                resultIntent.putExtra("summaryKey",key);
+                                                resultIntent.putExtra("subject",subject);
+                                                resultIntent.putExtra("openedNotif",true);
+                                                TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+                                                stackBuilder.addParentStack(LoadingActivity.class);
+                                                stackBuilder.addNextIntent(resultIntent);
+                                                PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_ONE_SHOT);
+                                                builder.setContentIntent(resultPendingIntent);
 //                                        MediaPlayer mediaPlayer = MediaPlayer.create(NotificationService.this, R.raw.service_notification_sound_effect);
 //                                        mediaPlayer.start();
-                                        notificationManager.notify(NOTIFICATION_ID, builder.build());
+                                                notificationManager.notify(NOTIFICATION_ID, builder.build());
+
+                                            }
+                                        });
+
 
                                     }
-                                });
 
-
+                                }
                             }
-
                         }
+
+
                     }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-                }
-            });
+                    }
+                });
+            }
 
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
         startService(new Intent(this,NotificationService.class));
         return super.onStartCommand(intent, flags, startId);
+    }
+
+
+    /**
+     * The following function checks if the user has an available internet connection in order to login
+     * @return
+     */
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

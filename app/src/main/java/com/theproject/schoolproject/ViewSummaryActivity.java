@@ -283,7 +283,13 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
      * */
     @Override
     public void onBackPressed() {
+        Intent intent = new Intent(this, ViewSummariesOnSubjectActivity.class);
+        intent.putExtra("SubjectSelected", summarySubject);
+
+       // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
         finish();
+
     }
 
     /**

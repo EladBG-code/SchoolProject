@@ -81,6 +81,7 @@
                     android:layout_height="200sp"
                     android:outlineAmbientShadowColor="@color/cardview_dark_background"
                     android:outlineProvider="paddedBounds"
+                    android:visibility="gone"
                     />
 
             </LinearLayout>

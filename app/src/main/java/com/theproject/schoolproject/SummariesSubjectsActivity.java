@@ -170,7 +170,7 @@ public class SummariesSubjectsActivity extends AppCompatActivity implements View
 
         // Check if we're running on Android 5.0 or higher
         Intent intent = new Intent(this,ViewSummariesOnSubjectActivity.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // Apply activity transition
 
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, cvSubject,subjectSelected);
@@ -181,7 +181,8 @@ public class SummariesSubjectsActivity extends AppCompatActivity implements View
             GlobalAcross.selectedSubjectVectorID = vectorID;
             startActivity(intent,options.toBundle());
 
-        } else {
+        } else*/
+        {
             // Swap without transition
             intent.putExtra("SubjectSelected",subjectSelected);
             GlobalAcross.selectedSubjectVectorID = vectorID;

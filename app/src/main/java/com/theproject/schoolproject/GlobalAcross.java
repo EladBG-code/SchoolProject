@@ -1,15 +1,21 @@
 package com.theproject.schoolproject;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.Uri;
+import android.provider.OpenableColumns;
 import android.text.Layout;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.firebase.database.DataSnapshot;
@@ -17,6 +23,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,6 +102,7 @@ public class GlobalAcross {
         return subjectsArrayList;
     }
 
+
     /**
      * This function validates the details of the user when they upload a summary (checks title & description)
      * @param title
@@ -103,6 +112,7 @@ public class GlobalAcross {
      */
     public static boolean checkValid(EditText title, EditText description, Context context){
         //This function checks if the entered parameters in the description and title of the summary withhold and are valid
+
         if(title.getText().toString().length() < 5){
             Toast.makeText(context, "אנא וודא\\י שיש לפחות 5 תווים בכותרת הסיכום", Toast.LENGTH_LONG).show();
             return false;

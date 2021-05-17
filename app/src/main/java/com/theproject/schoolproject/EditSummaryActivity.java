@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.Manifest;
+import android.animation.Animator;
 import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -19,19 +20,32 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.RotateDrawable;
+import android.graphics.drawable.VectorDrawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.provider.OpenableColumns;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -77,6 +91,8 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
     Boolean subjectChanged;
     int deletionProgress = 0;
     SharedPreferences sharedPreferences;
+    TextView tvNewFileName;
+    MediaPlayer mp;
 
     /**
      * Usual onCreate function that sets the proper needs to their proper values
@@ -90,7 +106,9 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         subject = getIntent().getStringExtra("subject");
         summaryKey = getIntent().getStringExtra("key");
 
+        mp = MediaPlayer.create(this, R.raw.clip_sound_effect);
 
+        tvNewFileName = findViewById(R.id.tvNewFilename);
         subjectChanged = false;
         pdfUri = null;
         setToolbarAndDrawer();
@@ -260,6 +278,146 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         return false;
     }
 
+    Drawable rotateDrawable(Drawable d, final float angle) {
+        // Use LayerDrawable, because it's simpler than RotateDrawable.
+        Drawable[] arD = {
+                d
+        };
+        return new LayerDrawable(arD) {
+            @Override
+            public void draw(Canvas canvas) {
+                canvas.save();
+                canvas.rotate(angle);
+                super.draw(canvas);
+                canvas.restore();
+            }
+        };
+    }
+
+
+    public static Bitmap RotateBitmap(Bitmap source, float angle)
+    {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+
+    public Boolean checkValidSize(Uri pdfUri){
+
+        if (pdfUri == null){
+            return true;
+        }
+        //This function checks if the entered parameters in the description and title of the summary withhold and are valid
+        Cursor returnCursor = getContentResolver().query(pdfUri, null, null, null, null);
+        int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+        returnCursor.moveToFirst();
+
+        if(returnCursor.getLong(sizeIndex) > 6291456) {  //Checks if the file size is over 6MB withusing a curser that checks the file's size
+
+            cvReplaceFile.animate().rotationBy(-360).setDuration(450).setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    cvReplaceFile.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                    Toast.makeText(getApplicationContext(),"הקובץ כבד מדי! אנו מרשים רק עד 6 MB.",Toast.LENGTH_LONG).show();
+                    tvNewFileName.setText("");
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            return false;
+
+        }
+        return true;
+    }
+
+    public void saveRedirectionToNewSubject(){
+        if (subjectChanged){
+            GlobalAcross.selectedSubjectVectorID = findIdOfSubject();
+        }
+
+        Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+        intent.putExtra("SubjectSelected", subject);
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+    }
+
+    public int findIdOfSubject(){
+
+        if (subject.equals("מתמטיקה")){
+            return R.drawable.calculating_mathematics_vector_icon;
+        }
+
+        if (subject.equals("לשון")){
+            return R.drawable.essay_lashon_hebrew_vector_icon;
+        }
+
+        if (subject.equals("היסטוריה")){
+            return R.drawable.pillar_history_vector_icon;
+        }
+
+        if (subject.equals("אזרחות")){
+            return R.drawable.israeli_flag_citizenship_vector_icon;
+        }
+
+        if (subject.equals("תנ"+'"'+"ך")){
+            return R.drawable.hebrew_bible_bible_vector_icon;
+        }
+
+        if (subject.equals("ספרות")){
+            return R.drawable.book_literature_vector_icon;
+        }
+
+        if (subject.equals("אנגלית")){
+            return R.drawable.abc_blocks_english_vector_icon;
+        }
+
+        if (subject.equals("ביולוגיה")){
+            return R.drawable.dna_biology_vector_icon;
+        }
+
+        if (subject.equals("מדעי המחשב")){
+            return R.drawable.web_programming_computer_science_vector_icon;
+        }
+
+        if (subject.equals("כימיה")){
+            return R.drawable.chemical_jar_chemistry_vector_icon;
+        }
+
+        if (subject.equals("פיזיקה")){
+            return R.drawable.formula_physics_vector_icon;
+        }
+
+        if (subject.equals("תולדות האומנות")){
+            return R.drawable.hieroglyph_history_of_art_vector_icon;
+        }
+
+        if (subject.equals("תקשורת")){
+            return R.drawable.communication_communication_vector_icon;
+        }
+
+        if (subject.equals("מדעי החברה")){
+            return R.drawable.social_network_sociology_vector_icon;
+        }
+
+        return R.drawable.applogo;
+
+
+    }
+
     /**
      * */
 
@@ -282,83 +440,78 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         if (v == floatingSaveButton) {
             //Save shapable image view in clicker in the toolbar
             //First of all we check if the user even changed anything
-            if (GlobalAcross.checkValid(etEditSummaryName, etEditSummaryDescription,EditSummaryActivity.this)) {
+
+            {
+                    if (checkValidSize(pdfUri)){
+                    if (GlobalAcross.checkValid(etEditSummaryName, etEditSummaryDescription,EditSummaryActivity.this)) {
 
 
-                progressDialog = new ProgressDialog(EditSummaryActivity.this);
-                progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                progressDialog.setTitle("שומרים את השינויים שלך...");
-                progressDialog.setProgress(0);
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-                //Editor's note - add an app check for the new values lengths entered to the edittexts while changing
+                        progressDialog = new ProgressDialog(EditSummaryActivity.this);
+                        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                        progressDialog.setTitle("שומרים את השינויים שלך...");
+                        progressDialog.setProgress(0);
+                        progressDialog.setCancelable(false);
+                        progressDialog.show();
+                        //Editor's note - add an app check for the new values lengths entered to the edittexts while changing
 
-                FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        GlobalAcross.editingTemp = 0;
+                        FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                GlobalAcross.editingTemp = 0;
 //                        if (!subject.equals(spinnerSubjectCurrent)) {
 //                            GlobalAcross.editingTemp++;
 //                        }
-                        if (!snapshot.child("title").getValue().toString().equals(etEditSummaryName.getText().toString())) {
-                            GlobalAcross.editingTemp++;
-                        }
-                        if (!snapshot.child("description").getValue().toString().equals(etEditSummaryDescription.getText().toString())) {
-                            GlobalAcross.editingTemp++;
-                        }
-                        if(pdfUri != null){
-                            GlobalAcross.editingTemp += 2;   //adds 2 : one for deletion & one for uploading the new PDF
-                        }
+                                if (!snapshot.child("title").getValue().toString().equals(etEditSummaryName.getText().toString())) {
+                                    GlobalAcross.editingTemp++;
+                                }
+                                if (!snapshot.child("description").getValue().toString().equals(etEditSummaryDescription.getText().toString())) {
+                                    GlobalAcross.editingTemp++;
+                                }
+                                if(pdfUri != null){
+                                    GlobalAcross.editingTemp += 2;   //adds 2 : one for deletion & one for uploading the new PDF
+                                }
 
 
 
-                        //FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("amountOfItemsToEdit").setValue(GlobalAcross.editingTemp); /*experiment*/
-                        //Toast.makeText(EditSummaryActivity.this,temp,Toast.LENGTH_SHORT).show(); /*experiment*/
+                                //FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("amountOfItemsToEdit").setValue(GlobalAcross.editingTemp); /*experiment*/
+                                //Toast.makeText(EditSummaryActivity.this,temp,Toast.LENGTH_SHORT).show(); /*experiment*/
 
-                        database = FirebaseDatabase.getInstance().getReference().child(subject);
-                        if(GlobalAcross.editingTemp != 0) {
-                            //Checks if any changes have even been made
-                            progressDialog.show();
+                                database = FirebaseDatabase.getInstance().getReference().child(subject);
+                                if(GlobalAcross.editingTemp != 0) {
+                                    //Checks if any changes have even been made
+                                    progressDialog.show();
 
-                            if (!snapshot.child("title").getValue().toString().equals(etEditSummaryName.getText().toString())) { //This function checks if the new title is different than the existing one and sets the on the realtime database as the new one
-                                FirebaseDatabase.getInstance().getReference().child(subject).child(summaryKey).child("title").setValue(etEditSummaryName.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
-                                        if (progressDialog.getProgress() == 100) {
-                                            progressDialog.dismiss();
-                                            Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                                            Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
-                                            intent.putExtra("SubjectSelected", subject);
-                                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                                            finish();
-                                        }
+                                    if (!snapshot.child("title").getValue().toString().equals(etEditSummaryName.getText().toString())) { //This function checks if the new title is different than the existing one and sets the on the realtime database as the new one
+                                        FirebaseDatabase.getInstance().getReference().child(subject).child(summaryKey).child("title").setValue(etEditSummaryName.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
+                                                if (progressDialog.getProgress() == 100) {
+                                                    progressDialog.dismiss();
+                                                    saveRedirectionToNewSubject();
+                                                }
 
+                                            }
+                                        });
                                     }
-                                });
-                            }
 
 
-                            if (!snapshot.child("description").getValue().toString().equals(etEditSummaryDescription.getText().toString())) { //This function checks if the new description is different than the existing one and sets the on the realtime database as the new one
-                                FirebaseDatabase.getInstance().getReference().child(subject).child(summaryKey).child("description").setValue(etEditSummaryDescription.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
-                                        if (progressDialog.getProgress() == 100) {
-                                            progressDialog.dismiss();
-                                            Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                                            Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
-                                            intent.putExtra("SubjectSelected", subject);
-                                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                                            finishAffinity();
-                                        }
+                                    if (!snapshot.child("description").getValue().toString().equals(etEditSummaryDescription.getText().toString())) { //This function checks if the new description is different than the existing one and sets the on the realtime database as the new one
+                                        FirebaseDatabase.getInstance().getReference().child(subject).child(summaryKey).child("description").setValue(etEditSummaryDescription.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
+                                                if (progressDialog.getProgress() == 100) {
+                                                    progressDialog.dismiss();
+                                                    saveRedirectionToNewSubject();
+                                                }
+                                            }
+                                        });
                                     }
-                                });
-                            }
 
-                            if (pdfUri != null){
-                                //This function deletes the usersThatLiked the summary because the creator decided to change the PDF file & resets likes
-                                DatabaseReference deleteUsersRef = FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked");
+                                    if (pdfUri != null){
+                                        //This function deletes the usersThatLiked the summary because the creator decided to change the PDF file & resets likes
+                                        DatabaseReference deleteUsersRef = FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked");
 //                                deleteUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
 //                                    @Override
 //                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -390,42 +543,39 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 //                                    }
 //                                });
 
-                                deleteChildrenFromRefMapPlus(FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked"),subject,summaryKey);
+                                        deleteChildrenFromRefMapPlus(FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked"),subject,summaryKey);
+
+
+                                    }
+                                    aSyncPDFchange();
+
+                                }
+                                else if(subjectChanged || progressDialog.getProgress() >= 99){
+                                   saveRedirectionToNewSubject();
+                                }
+                                else {
+                                    progressDialog.dismiss();
+                                    Toast.makeText(EditSummaryActivity.this,"לא נעשו שינויים בסיכום.",Toast.LENGTH_SHORT).show();
+                                    //EditSummaryActivity.super.onBackPressed();
+                                }
 
 
                             }
-                            aSyncPDFchange();
 
-                        }
-                        else if(subjectChanged){
-                            Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
-                            intent.putExtra("SubjectSelected", subject);
-                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                            finishAffinity();
-                        }
-                        else {
-                            progressDialog.dismiss();
-                            Toast.makeText(EditSummaryActivity.this,"לא נעשו שינויים בסיכום.",Toast.LENGTH_SHORT).show();
-                            //EditSummaryActivity.super.onBackPressed();
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(EditSummaryActivity.this,"אאוץ'! נתקלנו בשגיאה - נסו שוב מאוחר יותר", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                if (progressDialog.getProgress() >= 99 || subjectChanged) {
-                    progressDialog.dismiss();
-                    Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
-                    intent.putExtra("SubjectSelected", subject);
-                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                    finishAffinity();
-                }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toast.makeText(EditSummaryActivity.this,"אאוץ'! נתקלנו בשגיאה - נסו שוב מאוחר יותר", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+//                        if (progressDialog.getProgress() >= 99 || subjectChanged) {
+//                            progressDialog.dismiss();
+//                            Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
+//                            Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+//                            intent.putExtra("SubjectSelected", subject);
+//
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+//                        }
 
 //                if (subject != spinnerSubjectCurrent) {
 //                    //Toast.makeText(EditSummaryActivity.this,spinnerSubjectCurrent,Toast.LENGTH_SHORT).show();
@@ -447,40 +597,117 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 //            });
 
 
+                    }
+                }
+                else{
+                    tvNewFileName.setText("");
+                    mp.start();
+                    cvReplaceFile.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                    pdfUri = null;
+                }
+                if (progressDialog.getProgress() >= 99 || subjectChanged){
+                    saveRedirectionToNewSubject();
+                }
             }
+
+
+
 
 
         }
 
         if (v == cvReplaceFile) {
             //Activates if the replace PDF cardview is selected
-            Drawable temp = getResources().getDrawable(R.drawable.info_icon);
-            temp.setTint(Color.RED);
-            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(EditSummaryActivity.this);
-            builder.setMessage("אתם בטוחים שאתם רוצים לשנות את קובץ הPDF? שינוי קובץ הסיכום יגרום למחיקת כל הלייקים שנצברו עבור סיכום זה עד כה.")
-                    .setPositiveButton("כן", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (ContextCompat.checkSelfPermission(EditSummaryActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) { //Checks if has the permission to read external storage
-                                selectPDF();
-                            } else {
-                                ActivityCompat.requestPermissions(EditSummaryActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9); //Asks the user to give it the permission to do so if it doesn't have it and sets the request code to 9
-                                //onRequestPermissionResult will be the next line to this - all parameters are passed
+
+            if (pdfUri == null){
+                Drawable temp = getResources().getDrawable( R.drawable.info_icon);
+                temp.setTint(Color.RED);
+
+                androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(EditSummaryActivity.this);
+                builder.setMessage("אתם בטוחים שאתם רוצים לשנות את קובץ ה- PDF? שינוי קובץ הסיכום יגרום למחיקת כל הלייקים שנצברו עבור סיכום זה עד כה.")
+                        .setPositiveButton("כן", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                cvReplaceFile.animate().rotationBy(360).setDuration(450).setListener(new Animator.AnimatorListener() {
+                                    @Override
+                                    public void onAnimationStart(Animator animation) {
+                                        cvReplaceFile.setClickable(false);
+                                    }
+
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        if (ContextCompat.checkSelfPermission(EditSummaryActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) { //Checks if has the permission to read external storage
+                                            selectPDF();
+                                        } else {
+                                            ActivityCompat.requestPermissions(EditSummaryActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9); //Asks the user to give it the permission to do so if it doesn't have it and sets the request code to 9
+                                            //onRequestPermissionResult will be the next line to this - all parameters are passed
+                                        }
+                                        cvReplaceFile.setClickable(true);
+                                    }
+
+                                    @Override
+                                    public void onAnimationCancel(Animator animation) {
+
+                                    }
+
+                                    @Override
+                                    public void onAnimationRepeat(Animator animation) {
+
+                                    }
+                                });
+
+
+
+
+
                             }
-                        }
-                    })
-                    .setNegativeButton("לא",null)
-                    .setIcon(temp)
-                    .setTitle("אזהרה")
-            ;
-            AlertDialog alert = builder.create();
-            alert.show();
+                        })
+                        .setNegativeButton("לא",null)
+                        .setIcon(temp)
+                        .setTitle("אזהרה")
+                ;
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+            else{
+                cvReplaceFile.animate().rotationBy(-360).setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        pdfUri = null;
+                        cvReplaceFile.setClickable(false);
+                        mp.start();
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        tvNewFileName.setText("");
+                        cvReplaceFile.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                        Toast.makeText(EditSummaryActivity.this, "בחירת קובץ ה- PDF הנוכחית הוסרה בהצלחה.", Toast.LENGTH_SHORT).show();
+                        cvReplaceFile.setClickable(true);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+            }
+
 
 
         }
 
         if (v == cvDeleteSummary) {
             //Activates if the delete summary cardview is pressed on
+
+//            cvDeleteSummary.animate().rotationBy(90).set
+
 
             Drawable temp = getResources().getDrawable(R.drawable.info_icon);
             temp.setTint(Color.RED);
@@ -490,115 +717,79 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
-                            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked");
-                            //    myRef.child("usersThatLiked").child(String.valueOf(currentUserIndex)).removeValue();
-                            progressDialog = new ProgressDialog(EditSummaryActivity.this);
-                            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                            progressDialog.setTitle("מוחקים את הסיכום שלך...");
-                            progressDialog.setProgress(0);
-                            progressDialog.show();
+                            MediaPlayer.create(EditSummaryActivity.this,R.raw.delete_trashbin_sound_effect).start();
 
-                            deleteChildrenFromRefMap(myRef);
+                                cvDeleteSummary.animate().rotationBy(22).setDuration(50).setListener(new Animator.AnimatorListener() {
+                                    @Override
+                                    public void onAnimationStart(Animator animation) {
+                                        cvReplaceFile.setEnabled(false);
+                                        cvDeleteSummary.setEnabled(false);
+                                    }
 
-                            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull final DataSnapshot snapshot) {
-                                    if (snapshot != null) {
-                                        //Checks if the summary even has likes to start with the deletion
-
-                                        //HashMap<String,String> usersThatLikedCertainSummaryMap = new HashMap<>(snapshot.getValue(new GenericTypeIndicator<HashMap<String,String>>() {}));
-
-                                        //final ArrayList<String> usersThatLikedCertainSummary = new ArrayList<>(); //ArrayList for indexes of users who liked the summary that's about to me deleted
-
-                                        final Long childrenCount = snapshot.getChildrenCount();
-
-//                                        for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
-//                                            FirebaseDatabase.getInstance().getReference("UserHashMap").child(child.getKey()).child("favoriteSummaries").removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                @Override
-//                                                public void onSuccess(Void aVoid) {
-//                                                    deletionProgress += (100 / (childrenCount/100 + 2));
-//                                                    //System.out.println(deletionProgress);
-//                                                    progressDialog.setProgress(deletionProgress);
-//                                                }
-//                                            });
-//
-//
-//                                            //usersThatLikedCertainSummary.add(child.getValue().toString());
-//                                        }
-
-
-//                                        for (int i = 0; i < usersThatLikedCertainSummary.size(); i++) {
-//                                            final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/" + usersThatLikedCertainSummary.get(i));
-//                                            usersRef.child("favoriteSummaries").child(summaryKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                @Override
-//                                                public void onSuccess(Void aVoid) {
-//                                                    deletionProgress += (100 / (usersThatLikedCertainSummary.size() + 2));
-//                                                    //System.out.println(deletionProgress);
-//                                                    progressDialog.setProgress(deletionProgress);
-//                                                }
-//                                            }).addOnFailureListener(new OnFailureListener() {
-//                                                @Override
-//                                                public void onFailure(@NonNull Exception e) {
-//
-//                                                }
-//                                            });
-//                                        }
-
-
-                                        //The code gets here once it deletes all of the data the users who had the this summary as a favorite
-
-                                        //The string file in the reference inside the realtime database is opened and a storageref is opening and deleting the included file
-                                        FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("fileRef").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        cvDeleteSummary.animate().rotationBy(-44).setDuration(50).setListener(new Animator.AnimatorListener() {
                                             @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                StorageReference storageRef = storage.getInstance().getReference().child(snapshot.getValue().toString());
-                                                storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            public void onAnimationStart(Animator animation) {
+
+                                            }
+
+                                            @Override
+                                            public void onAnimationEnd(Animator animation) {
+                                                cvDeleteSummary.animate().rotationBy(22).setDuration(50).setListener(new Animator.AnimatorListener() {
                                                     @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        deletionProgress += 100 / (childrenCount + 2);
-                                                        progressDialog.setProgress(deletionProgress);
+                                                    public void onAnimationStart(Animator animation) {
+
+
+                                                    }
+
+                                                    @Override
+                                                    public void onAnimationEnd(Animator animation) {
+                                                        deleteSummaryFunc();
+                                                    }
+
+                                                    @Override
+                                                    public void onAnimationCancel(Animator animation) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onAnimationRepeat(Animator animation) {
+
                                                     }
                                                 });
                                             }
 
                                             @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-                                            }
-                                        });
+                                            public void onAnimationCancel(Animator animation) {
 
-                                        //Deletes the entire summary from the realtime database
-                                        FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            }
+
                                             @Override
-                                            public void onSuccess(Void aVoid) {
-                                             //The last piece to get 100% on the progressbar after the entire summary is removed from the realtime database
+                                            public void onAnimationRepeat(Animator animation) {
 
-                                                progressDialog.setProgress(deletionProgress);
-                                                progressDialog.dismiss();
-                                                Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
-                                                intent.putExtra("SubjectSelected", subject);
-                                                Toast.makeText(EditSummaryActivity.this, "הסיכום שלך נמחק בהצלחה!", Toast.LENGTH_SHORT).show();
-                                                progressDialog.dismiss();
-                                                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                                                finishAffinity();
                                             }
                                         });
-
-                                        //This prints the indexes of the users who liked the summary
-//                        for(int i=0;i<usersThatLikedCertainSummary.size();i++) {
-//                            System.out.println(usersThatLikedCertainSummary.get(i));
-//                        }
                                     }
-                                    //finishAffinity();
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    Toast.makeText(EditSummaryActivity.this,"אאוץ'! נתקלנו בשגיאה.", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                                    @Override
+                                    public void onAnimationCancel(Animator animation) {
+
+                                    }
+
+                                    @Override
+                                    public void onAnimationRepeat(Animator animation) {
+
+                                    }
+                                });
 
 
-                        }
+                            }
+
+
+
+
+
                     })
                     .setNegativeButton("לא", null)
                     .setIcon(temp)
@@ -606,6 +797,77 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
             AlertDialog alert = builder.create();
             alert.show();
         }
+    }
+
+    public void deleteSummaryFunc(){
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked");
+        //    myRef.child("usersThatLiked").child(String.valueOf(currentUserIndex)).removeValue();
+        progressDialog = new ProgressDialog(EditSummaryActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("מוחקים את הסיכום שלך...");
+        progressDialog.setProgress(0);
+        progressDialog.show();
+
+        deleteChildrenFromRefMap(myRef);
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull final DataSnapshot snapshot) {
+                if (snapshot != null) {
+                    //Checks if the summary even has likes to start with the deletion
+
+                    final Long childrenCount = snapshot.getChildrenCount();
+
+                    FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("fileRef").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            StorageReference storageRef = storage.getInstance().getReference().child(snapshot.getValue().toString());
+                            storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    deletionProgress += 100 / (childrenCount + 2);
+                                    progressDialog.setProgress(deletionProgress);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                    });
+
+                    //Deletes the entire summary from the realtime database
+                    FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            //The last piece to get 100% on the progressbar after the entire summary is removed from the realtime database
+
+                            progressDialog.setProgress(deletionProgress);
+                            progressDialog.dismiss();
+                            Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+                            intent.putExtra("SubjectSelected", subject);
+                            Toast.makeText(EditSummaryActivity.this, "הסיכום שלך נמחק בהצלחה!", Toast.LENGTH_LONG).show();
+                            progressDialog.dismiss();
+
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+
+                        }
+                    });
+
+                    //This prints the indexes of the users who liked the summary
+//                        for(int i=0;i<usersThatLikedCertainSummary.size();i++) {
+//                            System.out.println(usersThatLikedCertainSummary.get(i));
+//                        }
+                }
+                //finishAffinity();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(EditSummaryActivity.this,"אאוץ'! נתקלנו בשגיאה.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void deleteChildrenFromRefMapPlus(DatabaseReference myRef, final String summarySubject, final String summaryKey) {
@@ -705,11 +967,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                             //Success - changed the file reference of the summary in the realtime database to its actual new reference
                                             if (progressDialog.getProgress() == 100) {
                                                 progressDialog.dismiss();
-                                                Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                                                Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
-                                                intent.putExtra("SubjectSelected", subject);
-                                                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                                                finish();
+                                                saveRedirectionToNewSubject();
                                             }
                                             //aSyncSubjectIf();
                                         }
@@ -765,12 +1023,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                                     //Success - changed the file reference of the summary in the realtime database to its actual new reference
                                                     if(progressDialog.getProgress() == 100){
                                                         progressDialog.dismiss();
-                                                        Toast.makeText(EditSummaryActivity.this,"השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-                                                        Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
-                                                        intent.putExtra("SubjectSelected", subject);
-                                                        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                                                        finish();
-
+                                                        saveRedirectionToNewSubject();
                                                     }
                                                     //aSyncSubjectIf();
                                                 }
@@ -786,7 +1039,11 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     Toast.makeText(EditSummaryActivity.this,"אאוץ'! נתקלנו בשגיאה - נסו שוב מאוחר יותר", Toast.LENGTH_SHORT).show();
-                    finish();
+                    Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+                    intent.putExtra("SubjectSelected", subject);
+
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
                 }
             });
 
@@ -799,7 +1056,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
      * only when the other changes are done (peformed with OnSuccess or OnComplete listeners (according to the needs)
      * */
     public void aSyncSubjectIf(){
-        //if(!subject.equals(spinnerSubjectCurrent)){
+//        if(!subject.equals(spinnerSubjectCurrent)){
             //Enters if the subject was changed
 
             FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -921,7 +1178,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
             });
 
 
-        //}
+       // }
     }
 
     /**
@@ -942,15 +1199,60 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
      * @param data
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable final Intent data) {
         //This checks if the user has selected a file or not
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 86 && resultCode == RESULT_OK && data != null) {
-            pdfUri = data.getData(); // This will return the Uri of the selected file
-            Toast.makeText(EditSummaryActivity.this,"הקובץ: "+data.getData().getLastPathSegment()+" נבחר.",Toast.LENGTH_LONG);
+            cvReplaceFile.animate().rotationBy(-360).setDuration(450).setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    pdfUri = data.getData(); // This will return the Uri of the selected file
+                    mp.start();
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    cvReplaceFile.setCardBackgroundColor(Color.GRAY);
+                    tvNewFileName.setText("הקובץ בשם: "+getFileName(pdfUri)+" נבחר.");
+                    tvNewFileName.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+
         } else {
-            Toast.makeText(EditSummaryActivity.this, "אנא בחרו קובץ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(EditSummaryActivity.this, "אנא בחרו קובץ PDF", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
     }
 
     /**
