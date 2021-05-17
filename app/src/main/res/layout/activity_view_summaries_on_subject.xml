@@ -23,7 +23,38 @@
             app:menu="@menu/main_menu"
             app:navigationIcon="@drawable/navigation_icon"
             app:navigationIconTint="@color/white"
-            />
+            >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layoutDirection="rtl"
+                >
+
+<!--                <ImageButton-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="?actionBarSize"-->
+<!--                    android:src="@drawable/summaries_not_found_icon_vector"-->
+<!--                    android:tint="@color/white"-->
+<!--                    android:background="@drawable/roundcorner"-->
+<!--                    android:id="@+id/ibEditSummary"-->
+<!--                    android:clickable="true"-->
+<!--                    android:layout_marginEnd="10sp"-->
+<!--                    android:padding="1dp"-->
+<!--                    android:layout_gravity="end"-->
+<!--                    />-->
+                <ImageView
+                    android:layout_width="?actionBarSize"
+                    android:layout_height="?actionBarSize"
+                    android:src="@drawable/search_icon_vector"
+                    android:padding="17sp"
+                    android:id="@+id/ivSearchByName"
+                    app:tint="@color/white" />
+            </LinearLayout>
+
+
+        </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.drawerlayout.widget.DrawerLayout

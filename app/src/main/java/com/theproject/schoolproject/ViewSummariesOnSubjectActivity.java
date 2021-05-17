@@ -13,14 +13,20 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.util.LayoutDirection;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -44,6 +50,7 @@ import com.firebase.ui.database.SnapshotParser;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.internal.TextScale;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -51,6 +58,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -76,8 +84,10 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     ProgressBar pbLoadingSummaries;
     SharedPreferences sharedPreferences;
     LinearLayout llNoSummaries;
-    ImageView ivSubjectVector;
+    ImageView ivSubjectVector,ivSearchByName;
     MediaPlayer mp;
+
+    String inputSearchText;
 
     /**
      * Usual onCreate function
@@ -91,12 +101,15 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         initDrawer();
 
 
+
+
         pbLoadingSummaries = findViewById(R.id.pbLoadingSummaries);
         mp = MediaPlayer.create(this, R.raw.add_summary_sound);
 
             subject = new Subject(getIntent().getStringExtra("SubjectSelected"));
             tvSubjectName.setText(getIntent().getStringExtra("SubjectSelected")); /*This line sets the name of the subject which was selected as the title of the subject's summary page*/
 
+        pbLoadingSummaries.setVisibility(View.GONE);
 
             tvSubjectName.setPaintFlags(tvSubjectName.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG); //Makes the subject name textview bold
 
@@ -109,7 +122,8 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
             database = FirebaseDatabase.getInstance();
             summariesRef = database.getReference(subject.getSubjectName());
 
-            loadSummariesListFromDB();
+
+            loadSummariesListFromDB(summariesRef,true);
 
 
     }
@@ -159,9 +173,10 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     /**
      * This function loads all of the summaries of this current subject from the realtime database withusing a query - uses FirebaseUI (updates LIVE)
      * */
-    public void loadSummariesListFromDB() {
+    public void loadSummariesListFromDB(Query query,Boolean defaultX) {
         pbLoadingSummaries.setVisibility(View.VISIBLE);
-        options = new FirebaseRecyclerOptions.Builder<Summary>().setQuery(summariesRef, new SnapshotParser<Summary>() {
+
+        options = new FirebaseRecyclerOptions.Builder<Summary>().setQuery(query, new SnapshotParser<Summary>() {
         @NonNull
         @Override
         public Summary parseSnapshot(@NonNull DataSnapshot snapshot) {
@@ -191,166 +206,9 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
             return summary;
         }
     }).build();
-    adapter = new FirebaseRecyclerAdapter<Summary, MyViewHolder>(options) {
 
+    setAdapter(defaultX);
 
-
-        @Override
-        public void onDataChanged() {
-
-            pbLoadingSummaries.setVisibility(View.GONE);
-
-            if (adapter.getItemCount() == 0){
-                llNoSummaries.setVisibility(View.VISIBLE);
-            }
-            else{
-                llNoSummaries.setVisibility(View.GONE);
-            }
-
-            super.onDataChanged();
-            notifyDataSetChanged();
-        }
-
-        public String amountOfLikesFunc(long amountOfLikes) {
-
-            if (amountOfLikes > 5 && amountOfLikes < 10){
-                return "5+";
-            }
-            if(amountOfLikes > 10 && amountOfLikes < 20){
-                return "10+";
-            }
-            if(amountOfLikes > 20 && amountOfLikes < 40){
-                return "20+";
-            }
-            if(amountOfLikes > 40 && amountOfLikes < 60){
-                return "40+";
-            }
-            if(amountOfLikes > 60 && amountOfLikes < 80){
-                return "60+";
-            }
-            if (amountOfLikes > 80 && amountOfLikes < 100){
-                return "80+";
-            }
-            if(amountOfLikes > 100){
-                return "100+";
-            }
-            return amountOfLikes+"";
-        }
-
-        @Override
-        protected void onBindViewHolder(@NonNull final MyViewHolder holder, final int position, @NonNull final Summary model) {
-            pbLoadingSummaries.setVisibility(View.GONE);
-
-
-        holder.tvTitle.setText(model.getTitle());
-        if(model.getDescription().length() > 15){
-            holder.tvDescription.setText(model.getDescription().substring(0,15)+"...");
-        }
-        else{
-            holder.tvDescription.setText(model.getDescription());
-        }
-        holder.tvAuthor.setText(model.getAuthor());
-
-        holder.mtvLikesNum.setText(amountOfLikesFunc(model.getAmountOfLikes()));
-
-
-
-        if (model.getUsersThatLikedHash() == null){
-            holder.btnHeart.setChecked(false);
-        }
-        else{
-            if (model.getUsersThatLikedHash().containsKey(GlobalAcross.currentUserKey)){
-                holder.btnHeart.setChecked(true);
-                holder.mtvLikesNum.setTextColor(Color.RED);
-            }
-            else{
-                holder.btnHeart.setChecked(false);
-                holder.mtvLikesNum.setTextColor(Color.BLACK);
-            }
-        }
-
-
-     /*   if(model.getUsersThatLiked()==null){       //temporarily disabled
-            holder.btnHeart.setChecked(false);
-        }
-       else {
-            ArrayList<String> usersThatLikedTemp = model.getUsersThatLiked();
-            if(usersThatLikedTemp.contains(Long.valueOf(currentUserIndex))) {
-                holder.btnHeart.setChecked(true);
-                holder.mtvLikesNum.setTextColor(Color.RED);
-            }
-            else{
-                holder.btnHeart.setChecked(false);
-                holder.mtvLikesNum.setTextColor(Color.BLACK);
-            }
-        }   */
-
-
-        // this function is adding one like to the summary
-        holder.btnHeart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String selectedKeySummary = getRef(position).getKey();
-                long newLikes = model.getAmountOfLikes();
-                if(holder.btnHeart.isChecked()){
-                   newLikes += 1;
-                   updateLikesDB(selectedKeySummary, newLikes);
-                   updateListOfLikes(selectedKeySummary, true);
-                   Toast.makeText(ViewSummariesOnSubjectActivity.this, "הסיכום נשמר בסיכומים שלי", Toast.LENGTH_SHORT).show();
-                   holder.btnHeart.setChecked(true);
-                }
-                if(!holder.btnHeart.isChecked()){
-                    newLikes -= 1;
-                    updateLikesDB(selectedKeySummary, newLikes);
-                    updateListOfLikes(selectedKeySummary, false);
-                    Toast.makeText(ViewSummariesOnSubjectActivity.this, "הסיכום הוסר מהסיכומים שלי", Toast.LENGTH_SHORT).show();
-                    holder.btnHeart.setChecked(false);
-                    holder.mtvLikesNum.setTextColor(Color.BLACK);
-
-                }
-
-            }
-
-        });
-
-        holder.btnViewSummary.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ViewSummariesOnSubjectActivity.this,ViewSummaryActivity.class);
-                intent.putExtra("summaryKey",getRef(position).getKey());
-                intent.putExtra("subject",subject.getSubjectName());
-                startActivity(intent);
-            }
-        });
-
-        holder.v.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ViewSummariesOnSubjectActivity.this,ViewSummaryActivity.class);
-                intent.putExtra("summaryKey",getRef(position).getKey());
-                intent.putExtra("subject",subject.getSubjectName());
-                startActivity(intent);
-            }
-        });
-        holder.cvEntireSummary.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ViewSummariesOnSubjectActivity.this,ViewSummaryActivity.class);
-                intent.putExtra("summaryKey",getRef(position).getKey());
-                intent.putExtra("subject",subject.getSubjectName());
-                startActivity(intent);
-            }
-        });
-        }
-
-        @NonNull
-        @Override
-        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_grid_layout,parent,false);
-            return new MyViewHolder(v);
-        }
-
-    };
     adapter.startListening();
     GridLayoutManager gridLayoutManager = new GridLayoutManager(this,2,GridLayoutManager.VERTICAL, false);
     dataList.setLayoutManager(gridLayoutManager);
@@ -362,6 +220,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
      * Sets all of the components to their ID's in the XML
      */
     public void initComponents() {
+        ivSearchByName = findViewById(R.id.ivSearchByName);
         dataList = (RecyclerView)findViewById(R.id.recyclerView);
         drawerLayout = findViewById(R.id.drawer_layout_subject);
         navigationView = findViewById(R.id.nav_view_subject);
@@ -370,6 +229,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         tvSubjectName = findViewById(R.id.tvSubjectName);
         llNoSummaries = findViewById(R.id.llNoSummaries);
         ivSubjectVector = findViewById(R.id.ivSubjectVector);
+
     }
 
     /**
@@ -383,6 +243,12 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         toggle.syncState();
         floatingUploadButton.setOnClickListener(this);
         navigationView.setNavigationItemSelectedListener(this);
+        ivSearchByName.setOnClickListener(this);
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // only for oreo and newer devices - will have the tooltip feature
+            ivSearchByName.setTooltipText("חיפוש");
+        }
     }
 
     /**
@@ -473,6 +339,241 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         return false;
     }
 
+    private void searchByNameFunction(){
+        AlertDialog.Builder searchDialog = new AlertDialog.Builder(this);
+        searchDialog.setTitle("  הזינו את שם הסיכום");
+
+        final EditText searchInput = new EditText(this);
+        //searchInput.setPadding(2,0,2,0);
+
+        searchInput.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        searchInput.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        layoutParams.setMargins(50, 10, 50, 55);
+
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.addView(searchInput,layoutParams);
+        layoutParams.setLayoutDirection(LayoutDirection.RTL);
+
+        searchDialog.setView(linearLayout);
+
+
+       textWatchET(searchInput);
+
+
+       Drawable dialogLogo = getResources().getDrawable(R.drawable.search_icon_vector);
+       dialogLogo.setTint(getResources().getColor(R.color.colorPrimaryDark));
+
+        searchDialog.setPositiveButton("חפש", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Search and it is valid
+                if (searchInput.getError() != null){
+                    Toast.makeText(getApplicationContext(), "אנא עקבו אחר הוראות החיפוש.", Toast.LENGTH_SHORT - 5000).show();
+                    searchByNameFunction();
+                }
+                else {
+                    //Change the adapter to search in orderByChild by the inputSearchText
+                    inputSearchText = searchInput.getText().toString();
+
+                    String searchInputToLower = inputSearchText.toLowerCase();
+
+                    String searchInputTOUpper = inputSearchText.toUpperCase();
+
+                    Query queryByName = summariesRef.orderByChild("title").startAt(inputSearchText.substring(0,5)).endAt(inputSearchText+"\uf8ff");
+                   //loadSummariesListFromDB(queryByName);
+
+                   loadSummariesListFromDB(queryByName,false);
+
+
+
+                }
+            }
+        }).setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        }).setIcon(dialogLogo)
+                .show();
+    }
+
+    public void setAdapter(Boolean defaultX){
+        adapter = new FirebaseRecyclerAdapter<Summary, MyViewHolder>(options) {
+
+            @Override
+            public void onDataChanged() {
+
+                pbLoadingSummaries.setVisibility(View.GONE);
+
+                if (adapter.getItemCount() == 0){
+                    Toast.makeText(getApplicationContext(),"לא מצאנו תוצאות עבור חיפוש זה.",Toast.LENGTH_LONG).show();
+                    loadSummariesListFromDB(summariesRef,true);
+                }
+
+                super.onDataChanged();
+                notifyDataSetChanged();
+            }
+
+            public String amountOfLikesFunc(long amountOfLikes) {
+
+                if (amountOfLikes > 5 && amountOfLikes < 10){
+                    return "5+";
+                }
+                if(amountOfLikes > 10 && amountOfLikes < 20){
+                    return "10+";
+                }
+                if(amountOfLikes > 20 && amountOfLikes < 40){
+                    return "20+";
+                }
+                if(amountOfLikes > 40 && amountOfLikes < 60){
+                    return "40+";
+                }
+                if(amountOfLikes > 60 && amountOfLikes < 80){
+                    return "60+";
+                }
+                if (amountOfLikes > 80 && amountOfLikes < 100){
+                    return "80+";
+                }
+                if(amountOfLikes > 100){
+                    return "100+";
+                }
+                return amountOfLikes+"";
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull final MyViewHolder holder, final int position, @NonNull final Summary model) {
+                pbLoadingSummaries.setVisibility(View.GONE);
+                llNoSummaries.setVisibility(View.GONE);
+
+                holder.tvTitle.setText(model.getTitle());
+                if(model.getDescription().length() > 15){
+                    holder.tvDescription.setText(model.getDescription().substring(0,15)+"...");
+                }
+                else{
+                    holder.tvDescription.setText(model.getDescription());
+                }
+                holder.tvAuthor.setText(model.getAuthor());
+
+                holder.mtvLikesNum.setText(amountOfLikesFunc(model.getAmountOfLikes()));
+
+
+
+                if (model.getUsersThatLikedHash() == null){
+                    holder.btnHeart.setChecked(false);
+                }
+                else{
+                    if (model.getUsersThatLikedHash().containsKey(GlobalAcross.currentUserKey)){
+                        holder.btnHeart.setChecked(true);
+                        holder.mtvLikesNum.setTextColor(Color.RED);
+                    }
+                    else{
+                        holder.btnHeart.setChecked(false);
+                        holder.mtvLikesNum.setTextColor(Color.BLACK);
+                    }
+                }
+
+
+                // this function is adding one like to the summary
+                holder.btnHeart.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String selectedKeySummary = getRef(position).getKey();
+                        long newLikes = model.getAmountOfLikes();
+                        if(holder.btnHeart.isChecked()){
+                            newLikes += 1;
+                            updateLikesDB(selectedKeySummary, newLikes);
+                            updateListOfLikes(selectedKeySummary, true);
+                            Toast.makeText(ViewSummariesOnSubjectActivity.this, "הסיכום נשמר בסיכומים שלי", Toast.LENGTH_SHORT).show();
+                            holder.btnHeart.setChecked(true);
+                        }
+                        if(!holder.btnHeart.isChecked()){
+                            newLikes -= 1;
+                            updateLikesDB(selectedKeySummary, newLikes);
+                            updateListOfLikes(selectedKeySummary, false);
+                            Toast.makeText(ViewSummariesOnSubjectActivity.this, "הסיכום הוסר מהסיכומים שלי", Toast.LENGTH_SHORT).show();
+                            holder.btnHeart.setChecked(false);
+                            holder.mtvLikesNum.setTextColor(Color.BLACK);
+
+                        }
+
+                    }
+
+                });
+
+                holder.btnViewSummary.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(ViewSummariesOnSubjectActivity.this,ViewSummaryActivity.class);
+                        intent.putExtra("summaryKey",getRef(position).getKey());
+                        intent.putExtra("subject",subject.getSubjectName());
+                        startActivity(intent);
+                    }
+                });
+
+                holder.v.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(ViewSummariesOnSubjectActivity.this,ViewSummaryActivity.class);
+                        intent.putExtra("summaryKey",getRef(position).getKey());
+                        intent.putExtra("subject",subject.getSubjectName());
+                        startActivity(intent);
+                    }
+                });
+                holder.cvEntireSummary.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(ViewSummariesOnSubjectActivity.this,ViewSummaryActivity.class);
+                        intent.putExtra("summaryKey",getRef(position).getKey());
+                        intent.putExtra("subject",subject.getSubjectName());
+                        startActivity(intent);
+                    }
+                });
+            }
+
+            @NonNull
+            @Override
+            public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_grid_layout,parent,false);
+                return new MyViewHolder(v);
+            }
+
+        };
+    }
+
+    public void textWatchET(final EditText et){
+        et.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+               et.setError(null);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                count = et.getText().toString().length();
+                if (count == 0){
+                    et.setError("אנא הזינו שם");
+                }
+                else if (count < 5 || count > 15){
+                    et.setError("אנא בדקו את אורך הקלט");
+                }
+                else{
+                    et.setError(null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+    }
+
     /**
      * This function sends the user to the AddSummary activity
      * @param v
@@ -508,6 +609,31 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
             }).start();
 
 
+        }
+
+        if (v == ivSearchByName){
+            ivSearchByName.animate().rotationBy(360).setDuration(350).setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    ivSearchByName.setClickable(false);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    ivSearchByName.setClickable(true);
+                    searchByNameFunction();
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
         }
 
     }

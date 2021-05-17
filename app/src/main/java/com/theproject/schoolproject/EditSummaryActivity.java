@@ -169,7 +169,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
      */
     @Override
     public void onBackPressed() {
-        finish();
+        super.onBackPressed();
     }
 
     /**
@@ -343,16 +343,16 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
     }
 
     public void saveRedirectionToNewSubject(){
-        if (subjectChanged){
-            GlobalAcross.selectedSubjectVectorID = findIdOfSubject();
-        }
 
-        Toast.makeText(EditSummaryActivity.this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+        GlobalAcross.selectedSubjectVectorID = findIdOfSubject();
+
+        Toast.makeText(this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this, ViewSummariesOnSubjectActivity.class);
         intent.putExtra("SubjectSelected", subject);
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+        finishAfterTransition();
     }
 
     public int findIdOfSubject(){
@@ -440,18 +440,18 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         if (v == floatingSaveButton) {
             //Save shapable image view in clicker in the toolbar
             //First of all we check if the user even changed anything
-
+            progressDialog = new ProgressDialog(EditSummaryActivity.this);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setTitle("שומרים את השינויים שלך...");
+            progressDialog.setProgress(0);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
             {
                     if (checkValidSize(pdfUri)){
                     if (GlobalAcross.checkValid(etEditSummaryName, etEditSummaryDescription,EditSummaryActivity.this)) {
 
 
-                        progressDialog = new ProgressDialog(EditSummaryActivity.this);
-                        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                        progressDialog.setTitle("שומרים את השינויים שלך...");
-                        progressDialog.setProgress(0);
-                        progressDialog.setCancelable(false);
-                        progressDialog.show();
+
                         //Editor's note - add an app check for the new values lengths entered to the edittexts while changing
 
                         FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -479,7 +479,8 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                 database = FirebaseDatabase.getInstance().getReference().child(subject);
                                 if(GlobalAcross.editingTemp != 0) {
                                     //Checks if any changes have even been made
-                                    progressDialog.show();
+
+
 
                                     if (!snapshot.child("title").getValue().toString().equals(etEditSummaryName.getText().toString())) { //This function checks if the new title is different than the existing one and sets the on the realtime database as the new one
                                         FirebaseDatabase.getInstance().getReference().child(subject).child(summaryKey).child("title").setValue(etEditSummaryName.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -547,17 +548,31 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
 
                                     }
-                                    aSyncPDFchange();
+
 
                                 }
-                                else if(subjectChanged || progressDialog.getProgress() >= 99){
-                                   saveRedirectionToNewSubject();
-                                }
-                                else {
+                                else{
                                     progressDialog.dismiss();
-                                    Toast.makeText(EditSummaryActivity.this,"לא נעשו שינויים בסיכום.",Toast.LENGTH_SHORT).show();
-                                    //EditSummaryActivity.super.onBackPressed();
+                                    if(subjectChanged || progressDialog.getProgress() >= 99){
+                                        saveRedirectionToNewSubject();
+                                    }
+                                    else {
+                                        Toast.makeText(EditSummaryActivity.this,"לא נעשו שינויים בסיכום.",Toast.LENGTH_LONG).show();
+
+                                        finish();
+
+
+//                                        Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+//                                        intent.putExtra("SubjectSelected", subject);
+//
+//                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                                        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+//                                        finishAfterTransition();
+//                                        //EditSummaryActivity.super.onBackPressed();
+                                    }
                                 }
+
+
 
 
                             }
@@ -596,7 +611,6 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 //                }
 //            });
 
-
                     }
                 }
                 else{
@@ -605,9 +619,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                     cvReplaceFile.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                     pdfUri = null;
                 }
-                if (progressDialog.getProgress() >= 99 || subjectChanged){
-                    saveRedirectionToNewSubject();
-                }
+
             }
 
 
@@ -891,7 +903,13 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                     FirebaseDatabase.getInstance().getReference(summarySubject).child(summaryKey).child("usersThatLiked").removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            FirebaseDatabase.getInstance().getReference(summarySubject).child(summaryKey).child("amountOfLikes").setValue(0);
+                            FirebaseDatabase.getInstance().getReference(summarySubject).child(summaryKey).child("amountOfLikes").setValue(0).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+
+                                        aSyncPDFchange();
+                                }
+                            });
                         }
                     });
 
@@ -965,28 +983,19 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             //Success - changed the file reference of the summary in the realtime database to its actual new reference
-                                            if (progressDialog.getProgress() == 100) {
-                                                progressDialog.dismiss();
+                                            //if (progressDialog.getProgress() == 100) {
+                                                //progressDialog.dismiss()
+
+                                            if(progressDialog.getProgress() >= 99){
                                                 saveRedirectionToNewSubject();
                                             }
+
+                                            //}
                                             //aSyncSubjectIf();
                                         }
                                     });
                                 }
-                            })
-                            .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                                    //Tracks the progress of our upload task (progressbar)
-                                    if (snapshot.getTotalByteCount() > 6291456) { //This if checks if the file which is being uploaded is over 6MB and cancels this immediately if it is
-                                        newUploadTask.cancel();
-                                        Toast.makeText(EditSummaryActivity.this,"הקובץ כבד מדי! אנו מרשים רק עד 6 MB.",Toast.LENGTH_LONG).show();
-                                        pdfUri = null;
-                                        progressDialog.dismiss();
-                                    }
-                                }
-                            })
-                            ;
+                            });
 
                         }
                     }).addOnFailureListener(new OnFailureListener() { //This onfailurelistener tries to delete the file a second time inside of it
@@ -999,10 +1008,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
                                     Toast.makeText(EditSummaryActivity.this,"אאוץ'! נתקלנו בשגיאה - לא הצלחנו למחוק את הקובץ PDF הישן.", Toast.LENGTH_SHORT).show();
                                     progressDialog.dismiss();
-                                    Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
-                                    intent.putExtra("SubjectSelected", subject);
-                                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-                                    finish();
+                                   saveRedirectionToNewSubject();
                                 }
                             }).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -1039,11 +1045,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     Toast.makeText(EditSummaryActivity.this,"אאוץ'! נתקלנו בשגיאה - נסו שוב מאוחר יותר", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
-                    intent.putExtra("SubjectSelected", subject);
-
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+                    saveRedirectionToNewSubject();
                 }
             });
 
@@ -1082,22 +1084,24 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                     if(!snapshot.child("usersThatLiked").equals(null)){
                         //If thee summary has likes it'll copy the value of it and set it onto the new summary class
 
-                        FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked").addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        deleteChildrenFromRefMap(FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked"));
 
-//                                for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
-//                                    FirebaseDatabase.getInstance().getReference("UsersPlace").child(child.getValue().toString()).child("favoriteSummaries").child(summaryKey).removeValue(); //Removes all of the users who liked that certain summary on the database
-//                                }
-                                deleteChildrenFromRefMap(FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked"));
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
+//                        FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked").addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//
+////                                for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
+////                                    FirebaseDatabase.getInstance().getReference("UsersPlace").child(child.getValue().toString()).child("favoriteSummaries").child(summaryKey).removeValue(); //Removes all of the users who liked that certain summary on the database
+////                                }
+//
+//
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError error) {
+//
+//                            }
+//                        });
 
 
                     }
@@ -1119,47 +1123,13 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
                                     deleteChildrenFromRefMap(FirebaseDatabase.getInstance().getReference(spinnerSubjectCurrent).child(tempCopy.getId()).child("usersThatLiked"));
 
-                                    FirebaseDatabase.getInstance().getReference(spinnerSubjectCurrent).child(tempCopy.getId()).child("usersThatLiked").addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                                            //Checks if the summary even has likes and if it does it changes the subject in it for each user onto the new subject
-//                                            if(!snapshot.equals(null)) {
-//
-//                                                final ArrayList<String> usersThatLikedCertainSummary = new ArrayList<>(); //ArrayList for indexes of users who liked the summary that's about to be changed onto the new subject
-//                                                for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
-//                                                    usersThatLikedCertainSummary.add(child.getValue().toString());
-//                                                }
-//                                                for (int i = 0; i < usersThatLikedCertainSummary.size(); i++) {
-//                                                    //FirebaseDatabase.getInstance().getReference(spinnerSubjectCurrent).child(tempCopy.getId()).child("usersThatLiked").child(String.valueOf(i)).setValue(i);
-//                                                    //final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("UsersPlace/" + usersThatLikedCertainSummary.get(i));
-//                                                    FirebaseDatabase.getInstance().getReference("UsersPlace/"+ usersThatLikedCertainSummary.get(i)).child("favoriteSummaries").child(summaryKey).removeValue(); //Removes the old favorite summaries for the old key and summary for the former summary
-//                                                    //Temporarily disabled
-//                                                    //FirebaseDatabase.getInstance().getReference("UsersPlace/"+ usersThatLikedCertainSummary.get(i)).child("favoriteSummaries").child(tempCopy.getId()).setValue(spinnerSubjectCurrent); //Sets the new summary and summary id as favorite for each liker of the summary
-//                                                }
-//                                            }
-                                            subjectChanged = true;
-                                            progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
-                                            if (progressDialog.getProgress() == 100){
-                                                progressDialog.dismiss();
-                                                subject = spinnerSubjectCurrent;
-                                                Toast.makeText(EditSummaryActivity.this,"שיניתם נושא בהצלחה.", Toast.LENGTH_LONG).show();
-                                            }
-//                                            if(progressDialog.getProgress() == 100){
-//                                                progressDialog.dismiss();
-//                                                Toast.makeText(EditSummaryActivity.this,"שיניתם נושא בהצלחה.", Toast.LENGTH_LONG).show();
-//                                                Intent intent = new Intent(EditSummaryActivity.this, HomepageActivity.class);
-//                                                intent.putExtra("SubjectSelected", subject);
-//                                                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
-//                                                finishAffinity();
-//                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
-
-                                        }
-                                    });
+                                    subjectChanged = true;
+                                    progressDialog.setProgress(progressDialog.getProgress() + 100 / GlobalAcross.editingTemp);
+                                    if (progressDialog.getProgress() == 100){
+                                        progressDialog.dismiss();
+                                        subject = spinnerSubjectCurrent;
+                                        Toast.makeText(EditSummaryActivity.this,"שיניתם נושא בהצלחה.", Toast.LENGTH_LONG).show();
+                                    }
                                     //Does this when it finishes changing the liked references in everyone's accounts
 
 

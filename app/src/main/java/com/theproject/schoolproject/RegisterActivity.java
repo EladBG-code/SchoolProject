@@ -244,6 +244,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 //This section makes the phone vibrate and display a toast telling the user to recheck their details if the field is empty
                 vibratePhone(200);
                 Toast.makeText(this, "חזרו ומלאו את הפרטים בשדה השם הפרטי", Toast.LENGTH_SHORT).show();
+                etFName.setError("מלאו שדה");
                 return false;
             }
             if (!fName.matches("[א-ת]+")) {
@@ -260,6 +261,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 //This section makes the phone vibrate and display a toast telling the user to recheck their details if the field is empty
                 vibratePhone(200);
                 Toast.makeText(this, "חזרו ומלאו את הפרטים בשדה שם המשפחה", Toast.LENGTH_SHORT).show();
+                etLName.setError("מלאו שדה");
                 return false;
             }
             if (!lName.matches("[א-ת]+") || strContainArr(lName, illegalCharacters)) {
@@ -273,8 +275,15 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         }
 
         {
-            if (!isValidEmailAddress(email))
+            if (etEmail.getText().toString().isEmpty()){
+                etEmail.setError("מלאו שדה");
                 return false;
+            }
+            else if (!isValidEmailAddress(email)){
+                etEmail.setError("אנא תקנו את הכתובת");
+                return false;
+            }
+
         }
 
         //This section validates the username

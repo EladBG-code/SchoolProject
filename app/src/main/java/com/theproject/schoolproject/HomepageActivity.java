@@ -99,6 +99,7 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
             Intent intent = new Intent(HomepageActivity.this,ViewSummaryActivity.class);
             intent.putExtra("summaryKey",getIntent().getStringExtra("summaryKey"));
             intent.putExtra("subject",getIntent().getStringExtra("subject"));
+            intent.putExtra("openedNotif",getIntent().getBooleanExtra("openedNotif",false));
             startActivity(intent);
         }
 
