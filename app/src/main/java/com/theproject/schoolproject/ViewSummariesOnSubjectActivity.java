@@ -402,18 +402,26 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
                 .show();
     }
 
-    public void setAdapter(Boolean defaultX){
+    public void setAdapter(final Boolean defaultX){
         adapter = new FirebaseRecyclerAdapter<Summary, MyViewHolder>(options) {
 
             @Override
             public void onDataChanged() {
-
                 pbLoadingSummaries.setVisibility(View.GONE);
 
-                if (adapter.getItemCount() == 0){
-                    Toast.makeText(getApplicationContext(),"לא מצאנו תוצאות עבור חיפוש זה.",Toast.LENGTH_LONG).show();
-                    loadSummariesListFromDB(summariesRef,true);
+                if (!defaultX){
+
+                    if (adapter.getItemCount() == 0){
+                        Toast.makeText(getApplicationContext(),"לא מצאנו תוצאות עבור חיפוש זה.",Toast.LENGTH_LONG).show();
+                        loadSummariesListFromDB(summariesRef,true);
+                    }
                 }
+                else{
+                    if (adapter.getItemCount() == 0){
+                        llNoSummaries.setVisibility(View.VISIBLE);
+                    }
+                }
+
 
                 super.onDataChanged();
                 notifyDataSetChanged();
