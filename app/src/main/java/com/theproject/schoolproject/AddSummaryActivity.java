@@ -174,6 +174,7 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
             //finish();
             //startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
             finish();
+            
         }
         if(v == cvPublish){
             // UPLOAD SUMMARY BUTTON
