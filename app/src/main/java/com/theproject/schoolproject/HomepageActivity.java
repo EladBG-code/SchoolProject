@@ -9,6 +9,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.ActivityManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.barteksc.pdfviewer.PDFView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -40,6 +42,8 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 
 public class HomepageActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
@@ -56,10 +60,7 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
     //public static final String fileName = "login";
     //public static final String Username = "username";
 
-    /**
-     * Regular onCreate function but this one requires a certain API requirement and it has to be met - the requirement is vital in order for the service to work
-     * @param savedInstanceState
-     */
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,10 +90,12 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         /* sharedPreferences = getSharedPreferences("index", Context.MODE_PRIVATE);
         Toast.makeText(getApplicationContext(), sharedPreferences.getString("key",""), Toast.LENGTH_SHORT).show(); */
 
+
         tryCatchPFP();
 
-
-        startForegroundService(new Intent(HomepageActivity.this,NotificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
+       if (!isServiceRunning()){
+            startForegroundService(new Intent(HomepageActivity.this,NotificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
+        }
 
         if(getIntent().getBooleanExtra("openedNotif",false)){
             GlobalAcross.updateCurrentUserData();
@@ -103,6 +106,21 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
             startActivity(intent);
         }
 
+    }
+
+
+    /**
+     * Function checks if a service is running - if it doesn't it start the notification service I made
+     * @return
+     */
+    private boolean isServiceRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)){
+            if("com.theproject.schoolproject.NotificationService".equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

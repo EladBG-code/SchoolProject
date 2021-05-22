@@ -111,10 +111,10 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         tvNewFileName = findViewById(R.id.tvNewFilename);
         subjectChanged = false;
         pdfUri = null;
+
         setToolbarAndDrawer();
         setEveryAttribute();
         spinnerEditSubject.setOnItemSelectedListener(this);
-
 
 
     }
@@ -278,29 +278,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         return false;
     }
 
-    Drawable rotateDrawable(Drawable d, final float angle) {
-        // Use LayerDrawable, because it's simpler than RotateDrawable.
-        Drawable[] arD = {
-                d
-        };
-        return new LayerDrawable(arD) {
-            @Override
-            public void draw(Canvas canvas) {
-                canvas.save();
-                canvas.rotate(angle);
-                super.draw(canvas);
-                canvas.restore();
-            }
-        };
-    }
 
-
-    public static Bitmap RotateBitmap(Bitmap source, float angle)
-    {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
-    }
 
     public Boolean checkValidSize(Uri pdfUri){
 
@@ -320,6 +298,7 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
                     cvReplaceFile.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                     Toast.makeText(getApplicationContext(),"הקובץ כבד מדי! אנו מרשים רק עד 6 MB.",Toast.LENGTH_LONG).show();
                     tvNewFileName.setText("");
+                    progressDialog.dismiss();
                 }
 
                 @Override
@@ -342,9 +321,14 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         return true;
     }
 
+    /**
+     * Function redirects to the selected new subject with an intent
+     */
     public void saveRedirectionToNewSubject(){
 
         GlobalAcross.selectedSubjectVectorID = findIdOfSubject();
+
+        progressDialog.dismiss();
 
         Toast.makeText(this, "השינויים נשמרו בהצלחה!", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, ViewSummariesOnSubjectActivity.class);
@@ -355,6 +339,10 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         finishAfterTransition();
     }
 
+    /**
+     * Function returns the drawable ID of the subject needed
+     * @return
+     */
     public int findIdOfSubject(){
 
         if (subject.equals("מתמטיקה")){
@@ -811,17 +799,41 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         }
     }
 
-    public void deleteSummaryFunc(){
+    public void deleteChildrenFromRefMapDelSummary(DatabaseReference myRef){
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot != null){
+                    final Long childrenCount = snapshot.getChildrenCount();
+
+                    for (DataSnapshot child : snapshot.getChildren()) { //Traverses from every node within usersThatLiked within summary and adds that value to usersThatLikedCertainSummary
+                        FirebaseDatabase.getInstance().getReference("UserHashMap").child(child.getKey()).child("favoriteSummaries").removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                deletionProgress += (100 / (childrenCount / 100 + 2));
+                                //System.out.println(deletionProgress);
+                                progressDialog.setProgress(deletionProgress);
+                            }
+                        });
+
+                    }
+                    deleteSummaryFuncFull();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    /**
+     * Function deletes a summary
+     */
+    public void deleteSummaryFuncFull(){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked");
-        //    myRef.child("usersThatLiked").child(String.valueOf(currentUserIndex)).removeValue();
-        progressDialog = new ProgressDialog(EditSummaryActivity.this);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setTitle("מוחקים את הסיכום שלך...");
-        progressDialog.setProgress(0);
-        progressDialog.show();
-
-        deleteChildrenFromRefMap(myRef);
-
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull final DataSnapshot snapshot) {
@@ -856,14 +868,20 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
                             progressDialog.setProgress(deletionProgress);
                             progressDialog.dismiss();
-                            Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
-                            intent.putExtra("SubjectSelected", subject);
+//                            Intent intent = new Intent(EditSummaryActivity.this, ViewSummariesOnSubjectActivity.class);
+//                            intent.putExtra("SubjectSelected", subject);
                             Toast.makeText(EditSummaryActivity.this, "הסיכום שלך נמחק בהצלחה!", Toast.LENGTH_LONG).show();
-                            progressDialog.dismiss();
 
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+                            Intent intent = new Intent(getApplicationContext(), ViewSummariesOnSubjectActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+                            intent.putExtra("SubjectSelected", subject);
+                            intent.putExtra("DeletedSummaryBefore",true);
 
+                            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(EditSummaryActivity.this).toBundle());
+                            finish();
                         }
                     });
 
@@ -882,6 +900,29 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         });
     }
 
+    /**
+     * Function delete summary with its children fully
+     */
+    public void deleteSummaryFunc(){
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(subject).child(summaryKey).child("usersThatLiked");
+        //    myRef.child("usersThatLiked").child(String.valueOf(currentUserIndex)).removeValue();
+        progressDialog = new ProgressDialog(EditSummaryActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("מוחקים את הסיכום שלך...");
+        progressDialog.setProgress(0);
+        progressDialog.show();
+
+        deleteChildrenFromRefMapDelSummary(myRef);
+
+
+    }
+
+    /**
+     * Function deletes all of the summary with the key and subject and reference
+     * @param myRef
+     * @param summarySubject
+     * @param summaryKey
+     */
     private void deleteChildrenFromRefMapPlus(DatabaseReference myRef, final String summarySubject, final String summaryKey) {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -925,6 +966,10 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         });
     }
 
+    /**
+     * Function deletes children from ref with progress
+     * @param myRef
+     */
     public void deleteChildrenFromRefMap(DatabaseReference myRef){
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1203,6 +1248,11 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
         }
     }
 
+    /**
+     * Function returns the selected Uri's file name
+     * @param uri
+     * @return
+     */
     public String getFileName(Uri uri) {
         String result = null;
         if (uri.getScheme().equals("content")) {

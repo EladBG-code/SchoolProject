@@ -44,6 +44,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
     Spinner spinnerClass;
     ArrayAdapter<String> adapter;
     String[] arrClasses = {"י'" ,"י"+'"'+"א", "י"+'"'+"ב"};
+    Boolean passTests;
     //To here
 
     EditText etFName,etLName,etUsername,etEmail,etPassword;
@@ -61,6 +62,8 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        passTests = false;
 
         etLName = findViewById(R.id.etLName);
         etFName = findViewById(R.id.etFName);
@@ -145,6 +148,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 if(count == 0) {
                     tvCharCountET.setVisibility(View.GONE);
                     et.getBackground().mutate().setColorFilter(cfTemp); //sets the color filter back to default of the edittext
+                    passTests = false;
                 }
                     else{
                     tvCharCountET.setVisibility(View.VISIBLE);
@@ -152,15 +156,18 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
                     if(count - 1 == maxCount){
                         vibratePhone(200);
+                        passTests = false;
                     }
                     if(count > maxCount || (count < 4 && count > 0)) {
                         tvCharCountET.setTextColor(Color.RED);
                         et.getBackground().mutate().setColorFilter(getResources().getColor(android.R.color.holo_red_light), PorterDuff.Mode.SRC_ATOP); //sets the color filter to red of (the edittext because it's too many chars)
-
+                        passTests = false;
                     }
+
                     else{
                         et.getBackground().mutate().setColorFilter(cfTemp); //sets the color filter back to default of the edittext
                         tvCharCountET.setTextColor(Color.BLACK);
+                        passTests = true;
                     }
                 }
 
@@ -237,6 +244,8 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
         char[] illegalCharacters = {'`', '~', ';', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '/', '[', ']', '"', ':', '<', '>','\\','?'};
 
+
+
         //This section validates the first and last names of the user (fName & lName)
         {
             //This section checks if both of these fields are empty (first check)
@@ -253,6 +262,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 //This section makes the phone vibrate and display a toast telling the user to recheck their details
                 vibratePhone(200);
                 Toast.makeText(this, "חזרו ובדקו את תקינות שדה השם הפרטי", Toast.LENGTH_SHORT).show();
+                etFName.setError("תווים בעברית בבקשה");
                 return false;
             }
 
@@ -269,6 +279,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
                 //This section makes the phone vibrate and display a toast telling the user to recheck their details
                 vibratePhone(200);
+                etLName.setError("תווים בעברית בבקשה");
                 Toast.makeText(this, "חזורו ובדקו את תקינות שדה שם המשפחה", Toast.LENGTH_SHORT).show();
                 return false;
             }
@@ -289,13 +300,33 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         //This section validates the username
         {
             if(!(!username.matches(".*[א-ת]+.*") && (username.matches(".*[a-z]+.*") || username.matches(".*[A-Z]+.*")))){
-                if (username.equals(null) || username.isEmpty())
+                if (username.length() > 14){
+                    etUsername.setError("יותר מדי תווים!");
+                    vibratePhone(200);
                     return false;
+                }
+                else if (username.equals(null) || username.isEmpty() || username.length() == 0 || username.length() < 4){
+                    etUsername.setError("מלאו שדה");
+                    vibratePhone(200);
+                    return false;
+                }
                 //This section makes the phone vibrate and display a toast telling the user to recheck their details
                 vibratePhone(200);
                 Toast.makeText(this, "שם המשתמש יכול להכיל רק אותיות (באנגלית) ומספרים", Toast.LENGTH_SHORT).show();
                 return false;
             }
+        }
+
+
+        if (password.length() < 4 || password.length() > 30){
+            etPassword.setError("התווים לא בתחום התקין.");
+            Toast.makeText(getApplicationContext(), "אנא חזרו ובדקו את אורך הסיסמה.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (!passTests){
+            Toast.makeText(getApplicationContext(), "אנא חזרו ובדקו את אורך כל השדות שלכם.", Toast.LENGTH_SHORT).show();
+            return false;
         }
 
 

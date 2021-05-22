@@ -101,15 +101,13 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         initDrawer();
 
 
-
-
         pbLoadingSummaries = findViewById(R.id.pbLoadingSummaries);
         mp = MediaPlayer.create(this, R.raw.add_summary_sound);
+
 
             subject = new Subject(getIntent().getStringExtra("SubjectSelected"));
             tvSubjectName.setText(getIntent().getStringExtra("SubjectSelected")); /*This line sets the name of the subject which was selected as the title of the subject's summary page*/
 
-        pbLoadingSummaries.setVisibility(View.GONE);
 
             tvSubjectName.setPaintFlags(tvSubjectName.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG); //Makes the subject name textview bold
 
@@ -124,6 +122,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
 
 
             loadSummariesListFromDB(summariesRef,true);
+
 
 
     }
@@ -174,7 +173,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
      * This function loads all of the summaries of this current subject from the realtime database withusing a query - uses FirebaseUI (updates LIVE)
      * */
     public void loadSummariesListFromDB(Query query,Boolean defaultX) {
-        pbLoadingSummaries.setVisibility(View.VISIBLE);
+        //
 
         options = new FirebaseRecyclerOptions.Builder<Summary>().setQuery(query, new SnapshotParser<Summary>() {
         @NonNull
@@ -256,6 +255,15 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
      * */
     @Override
     public void onBackPressed() {
+
+        if (getIntent().getBooleanExtra("DeletedSummaryBefore",false)){
+
+            Intent intent = new Intent(getApplicationContext(),SummariesSubjectsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }
+
          if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         }
@@ -404,7 +412,6 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
 
     public void setAdapter(final Boolean defaultX){
         adapter = new FirebaseRecyclerAdapter<Summary, MyViewHolder>(options) {
-
             @Override
             public void onDataChanged() {
                 pbLoadingSummaries.setVisibility(View.GONE);
@@ -546,6 +553,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
             @NonNull
             @Override
             public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                pbLoadingSummaries.setVisibility(View.INVISIBLE);
                 View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_grid_layout,parent,false);
                 return new MyViewHolder(v);
             }

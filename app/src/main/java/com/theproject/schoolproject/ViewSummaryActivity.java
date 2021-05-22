@@ -289,16 +289,18 @@ public class ViewSummaryActivity extends AppCompatActivity implements Navigation
 
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
-            finish();
         }
         else{
-            Intent intent = new Intent(this, ViewSummariesOnSubjectActivity.class);
-            intent.putExtra("SubjectSelected", summarySubject);
+            if (super.getClass().equals(ViewSummariesOnSubjectActivity.class)){
+                Intent intent = new Intent(this, ViewSummariesOnSubjectActivity.class);
+                intent.putExtra("SubjectSelected", summarySubject);
 
-            // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
+                // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+
         }
+        finish();
 
 
     }

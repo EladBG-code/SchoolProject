@@ -123,9 +123,16 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         cvAttachment.setOnClickListener(this);
     }
 
+    /**
+     * Function starts a sound
+     */
     public void startAttachSound(){
         mp.start();
     }
+
+    /**
+     * Function stops the sound
+     */
     public void stopAttachSound(){
         mp.stop();
     }
@@ -471,6 +478,11 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    /**
+     * Function returns the name of the Uri of the path of the file which was selected
+     * @param uri
+     * @return
+     */
     public String getFileName(Uri uri) {
         String result = null;
         if (uri.getScheme().equals("content")) {
@@ -493,6 +505,9 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
         return result;
     }
 
+    /**
+     * Repetitive function in each acitvity that logs the user out at will
+     */
     public void logoutFunction(){
         GlobalAcross.currentUser = null;
         Intent intent = new Intent(getApplicationContext(), LoadingActivity.class);
