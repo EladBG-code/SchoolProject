@@ -347,7 +347,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         return false;
     }
 
-    private void searchByNameFunction(){
+    public void searchByNameFunction(){
         AlertDialog.Builder searchDialog = new AlertDialog.Builder(this);
         searchDialog.setTitle("  הזינו את שם הסיכום");
 
@@ -388,11 +388,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
                     //Change the adapter to search in orderByChild by the inputSearchText
                     inputSearchText = searchInput.getText().toString();
 
-                    String searchInputToLower = inputSearchText.toLowerCase();
-
-                    String searchInputTOUpper = inputSearchText.toUpperCase();
-
-                    Query queryByName = summariesRef.orderByChild("title").startAt(inputSearchText.substring(0,5)).endAt(inputSearchText+"\uf8ff");
+                    Query queryByName = summariesRef.orderByChild("title").startAt(inputSearchText).endAt(inputSearchText+"\uf8ff");
                    //loadSummariesListFromDB(queryByName);
 
                    loadSummariesListFromDB(queryByName,false);
@@ -410,6 +406,10 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
                 .show();
     }
 
+    /**
+     * Function sets the adapter of the summary recycleview
+     * @param defaultX
+     */
     public void setAdapter(final Boolean defaultX){
         adapter = new FirebaseRecyclerAdapter<Summary, MyViewHolder>(options) {
             @Override
