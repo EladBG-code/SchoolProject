@@ -1,6 +1,7 @@
 package com.theproject.schoolproject;
 
 import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -39,6 +40,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -86,6 +88,7 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     LinearLayout llNoSummaries;
     ImageView ivSubjectVector,ivSearchByName;
     MediaPlayer mp;
+    boolean searchAnimationBoolean;
 
     String inputSearchText;
 
@@ -348,62 +351,69 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
     }
 
     public void searchByNameFunction(){
-        AlertDialog.Builder searchDialog = new AlertDialog.Builder(this);
-        searchDialog.setTitle("  הזינו את שם הסיכום");
+        if (searchAnimationBoolean){
+            AlertDialog.Builder searchDialog = new AlertDialog.Builder(this);
+            searchDialog.setTitle("  הזינו את שם הסיכום");
 
-        final EditText searchInput = new EditText(this);
-        //searchInput.setPadding(2,0,2,0);
+            final EditText searchInput = new EditText(this);
+            //searchInput.setPadding(2,0,2,0);
 
-        searchInput.setInputType(InputType.TYPE_CLASS_TEXT);
+            searchInput.setInputType(InputType.TYPE_CLASS_TEXT);
 
-        searchInput.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            searchInput.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        layoutParams.setMargins(50, 10, 50, 55);
+            layoutParams.setMargins(50, 10, 50, 55);
 
-        LinearLayout linearLayout = new LinearLayout(this);
-        linearLayout.addView(searchInput,layoutParams);
-        layoutParams.setLayoutDirection(LayoutDirection.RTL);
+            LinearLayout linearLayout = new LinearLayout(this);
+            linearLayout.addView(searchInput,layoutParams);
+            layoutParams.setLayoutDirection(LayoutDirection.RTL);
 
-        searchDialog.setView(linearLayout);
-
-
-       textWatchET(searchInput);
+            searchDialog.setView(linearLayout);
 
 
-       Drawable dialogLogo = getResources().getDrawable(R.drawable.search_icon_vector);
-       dialogLogo.setTint(getResources().getColor(R.color.colorPrimaryDark));
+            textWatchET(searchInput);
 
-        searchDialog.setPositiveButton("חפש", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //Search and it is valid
-                if (searchInput.getError() != null){
-                    Toast.makeText(getApplicationContext(), "אנא עקבו אחר הוראות החיפוש.", Toast.LENGTH_SHORT - 5000).show();
-                    searchByNameFunction();
+
+            Drawable dialogLogo /*= getResources().getDrawable(R.drawable.search_icon_vector);
+
+       dialogLogo */= ResourcesCompat.getDrawable(getResources(),R.drawable.search_icon_vector,null);
+
+            dialogLogo.setTint(getResources().getColor(R.color.colorPrimaryDark));
+
+            searchDialog.setPositiveButton("חפש", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //Search and it is valid
+                    if (searchInput.getError() != null){
+                        Toast.makeText(getApplicationContext(), "אנא עקבו אחר הוראות החיפוש.", Toast.LENGTH_SHORT - 5000).show();
+                        searchByNameFunction();
+                    }
+                    else {
+                        //Change the adapter to search in orderByChild by the inputSearchText
+                        inputSearchText = searchInput.getText().toString();
+
+                        Query queryByName = summariesRef.orderByChild("title").startAt(inputSearchText).endAt(inputSearchText+"\uf8ff");
+                        //loadSummariesListFromDB(queryByName);
+
+                        loadSummariesListFromDB(queryByName,false);
+
+
+
+                    }
                 }
-                else {
-                    //Change the adapter to search in orderByChild by the inputSearchText
-                    inputSearchText = searchInput.getText().toString();
-
-                    Query queryByName = summariesRef.orderByChild("title").startAt(inputSearchText).endAt(inputSearchText+"\uf8ff");
-                   //loadSummariesListFromDB(queryByName);
-
-                   loadSummariesListFromDB(queryByName,false);
-
-
-
+            }).setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
                 }
-            }
-        }).setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        }).setIcon(dialogLogo)
-                .show();
+            }).setIcon(dialogLogo)
+                    .show();
+        }
+
+
     }
 
     /**
@@ -628,36 +638,314 @@ public class ViewSummariesOnSubjectActivity extends AppCompatActivity implements
         }
 
         if (v == ivSearchByName){
-            ivSearchByName.animate().rotationBy(360).setDuration(350).setListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    ivSearchByName.setClickable(false);
-                }
 
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    ivSearchByName.setClickable(true);
-                    searchByNameFunction();
-                }
+            animateAndSearch(250,350,18f);
 
-                @Override
-                public void onAnimationCancel(Animator animation) {
+//            ObjectAnimator animation = ObjectAnimator.ofFloat(ivSearchByName, "translationX", -20f);
+//            animation.setDuration(1000);
+//            animation.start();
+//
+//            animation.addListener(new Animator.AnimatorListener() {
+//                @Override
+//                public void onAnimationStart(Animator animation) {
+//                }
+//
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    animation = ObjectAnimator.ofFloat(ivSearchByName, "translationX", 20f);
+//                    animation.setDuration(1000);
+//                    animation.start();
+//
+//                    animation.addListener(new Animator.AnimatorListener() {
+//                        @Override
+//                        public void onAnimationStart(Animator animation) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onAnimationEnd(Animator animation) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onAnimationCancel(Animator animation) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onAnimationRepeat(Animator animation) {
+//
+//                        }
+//                    });
+//                }
+//
+//                @Override
+//                public void onAnimationCancel(Animator animation) {
+//
+//                }
+//
+//                @Override
+//                public void onAnimationRepeat(Animator animation) {
+//
+//                }
+//            });
 
-                }
 
-                @Override
-                public void onAnimationRepeat(Animator animation) {
+//            ivSearchByName.animate().rotationBy(360).setDuration(350).setListener(new Animator.AnimatorListener() {
+//                @Override
+//                public void onAnimationStart(Animator animation) {
+//                    ivSearchByName.setClickable(false);
+//                }
+//
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    ivSearchByName.setClickable(true);
+//                    searchByNameFunction();
+//                }
+//
+//                @Override
+//                public void onAnimationCancel(Animator animation) {
+//
+//                }
+//
+//                @Override
+//                public void onAnimationRepeat(Animator animation) {
+//
+//                }
+//            });
 
-                }
-            });
+//            ivSearchByName.animate().rotationBy(360).setDuration(350).setListener(new Animator.AnimatorListener() {
+//                @Override
+//                public void onAnimationStart(Animator animation) {
+//                    ivSearchByName.setClickable(false);
+//                }
+//
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    ivSearchByName.setClickable(true);
+//                    searchByNameFunction();
+//                }
+//
+//                @Override
+//                public void onAnimationCancel(Animator animation) {
+//
+//                }
+//
+//                @Override
+//                public void onAnimationRepeat(Animator animation) {
+//
+//                }
+//            });
         }
 
+    }
+
+    public void animateAndSearch(int startAnimationDelay , int endAnimationDelay , float rotationByFloat){
+        searchAnimationBoolean = false;
+        ivSearchByName.animate().translationYBy(-rotationByFloat).setDuration(startAnimationDelay).setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                ivSearchByName.setClickable(false);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                //ivSearchByName.setClickable(true);
+
+                ivSearchByName.animate().translationYBy(rotationByFloat).setDuration(endAnimationDelay).setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        ivSearchByName.animate().translationXBy(-rotationByFloat).setDuration(startAnimationDelay).setListener(new Animator.AnimatorListener() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                ivSearchByName.animate().translationYBy(-rotationByFloat).setDuration(startAnimationDelay).setListener(new Animator.AnimatorListener() {
+                                    @Override
+                                    public void onAnimationStart(Animator animation) {
+
+                                    }
+
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+
+                                        ivSearchByName.animate().translationXBy(rotationByFloat).setDuration(endAnimationDelay).setListener(new Animator.AnimatorListener() {
+                                            @Override
+                                            public void onAnimationStart(Animator animation) {
+                                                ivSearchByName.animate().translationYBy(rotationByFloat).setDuration(endAnimationDelay).setListener(new Animator.AnimatorListener() {
+                                                    @Override
+                                                    public void onAnimationStart(Animator animation) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onAnimationEnd(Animator animation) {
+                                                        ivSearchByName.animate().translationXBy(rotationByFloat).setDuration(startAnimationDelay).setListener(new Animator.AnimatorListener() {
+                                                            @Override
+                                                            public void onAnimationStart(Animator animation) {
+
+                                                            }
+
+                                                            @Override
+                                                            public void onAnimationEnd(Animator animation) {
+                                                                ivSearchByName.animate().translationXBy(-rotationByFloat).setDuration(startAnimationDelay).setListener(new Animator.AnimatorListener() {
+                                                                    @Override
+                                                                    public void onAnimationStart(Animator animation) {
+
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onAnimationEnd(Animator animation) {
+                                                                        //
+//                                                                        searchAnimationBoolean = true;
+//                                                                        ivSearchByName.setClickable(true);
+//                                                                        searchByNameFunction();
+                                                                        //
+
+
+                                                                        //
+                                                                        ivSearchByName.animate().translationXBy(rotationByFloat).setDuration(endAnimationDelay).setListener(new Animator.AnimatorListener() {
+                                                                            @Override
+                                                                            public void onAnimationStart(Animator animation) {
+
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onAnimationEnd(Animator animation) {
+                                                                                searchAnimationBoolean = true;
+                                                                                ivSearchByName.setClickable(true);
+                                                                                searchByNameFunction();
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onAnimationCancel(Animator animation) {
+
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onAnimationRepeat(Animator animation) {
+
+                                                                            }
+                                                                        });
+
+                                                                        //
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onAnimationCancel(Animator animation) {
+
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onAnimationRepeat(Animator animation) {
+
+                                                                    }
+                                                                });
+                                                            }
+
+                                                            @Override
+                                                            public void onAnimationCancel(Animator animation) {
+
+                                                            }
+
+                                                            @Override
+                                                            public void onAnimationRepeat(Animator animation) {
+
+                                                            }
+                                                        });
+                                                    }
+
+                                                    @Override
+                                                    public void onAnimationCancel(Animator animation) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onAnimationRepeat(Animator animation) {
+
+                                                    }
+                                                });
+                                            }
+
+                                            @Override
+                                            public void onAnimationEnd(Animator animation) {
+                                            }
+
+                                            @Override
+                                            public void onAnimationCancel(Animator animation) {
+
+                                            }
+
+                                            @Override
+                                            public void onAnimationRepeat(Animator animation) {
+
+                                            }
+                                        });
+
+
+                                    }
+
+                                    @Override
+                                    public void onAnimationCancel(Animator animation) {
+
+                                    }
+
+                                    @Override
+                                    public void onAnimationRepeat(Animator animation) {
+
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationCancel(Animator animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animator animation) {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+
+                //FINAL
+                //searchByNameFunction();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
     }
 
     public void startAddSound(){
         mp.start();
     }
-
-
 
 }

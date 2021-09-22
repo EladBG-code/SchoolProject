@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Android Projects/SchoolProject/app/src/main/res/layout/header.xml" value="0.2171875" />
+        <entry key="..\:/Android Projects/SchoolProject/app/src/main/res/menu/main_menu.xml" value="0.2171875" />
+      </map>
+    </option>
+  </component>
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" value="$USER_HOME$/Desktop/Temp" />
     <option name="OPTION_INCLUDE_LIBS" value="true" />
