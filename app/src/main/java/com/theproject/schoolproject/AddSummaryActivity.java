@@ -242,14 +242,10 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        if(ContextCompat.checkSelfPermission(AddSummaryActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){ //Checks if has the permission to read external storage
-                            cvAttachment.setClickable(true);
-                            selectPDF();
-                        }
-                        else{
-                            ActivityCompat.requestPermissions(AddSummaryActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9); //Asks the user to give it the permission to do so if it doesn't have it and sets the request code to 9
-                            //onRequestPermissionResult will be the next line to this - all parameters are passed
-                        }
+                        // No permission check needed - Android's document picker (ACTION_OPEN_DOCUMENT/ACTION_GET_CONTENT)
+                        // handles permissions internally via Storage Access Framework (SAF)
+                        cvAttachment.setClickable(true);
+                        selectPDF();
                     }
 
                     @Override
@@ -396,10 +392,10 @@ public class AddSummaryActivity extends AppCompatActivity implements View.OnClic
      */
     public void selectPDF() {
         // Method for offering the user to select a PDF file using file manager with an intent
-        Intent intent = new Intent()
-        .setType("application/pdf")
-        .setAction(Intent.ACTION_GET_CONTENT) // in order to fetch the files - type of action
-                ;
+        // Using ACTION_OPEN_DOCUMENT for better compatibility with Android 10+ (Scoped Storage)
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/pdf");
         startActivityForResult(intent, 86);
     }
 

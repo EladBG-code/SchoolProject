@@ -637,12 +637,8 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
 
                                     @Override
                                     public void onAnimationEnd(Animator animation) {
-                                        if (ContextCompat.checkSelfPermission(EditSummaryActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) { //Checks if has the permission to read external storage
-                                            selectPDF();
-                                        } else {
-                                            ActivityCompat.requestPermissions(EditSummaryActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9); //Asks the user to give it the permission to do so if it doesn't have it and sets the request code to 9
-                                            //onRequestPermissionResult will be the next line to this - all parameters are passed
-                                        }
+                                        // No permission check needed - Android's document picker handles permissions internally
+                                        selectPDF();
                                         cvReplaceFile.setClickable(true);
                                     }
 
@@ -1200,10 +1196,10 @@ public class EditSummaryActivity extends AppCompatActivity implements Navigation
      * Function creates an action get content type intent that selects PDF only and starts activityForResult with resultCode 86 and the path
      * */
     public void selectPDF() {
-        // Method for offering the user to select a PDF file using file manager with an intent
-        Intent intent = new Intent();
+        // Using ACTION_OPEN_DOCUMENT for better compatibility with Android 10+ (Scoped Storage)
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("application/pdf");
-        intent.setAction(Intent.ACTION_GET_CONTENT); // in order to fetch the files - type of action
         startActivityForResult(intent, 86);
     }
 
