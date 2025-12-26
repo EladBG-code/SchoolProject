@@ -90,9 +90,6 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
         /* sharedPreferences = getSharedPreferences("index", Context.MODE_PRIVATE);
         Toast.makeText(getApplicationContext(), sharedPreferences.getString("key",""), Toast.LENGTH_SHORT).show(); */
 
-
-        tryCatchPFP();
-
        if (!isServiceRunning()){
             startForegroundService(new Intent(HomepageActivity.this,NotificationService.class)); //5 like notification service starter - TEMPORARILY DISABLED
         }
@@ -106,6 +103,16 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
             startActivity(intent);
         }
 
+    }
+
+    /**
+     * Called when returning to this activity - refreshes profile picture in case it was changed
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh profile picture every time we return to homepage
+        tryCatchPFP();
     }
 
 
