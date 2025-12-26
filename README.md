@@ -8,6 +8,8 @@
 
 ## 🎯 מה זה?
 
+> 🎓 **פרויקט בגרות במדעי המחשב** | ציון סופי: **💯 100**
+
 אפליקציית אנדרואיד לשיתוף **סיכומים לבגרות** בין תלמידי תיכון בישראל! 🇮🇱
 
 תלמידים יכולים:
@@ -102,6 +104,8 @@ git clone https://github.com/EladBG-code/SchoolProject.git
 </p>
 
 ## 🎯 What is this?
+
+> 🎓 **Computer Science Bagrut Project** | Final Score: **💯 100/100**
 
 An Android app for sharing **Bagrut (Israeli matriculation exam) summaries** among high school students! 🇮🇱
 
