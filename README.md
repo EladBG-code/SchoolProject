@@ -1,6 +1,6 @@
 <div dir="rtl">
 
-# 📚 HS+ - אפליקציית סיכומים לבגרות
+# 📚 HS+ אפליקציית סיכומים לבגרות
 
 <p align="center">
   <img src="app/src/main/res/drawable/applogo.png" width="120" alt="App Logo"/>
@@ -95,7 +95,7 @@ git clone https://github.com/EladBG-code/SchoolProject.git
 
 ---
 
-# 📚 HS+ - Bagrut Summary Sharing App
+# 📚 HS+ Bagrut Summary Sharing App
 
 <p align="center">
   <img src="app/src/main/res/drawable/applogo.png" width="120" alt="App Logo"/>
