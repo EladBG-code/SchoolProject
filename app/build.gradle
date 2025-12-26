@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 30 /*30*/
-    buildToolsVersion "30.0.2"
+    namespace 'com.theproject.schoolproject'
+    compileSdk 34
     compileOptions.encoding = 'UTF-8'
 
     defaultConfig {
         applicationId "com.theproject.schoolproject"
         minSdkVersion 23
-        targetSdkVersion 30
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
