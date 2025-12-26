@@ -142,7 +142,23 @@ public class HomepageActivity extends AppCompatActivity implements NavigationVie
                             @Override
                             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                                 ShapeableImageView ivPFP = findViewById(R.id.ivProfilePictureIconHomepage);
-                                Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                                
+                                // Scale down bitmap to prevent 'Canvas: trying to draw too large bitmap' crash
+                                BitmapFactory.Options options = new BitmapFactory.Options();
+                                options.inJustDecodeBounds = true;
+                                BitmapFactory.decodeFile(localFile.getAbsolutePath(), options);
+                                
+                                // Calculate inSampleSize to scale down large images
+                                int maxSize = 500; // Max width/height in pixels
+                                int scale = 1;
+                                while (options.outWidth / scale > maxSize || options.outHeight / scale > maxSize) {
+                                    scale *= 2;
+                                }
+                                
+                                options.inJustDecodeBounds = false;
+                                options.inSampleSize = scale;
+                                Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath(), options);
+                                
                                 ivPFP.setScaleType(ImageView.ScaleType.FIT_XY);
                                 ivPFP.setForeground(null);
                                 ivPFP.setImageBitmap(bitmap);

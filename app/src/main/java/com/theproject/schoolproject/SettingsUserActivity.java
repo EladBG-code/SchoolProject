@@ -321,7 +321,20 @@ public class SettingsUserActivity extends AppCompatActivity implements Navigatio
                                     firePfpRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                                         @Override
                                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                            bitmapTemp = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                                            // Scale down bitmap to prevent 'Canvas: trying to draw too large bitmap' crash
+                                            BitmapFactory.Options options = new BitmapFactory.Options();
+                                            options.inJustDecodeBounds = true;
+                                            BitmapFactory.decodeFile(localFile.getAbsolutePath(), options);
+                                            
+                                            int maxSize = 500;
+                                            int scale = 1;
+                                            while (options.outWidth / scale > maxSize || options.outHeight / scale > maxSize) {
+                                                scale *= 2;
+                                            }
+                                            
+                                            options.inJustDecodeBounds = false;
+                                            options.inSampleSize = scale;
+                                            bitmapTemp = BitmapFactory.decodeFile(localFile.getAbsolutePath(), options);
                                         }
                                     });
                                 } catch (IOException e) {
