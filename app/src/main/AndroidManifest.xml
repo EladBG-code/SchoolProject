@@ -24,7 +24,8 @@
 
         <activity
             android:name=".LoadingActivity"
-            android:screenOrientation="locked">
+            android:screenOrientation="locked"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
